@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { JsonpClientBackend } from '@angular/common/http';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EmployeesService } from './employees.service';
 
@@ -7,8 +8,8 @@ import { EmployeesService } from './employees.service';
   templateUrl: './employees.component.html',
   styleUrls: ['./employees.component.css']
 })
-export class EmployeesComponent implements OnInit {
-  employees! : Object;
+export class EmployeesComponent implements OnInit, OnDestroy {
+  employees: JSON|any;
   employeesSubs!: Subscription;
   constructor(private emplSer : EmployeesService) { }
 
@@ -20,6 +21,9 @@ export class EmployeesComponent implements OnInit {
       this.employees = res;
     }
   );
-  console.log(this.employees)
   }
+  ngOnDestroy() {
+    this.employeesSubs.unsubscribe();
+  }
+
 }

@@ -10,9 +10,6 @@ export class EmployeesService {
   constructor(private http: HttpClient) { }
 
   getEmployees(): Observable<Object>{
-    var emp = this.http.get('http://127.0.0.1:5002/employees');
-    console.log("**")
-    console.log(emp)
-    return emp
+    return this.http.get('http://127.0.0.1:5002/employees');
   }
 }

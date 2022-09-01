@@ -1,2 +1,6 @@
 <p>employees works!</p>
-<p *ngIf="employees">{{employees}}/p>
+<ng-container *ngIf="employees" >
+    <p *ngFor="let employee of employees.employees">{{employee.name}}</p>
+ </ng-container>
+
+
