@@ -1,6 +1,41 @@
-<div style="text-align:center">
-  <h1>Exams</h1>
+
+<div> 
+  <mat-toolbar color="primary">
+    <div fxShow="true" fxHide.gt-sm="true">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+
+    <a mat-button class="companyName" routerLink="/">
+      <span>OCEL tool</span>
+    </a>
+    <span class="example-spacer"></span>
+    <div fxShow="true" fxHide.lt-md="true">
+      <a mat-button routerLink="/about-us">Import</a>
+      <a mat-button routerLink="/prices">Apply</a>
+      <a mat-button routerLink="/start-page">Export</a>
+      <!-- <a mat-button routerLink="/offer">Offer</a>
+      <a mat-button routerLink="/contact">Contact</a> -->
+    </div>
+
+  </mat-toolbar>
+  <mat-sidenav-container fxFlexFill class="example-container">
+
+    <mat-sidenav color="primary" #sidenav fxLayout="column" mode="over"  opened="false" fxHide.gt-sm="true">
+      <div fxLayout="column">
+        <a mat-button routerLink="/about-us">Import</a>
+        <a mat-button routerLink="/prices">Apply</a>
+        <a mat-button routerLink="/start-page">Export</a>
+        <!-- <a mat-button routerLink="/offer">Offer</a>
+        <a mat-button routerLink="/contact">Contact</a> -->
+      </div>
+    </mat-sidenav>
+    <!-- <mat-sidenav-content fxFlexFill>
+      Awesome content
+    </mat-sidenav-content> -->
+  </mat-sidenav-container>
 </div>
-<h2>Here are the exams created so far: </h2>
-<li><a routerLink="/employees" routerLinkActive="active" ariaCurrentWhenActive="page">Employees</a></li>
-<router-outlet></router-outlet>
+<!-- <div style="text-align:center">
+  <h1>OCEL tool</h1>
+</div> -->
