@@ -14,13 +14,17 @@ import { MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import { ImportComponent } from './import/import.component';
+import {ImportComponent } from './import/import.component';
+import {ApplyingComponent } from './applying/applying.component';
+import {ExportComponent } from './export/export.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     EmployeesComponent,
-    ImportComponent
+    ImportComponent,
+    ApplyingComponent,
+    ExportComponent
   ],
   imports: [
     BrowserModule,
