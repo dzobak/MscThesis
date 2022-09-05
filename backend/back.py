@@ -11,7 +11,12 @@ class Employees(Resource):
     def get(self):
         return {'employees': [{'id':1, 'name':'Balram'},{'id':2, 'name':'Tom'}]} 
 
+class FileUpload(Resource):
+    def get(self):
+        return {"good": "nice"}
+
 api.add_resource(Employees, '/employees') # Route_1
+api.add_resource(FileUpload, '/fileUpload')
 
 if __name__ == '__main__':
      app.run(port=5002)

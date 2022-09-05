@@ -10,13 +10,13 @@ import { EmployeesService } from './employees/employees.service';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatButtonModule} from '@angular/material/button';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatIconModule} from '@angular/material/icon';
-import {MatToolbarModule} from '@angular/material/toolbar';
+
+import { MaterialModules } from './material.module';
+
 import {ImportComponent } from './import/import.component';
 import {ApplyingComponent } from './applying/applying.component';
 import {ExportComponent } from './export/export.component';
+
 
 @NgModule({
   declarations: [
@@ -30,10 +30,7 @@ import {ExportComponent } from './export/export.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    MatSidenavModule,
-    MatButtonModule,
-    MatIconModule,
-    MatToolbarModule,
+    MaterialModules,
     FlexLayoutModule,
     BrowserAnimationsModule,
   ],
