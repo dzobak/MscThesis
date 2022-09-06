@@ -11,7 +11,7 @@ import { EmployeesService } from './employees/employees.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { MaterialModules } from './material.module';
+import { MatModules } from './material.module';
 
 import {ImportComponent } from './import/import.component';
 import {ApplyingComponent } from './applying/applying.component';
@@ -30,7 +30,7 @@ import {ExportComponent } from './export/export.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    MaterialModules,
+    MatModules,
     FlexLayoutModule,
     BrowserAnimationsModule,
   ],
