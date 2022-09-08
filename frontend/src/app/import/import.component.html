@@ -1,2 +1,14 @@
-<input type="file" class="file-upload" onchange="console.log(event.target.files)">
-<button mat-flat-button color="primary">Upload</button>
+<!-- <input type="file" class="file-upload" onchange="console.log(event.target.files)">
+<button mat-flat-button color="primary">Upload</button> -->
+<input type="file" class="file-input multiple"
+       (change)="onFileSelected($event)" #fileUpload>
+
+<div class="file-upload">
+
+   {{fileName || "No file uploaded yet."}}
+
+    <button mat-mini-fab color="primary" class="upload-btn"
+      (click)="fileUpload.click()">
+        <mat-icon>attach_file</mat-icon>
+    </button>
+</div>
