@@ -1,3 +1,21 @@
 .file-input {
     display: none;
   }
+table {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+.mat-success {
+      background-color: green;
+      color: #fff;
+}
+.center {
+  flex-direction: column;
+  justify-content: center;
+}
+mat-header-cell, mat-cell {
+  justify-content: center;
+  text-align: center ;
+}
