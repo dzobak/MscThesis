@@ -16,6 +16,7 @@ import { MatModules } from './material.module';
 import {ImportComponent } from './import/import.component';
 import {ApplyingComponent } from './applying/applying.component';
 import {ExportComponent } from './export/export.component';
+import {LogDetailsComponent } from './log-details/log-details.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {ExportComponent } from './export/export.component';
     EmployeesComponent,
     ImportComponent,
     ApplyingComponent,
-    ExportComponent
+    ExportComponent,
+    LogDetailsComponent
   ],
   imports: [
     BrowserModule,

@@ -10,10 +10,10 @@ div {
     overflow: inherit;
 }
 
-/* .mat-sidenav-container{
-  background-color: lightskyblue;
+ .mat-sidenav-container{
+  /* background-color: lightskyblue; */
   min-height: 93vh !important;
-} */
+}
 
 a{
     text-decoration: none;
@@ -35,6 +35,6 @@ button{
   }
 
   .mat-sidenav-content{
-      font-size: 200%;
+      font-size: 120%;
       text-align: center;
   }

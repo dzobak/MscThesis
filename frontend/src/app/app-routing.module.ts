@@ -4,12 +4,14 @@ import { EmployeesComponent } from './employees/employees.component';
 import { ImportComponent } from './import/import.component';
 import { ApplyingComponent } from './applying/applying.component';
 import { ExportComponent } from './export/export.component';
+import { LogDetailsComponent } from './log-details/log-details.component';
 
 const routes: Routes = [
   {path: "employees", component: EmployeesComponent},
   {path: "import", component: ImportComponent},
   {path: "applying", component:ApplyingComponent},
-  {path: "export", component:ExportComponent}
+  {path: "export", component:ExportComponent},
+  {path: "logs", component:LogDetailsComponent},
   ];
 
 @NgModule({
