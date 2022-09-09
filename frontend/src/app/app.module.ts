@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MatModules } from './material.module';
+import { FormsModule } from '@angular/forms';
 
 import {ImportComponent } from './import/import.component';
 import {ApplyingComponent } from './applying/applying.component';
@@ -34,6 +35,7 @@ import {LogDetailsComponent } from './log-details/log-details.component';
     AppRoutingModule,
     HttpClientModule,
     FlexLayoutModule,
+    FormsModule,
     MatModules,
   ],
   providers: [EmployeesService],
