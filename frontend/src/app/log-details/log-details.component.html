@@ -1,3 +1,50 @@
+<!-- <mat-list>
+  <button mat-list-item *ngFor="let log of dataSource" (click)="visibility(log)"> {{log.name}}
+
+  </button>
+  <mat-list-item *ngFor="let log of dataSource">
+    <button mat-icon-button disabled></button>
+    <mat-card *ngIf="log.visibility">Number of events: {{log.events}}</mat-card>
+  </mat-list-item> -->
+  
+  <!-- <mat-list-item> Pepper </mat-list-item>
+  <mat-list-item> Salt </mat-list-item>
+  <mat-list-item *ngIf="true"> Paprika </mat-list-item>
+  <button mat-list-item (click)="save()"> 
+    save
+  </button>
+  <mat-list-item>
+    <button mat-icon-button disabled></button>
+    <mat-card *ngIf="saveVal">Simple card</mat-card>
+  </mat-list-item> 
+ </mat-list> -->
+
+ <div class="example-action-buttons">
+  <button mat-button (click)="accordion.openAll()">Expand All</button>
+  <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+</div>
+<div style="padding: 3em 3em;">
+<mat-accordion class="example-headers-align"  multi>
+
+  <mat-expansion-panel 
+  *ngFor="let log of dataSource" 
+  (opened)="log.panelOpenState = true"
+  (closed)="log.panelOpenState = false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{log.name}}
+      </mat-panel-title>
+      <mat-panel-description>
+        Click for {{log.panelOpenState ? 'less' : 'more'}} details
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <p>Number of events: {{log.events}}</p>
+  </mat-expansion-panel>
+</mat-accordion>
+</div>
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -30,4 +77,3 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-

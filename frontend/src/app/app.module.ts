@@ -30,11 +30,11 @@ import {LogDetailsComponent } from './log-details/log-details.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    MatModules,
     FlexLayoutModule,
-    BrowserAnimationsModule,
+    MatModules,
   ],
   providers: [EmployeesService],
   bootstrap: [AppComponent]
