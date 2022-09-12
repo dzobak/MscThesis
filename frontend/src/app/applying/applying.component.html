@@ -16,6 +16,7 @@
 
 <mat-tab-group>
     <mat-tab label="Selection Function"> Content 1 
+        <ng-container *ngIf="applyingData" >{{applyingData.hithere}}</ng-container>
         <div class="pad-top">
             <button mat-raised-button color="primary">Apply</button>
 

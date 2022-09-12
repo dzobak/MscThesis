@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api
 from flask_cors import CORS
 
-from applying import Applying
+from applying.default import Applying
 
 
 app = Flask(__name__)
@@ -20,7 +20,7 @@ class FileUpload(Resource):
 
 api.add_resource(Employees, '/employees') # Route_1
 api.add_resource(FileUpload, '/fileUpload')
-api.add_resource(Applying, '/applying')
+api.add_resource(Applying, '/applying/<method>')
 
 if __name__ == '__main__':
      app.run(port=5002)

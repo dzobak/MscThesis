@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import {ApplyingService} from './applying.service'
 
 export interface PeriodicElement {
-  name: string;
+  name: string
   position: number;
   events: number;
   symbol: string;
@@ -22,12 +24,27 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './applying.component.html',
   styleUrls: ['./applying.component.css']
 })
-export class ApplyingComponent implements OnInit {
+export class ApplyingComponent implements OnInit, OnDestroy {
+  applyingData: JSON|any;
+  ApplyingSubs!: Subscription;
+  
+
   dataSource = ELEMENT_DATA; 
   selectedValue!: string;
-  constructor() { }
+  constructor(private emplSer : ApplyingService) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    console.log("hello")
+    this.ApplyingSubs = this.emplSer
+    .getApplyingPage()
+    .subscribe(res => {
+      this.applyingData = res;
+    }
+  );
   }
+  ngOnDestroy() {
+    this.ApplyingSubs.unsubscribe();
+  }
+
 
 }
