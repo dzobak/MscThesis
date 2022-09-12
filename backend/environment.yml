@@ -1,0 +1,7 @@
+name: ocelapp
+dependencies:
+python=3.9.12
+pandas=1.4.2
+flask=2.2.2
+flask-cors=3.0.10
+flask-restful=0.3.9
