@@ -41,6 +41,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       this.applyingData = res;
     }
   );
+  console.log(this.applyingData)
   }
   ngOnDestroy() {
     this.ApplyingSubs.unsubscribe();

@@ -1,8 +1,8 @@
 <mat-form-field appearance="fill">
     <mat-label>Select event log</mat-label>
-    <mat-select [(ngModel)]="selectedValue" name="food">
-        <mat-option *ngFor="let food of dataSource" [value]="food.position">
-        {{food.name}}
+    <mat-select [(ngModel)]="selectedValue" name="log">
+        <mat-option *ngFor="let log of applyingData.event_logs" [value]="log">
+        {{log}}
         </mat-option>
     </mat-select>
     </mat-form-field>
@@ -10,7 +10,9 @@
     <mat-form-field appearance="fill">
     <mat-label>Select scope column</mat-label>
     <mat-select >
-        <mat-option value="option1">Scope 1</mat-option>
+        <mat-option *ngFor="let scope of applyingData.scopes" [value]="scope">
+            {{scope}}
+        </mat-option>
     </mat-select>
     </mat-form-field>
 

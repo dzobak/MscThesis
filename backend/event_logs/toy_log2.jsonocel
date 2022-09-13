@@ -1,0 +1,1465 @@
+{
+  "ocel:global-event": {
+    "ocel:activity": "__INVALID__"
+  },
+  "ocel:global-object": {
+    "ocel:type": "__INVALID__"
+  },
+  "ocel:global-log": {
+    "ocel:attribute-names": [
+      "scope",
+      "scope2"
+    ],
+    "ocel:object-types": [
+      "customers",
+      "items",
+      "orders",
+      "packages",
+      "products"
+    ],
+    "ocel:version": "1.0",
+    "ocel:ordering": "timestamp"
+  },
+  "ocel:events": {
+    "1.0": {
+      "ocel:timestamp": "2021-10-19T04:03:00.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart",
+        "scope2": "second scope"
+      },
+      "ocel:omap": [
+        "i1"
+      ]
+    },
+    "2.0": {
+      "ocel:timestamp": "2021-10-19T04:26:27.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i2"
+      ]
+    },
+    "3.0": {
+      "ocel:timestamp": "2021-10-19T05:35:24.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i3"
+      ]
+    },
+    "4.0": {
+      "ocel:timestamp": "2021-10-19T06:15:54.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i4"
+      ]
+    },
+    "5.0": {
+      "ocel:timestamp": "2021-10-19T06:56:36.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i5"
+      ]
+    },
+    "6.0": {
+      "ocel:timestamp": "2021-10-19T08:53:05.000Z",
+      "ocel:activity": "place order",
+      "ocel:vmap": {
+        "scope": "business/new order/place order"
+      },
+      "ocel:omap": [
+        "i1",
+        "i2",
+        "i3",
+        "i4",
+        "i5",
+        "o1"
+      ]
+    },
+    "7.0": {
+      "ocel:timestamp": "2021-10-19T11:31:47.000Z",
+      "ocel:activity": "choose payment method",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/choose payment method"
+      },
+      "ocel:omap": [
+        "o1"
+      ]
+    },
+    "8.0": {
+      "ocel:timestamp": "2021-10-19T11:57:56.000Z",
+      "ocel:activity": "confirm payment",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/confirm payment"
+      },
+      "ocel:omap": [
+        "o1"
+      ]
+    },
+    "9.0": {
+      "ocel:timestamp": "2021-10-19T12:58:50.000Z",
+      "ocel:activity": "confirm order",
+      "ocel:vmap": {
+        "scope": "business/new order/confirm order"
+      },
+      "ocel:omap": [
+        "i1",
+        "i2",
+        "i3",
+        "i4",
+        "i5",
+        "o1"
+      ]
+    },
+    "10.0": {
+      "ocel:timestamp": "2021-10-19T14:25:30.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i1",
+        "o1",
+        "p1"
+      ]
+    },
+    "11.0": {
+      "ocel:timestamp": "2021-10-19T16:48:58.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i2",
+        "o1",
+        "p2"
+      ]
+    },
+    "12.0": {
+      "ocel:timestamp": "2021-10-19T18:04:26.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i3",
+        "o1",
+        "p3"
+      ]
+    },
+    "13.0": {
+      "ocel:timestamp": "2021-10-19T19:57:16.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i4",
+        "i5",
+        "o1",
+        "p4"
+      ]
+    },
+    "14.0": {
+      "ocel:timestamp": "2021-10-19T20:13:47.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i1",
+        "o1",
+        "p1"
+      ]
+    },
+    "15.0": {
+      "ocel:timestamp": "2021-10-19T22:16:26.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i2",
+        "o1",
+        "p2"
+      ]
+    },
+    "16.0": {
+      "ocel:timestamp": "2021-10-19T22:32:33.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i3",
+        "o1",
+        "p3"
+      ]
+    },
+    "17.0": {
+      "ocel:timestamp": "2021-10-19T23:04:58.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i4",
+        "i5",
+        "o1",
+        "p4"
+      ]
+    },
+    "18.0": {
+      "ocel:timestamp": "2021-10-19T23:28:12.000Z",
+      "ocel:activity": "load truck",
+      "ocel:vmap": {
+        "scope": "business/ship package/load truck"
+      },
+      "ocel:omap": [
+        "i1",
+        "i2",
+        "i3",
+        "i4",
+        "i5",
+        "o1",
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ]
+    },
+    "19.0": {
+      "ocel:timestamp": "2021-10-20T00:55:06.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i1",
+        "o1",
+        "p1"
+      ]
+    },
+    "20.0": {
+      "ocel:timestamp": "2021-10-20T02:00:26.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i2",
+        "o1",
+        "p2"
+      ]
+    },
+    "21.0": {
+      "ocel:timestamp": "2021-10-20T02:09:19.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i3",
+        "o1",
+        "p3"
+      ]
+    },
+    "22.0": {
+      "ocel:timestamp": "2021-10-20T04:05:03.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i4",
+        "i5",
+        "o1",
+        "p4"
+      ]
+    },
+    "23.0": {
+      "ocel:timestamp": "2021-10-20T06:26:59.000Z",
+      "ocel:activity": "complete order",
+      "ocel:vmap": {
+        "scope": "business/close order/complete order"
+      },
+      "ocel:omap": ["o0"]
+    },
+    "24.0": {
+      "ocel:timestamp": "2021-10-20T08:38:11.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i6"
+      ]
+    },
+    "25.0": {
+      "ocel:timestamp": "2021-10-20T10:36:57.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i7"
+      ]
+    },
+    "26.0": {
+      "ocel:timestamp": "2021-10-20T11:38:08.000Z",
+      "ocel:activity": "place order",
+      "ocel:vmap": {
+        "scope": "business/new order/place order"
+      },
+      "ocel:omap": [
+        "i6",
+        "i7",
+        "o2"
+      ]
+    },
+    "27.0": {
+      "ocel:timestamp": "2021-10-20T14:11:29.000Z",
+      "ocel:activity": "choose payment method",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/choose payment method"
+      },
+      "ocel:omap": [
+        "o2"
+      ]
+    },
+    "28.0": {
+      "ocel:timestamp": "2021-10-20T14:56:58.000Z",
+      "ocel:activity": "confirm payment",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/confirm payment"
+      },
+      "ocel:omap": [
+        "o2"
+      ]
+    },
+    "29.0": {
+      "ocel:timestamp": "2021-10-20T17:09:58.000Z",
+      "ocel:activity": "confirm order",
+      "ocel:vmap": {
+        "scope": "business/new order/confirm order"
+      },
+      "ocel:omap": [
+        "i6",
+        "i7",
+        "o2"
+      ]
+    },
+    "30.0": {
+      "ocel:timestamp": "2021-10-20T18:11:02.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i6",
+        "o2",
+        "p5"
+      ]
+    },
+    "31.0": {
+      "ocel:timestamp": "2021-10-20T20:04:44.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i6",
+        "o2",
+        "p5"
+      ]
+    },
+    "32.0": {
+      "ocel:timestamp": "2021-10-20T22:04:37.000Z",
+      "ocel:activity": "load truck",
+      "ocel:vmap": {
+        "scope": "business/ship package/load truck"
+      },
+      "ocel:omap": [
+        "i6",
+        "o2",
+        "p5"
+      ]
+    },
+    "33.0": {
+      "ocel:timestamp": "2021-10-20T23:04:56.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i6",
+        "o2",
+        "p5"
+      ]
+    },
+    "34.0": {
+      "ocel:timestamp": "2021-10-20T23:51:01.000Z",
+      "ocel:activity": "complete order",
+      "ocel:vmap": {
+        "scope": "business/close order/complete order"
+      },
+      "ocel:omap": ["o1"]
+    },
+    "35.0": {
+      "ocel:timestamp": "2021-10-21T00:10:49.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i8"
+      ]
+    },
+    "36.0": {
+      "ocel:timestamp": "2021-10-21T02:36:07.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i9"
+      ]
+    },
+    "37.0": {
+      "ocel:timestamp": "2021-10-21T04:50:44.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i10"
+      ]
+    },
+    "38.0": {
+      "ocel:timestamp": "2021-10-21T06:39:17.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i11"
+      ]
+    },
+    "39.0": {
+      "ocel:timestamp": "2021-10-21T08:38:37.000Z",
+      "ocel:activity": "place order",
+      "ocel:vmap": {
+        "scope": "business/new order/place order"
+      },
+      "ocel:omap": [
+        "i10",
+        "i11",
+        "i8",
+        "i9",
+        "o3"
+      ]
+    },
+    "40.0": {
+      "ocel:timestamp": "2021-10-21T09:41:11.000Z",
+      "ocel:activity": "choose payment method",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/choose payment method"
+      },
+      "ocel:omap": [
+        "o3"
+      ]
+    },
+    "41.0": {
+      "ocel:timestamp": "2021-10-21T10:46:56.000Z",
+      "ocel:activity": "confirm payment",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/confirm payment"
+      },
+      "ocel:omap": [
+        "o3"
+      ]
+    },
+    "42.0": {
+      "ocel:timestamp": "2021-10-21T12:59:10.000Z",
+      "ocel:activity": "confirm order",
+      "ocel:vmap": {
+        "scope": "business/new order/confirm order"
+      },
+      "ocel:omap": [
+        "i10",
+        "i11",
+        "i8",
+        "i9",
+        "o3"
+      ]
+    },
+    "43.0": {
+      "ocel:timestamp": "2021-10-21T13:14:36.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i7",
+        "i8",
+        "o2",
+        "o3",
+        "p6"
+      ]
+    },
+    "44.0": {
+      "ocel:timestamp": "2021-10-21T14:58:05.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i9",
+        "o3",
+        "p7"
+      ]
+    },
+    "45.0": {
+      "ocel:timestamp": "2021-10-21T17:18:02.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i7",
+        "i8",
+        "o2",
+        "o3",
+        "p6"
+      ]
+    },
+    "46.0": {
+      "ocel:timestamp": "2021-10-21T18:01:55.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i9",
+        "o3",
+        "p7"
+      ]
+    },
+    "47.0": {
+      "ocel:timestamp": "2021-10-21T20:32:26.000Z",
+      "ocel:activity": "load truck",
+      "ocel:vmap": {
+        "scope": "business/ship package/load truck"
+      },
+      "ocel:omap": [
+        "i7",
+        "i8",
+        "i9",
+        "o2",
+        "o3",
+        "p6",
+        "p7"
+      ]
+    },
+    "48.0": {
+      "ocel:timestamp": "2021-10-21T22:56:27.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i7",
+        "i8",
+        "o2",
+        "o3",
+        "p6"
+      ]
+    },
+    "49.0": {
+      "ocel:timestamp": "2021-10-22T00:22:05.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i9",
+        "o3",
+        "p7"
+      ]
+    },
+    "50.0": {
+      "ocel:timestamp": "2021-10-22T00:50:35.000Z",
+      "ocel:activity": "complete order",
+      "ocel:vmap": {
+        "scope": "business/close order/complete order"
+      },
+      "ocel:omap": ["o2"]
+    },
+    "51.0": {
+      "ocel:timestamp": "2021-10-22T01:21:05.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i12"
+      ]
+    },
+    "52.0": {
+      "ocel:timestamp": "2021-10-22T01:50:16.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i13"
+      ]
+    },
+    "53.0": {
+      "ocel:timestamp": "2021-10-22T04:19:41.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i14"
+      ]
+    },
+    "54.0": {
+      "ocel:timestamp": "2021-10-22T05:45:14.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i15"
+      ]
+    },
+    "55.0": {
+      "ocel:timestamp": "2021-10-22T07:49:13.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i16"
+      ]
+    },
+    "56.0": {
+      "ocel:timestamp": "2021-10-22T07:57:47.000Z",
+      "ocel:activity": "place order",
+      "ocel:vmap": {
+        "scope": "business/new order/place order"
+      },
+      "ocel:omap": [
+        "i12",
+        "i13",
+        "i14",
+        "i15",
+        "i16",
+        "o4"
+      ]
+    },
+    "57.0": {
+      "ocel:timestamp": "2021-10-22T09:00:36.000Z",
+      "ocel:activity": "choose payment method",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/choose payment method"
+      },
+      "ocel:omap": [
+        "o4"
+      ]
+    },
+    "58.0": {
+      "ocel:timestamp": "2021-10-22T10:58:57.000Z",
+      "ocel:activity": "confirm payment",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/confirm payment"
+      },
+      "ocel:omap": [
+        "o4"
+      ]
+    },
+    "59.0": {
+      "ocel:timestamp": "2021-10-22T13:37:49.000Z",
+      "ocel:activity": "confirm order",
+      "ocel:vmap": {
+        "scope": "business/new order/confirm order"
+      },
+      "ocel:omap": [
+        "i12",
+        "i13",
+        "i14",
+        "i15",
+        "i16",
+        "o4"
+      ]
+    },
+    "60.0": {
+      "ocel:timestamp": "2021-10-22T15:48:20.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i10",
+        "i11",
+        "o3",
+        "p8"
+      ]
+    },
+    "61.0": {
+      "ocel:timestamp": "2021-10-22T17:20:21.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i12",
+        "i13",
+        "i14",
+        "o4",
+        "p9"
+      ]
+    },
+    "62.0": {
+      "ocel:timestamp": "2021-10-22T19:45:52.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i15",
+        "o4",
+        "p10"
+      ]
+    },
+    "63.0": {
+      "ocel:timestamp": "2021-10-22T20:18:26.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i16",
+        "o4",
+        "p11"
+      ]
+    },
+    "64.0": {
+      "ocel:timestamp": "2021-10-22T20:30:56.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i10",
+        "i11",
+        "o3",
+        "p8"
+      ]
+    },
+    "65.0": {
+      "ocel:timestamp": "2021-10-22T20:47:26.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i12",
+        "i13",
+        "i14",
+        "o4",
+        "p9"
+      ]
+    },
+    "66.0": {
+      "ocel:timestamp": "2021-10-22T23:23:55.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i15",
+        "o4",
+        "p10"
+      ]
+    },
+    "67.0": {
+      "ocel:timestamp": "2021-10-23T01:41:59.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i16",
+        "o4",
+        "p11"
+      ]
+    },
+    "68.0": {
+      "ocel:timestamp": "2021-10-23T04:12:17.000Z",
+      "ocel:activity": "load truck",
+      "ocel:vmap": {
+        "scope": "business/ship package/load truck"
+      },
+      "ocel:omap": [
+        "i10",
+        "i11",
+        "i12",
+        "i13",
+        "i14",
+        "i15",
+        "i16",
+        "o3",
+        "o4",
+        "p10",
+        "p11",
+        "p8",
+        "p9"
+      ]
+    },
+    "69.0": {
+      "ocel:timestamp": "2021-10-23T06:24:04.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i10",
+        "i11",
+        "o3",
+        "p8"
+      ]
+    },
+    "70.0": {
+      "ocel:timestamp": "2021-10-23T07:05:54.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i12",
+        "i13",
+        "i14",
+        "o4",
+        "p9"
+      ]
+    },
+    "71.0": {
+      "ocel:timestamp": "2021-10-23T09:45:18.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i15",
+        "o4",
+        "p10"
+      ]
+    },
+    "72.0": {
+      "ocel:timestamp": "2021-10-23T11:15:31.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i16",
+        "o4",
+        "p11"
+      ]
+    },
+    "73.0": {
+      "ocel:timestamp": "2021-10-23T13:42:54.000Z",
+      "ocel:activity": "complete order",
+      "ocel:vmap": {
+        "scope": "business/close order/complete order"
+      },
+      "ocel:omap": ["o3"]
+    },
+    "74.0": {
+      "ocel:timestamp": "2021-10-23T16:24:06.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i17"
+      ]
+    },
+    "75.0": {
+      "ocel:timestamp": "2021-10-23T17:34:54.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i18"
+      ]
+    },
+    "76.0": {
+      "ocel:timestamp": "2021-10-23T18:47:16.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i19"
+      ]
+    },
+    "77.0": {
+      "ocel:timestamp": "2021-10-23T20:12:15.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i20"
+      ]
+    },
+    "78.0": {
+      "ocel:timestamp": "2021-10-23T21:31:34.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i21"
+      ]
+    },
+    "79.0": {
+      "ocel:timestamp": "2021-10-23T23:47:59.000Z",
+      "ocel:activity": "place order",
+      "ocel:vmap": {
+        "scope": "business/new order/place order"
+      },
+      "ocel:omap": [
+        "i17",
+        "i18",
+        "i19",
+        "i20",
+        "i21",
+        "o5"
+      ]
+    },
+    "80.0": {
+      "ocel:timestamp": "2021-10-24T02:07:02.000Z",
+      "ocel:activity": "choose payment method",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/choose payment method"
+      },
+      "ocel:omap": [
+        "o5"
+      ]
+    },
+    "81.0": {
+      "ocel:timestamp": "2021-10-24T04:30:54.000Z",
+      "ocel:activity": "confirm payment",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/confirm payment"
+      },
+      "ocel:omap": [
+        "o5"
+      ]
+    },
+    "82.0": {
+      "ocel:timestamp": "2021-10-24T06:16:19.000Z",
+      "ocel:activity": "confirm order",
+      "ocel:vmap": {
+        "scope": "business/new order/confirm order"
+      },
+      "ocel:omap": [
+        "i17",
+        "i18",
+        "i19",
+        "i20",
+        "i21",
+        "o5"
+      ]
+    },
+    "83.0": {
+      "ocel:timestamp": "2021-10-24T09:01:43.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i17",
+        "o5",
+        "p12"
+      ]
+    },
+    "84.0": {
+      "ocel:timestamp": "2021-10-24T09:40:03.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i17",
+        "o5",
+        "p12"
+      ]
+    },
+    "85.0": {
+      "ocel:timestamp": "2021-10-24T11:06:34.000Z",
+      "ocel:activity": "load truck",
+      "ocel:vmap": {
+        "scope": "business/ship package/load truck"
+      },
+      "ocel:omap": [
+        "i17",
+        "o5",
+        "p12"
+      ]
+    },
+    "86.0": {
+      "ocel:timestamp": "2021-10-24T11:40:54.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i17",
+        "o5",
+        "p12"
+      ]
+    },
+    "87.0": {
+      "ocel:timestamp": "2021-10-24T12:55:01.000Z",
+      "ocel:activity": "complete order",
+      "ocel:vmap": {
+        "scope": "business/close order/complete order"
+      },
+      "ocel:omap": ["o4"]
+    },
+    "88.0": {
+      "ocel:timestamp": "2021-10-24T15:24:06.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i22"
+      ]
+    },
+    "89.0": {
+      "ocel:timestamp": "2021-10-24T17:03:01.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i23"
+      ]
+    },
+    "90.0": {
+      "ocel:timestamp": "2021-10-24T17:24:06.000Z",
+      "ocel:activity": "add item to cart",
+      "ocel:vmap": {
+        "scope": "business/new order/add item to cart"
+      },
+      "ocel:omap": [
+        "i24"
+      ]
+    },
+    "91.0": {
+      "ocel:timestamp": "2021-10-24T19:55:06.000Z",
+      "ocel:activity": "place order",
+      "ocel:vmap": {
+        "scope": "business/new order/place order"
+      },
+      "ocel:omap": [
+        "i22",
+        "i23",
+        "i24",
+        "o6"
+      ]
+    },
+    "92.0": {
+      "ocel:timestamp": "2021-10-24T20:15:43.000Z",
+      "ocel:activity": "choose payment method",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/choose payment method"
+      },
+      "ocel:omap": [
+        "o6"
+      ]
+    },
+    "93.0": {
+      "ocel:timestamp": "2021-10-24T21:33:12.000Z",
+      "ocel:activity": "confirm payment",
+      "ocel:vmap": {
+        "scope": "business/new order/payment/confirm payment"
+      },
+      "ocel:omap": [
+        "o6"
+      ]
+    },
+    "94.0": {
+      "ocel:timestamp": "2021-10-24T23:26:00.000Z",
+      "ocel:activity": "confirm order",
+      "ocel:vmap": {
+        "scope": "business/new order/confirm order"
+      },
+      "ocel:omap": [
+        "i22",
+        "i23",
+        "i24",
+        "o6"
+      ]
+    },
+    "95.0": {
+      "ocel:timestamp": "2021-10-24T23:29:58.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i18",
+        "i19",
+        "i20",
+        "o5",
+        "p13"
+      ]
+    },
+    "96.0": {
+      "ocel:timestamp": "2021-10-25T00:48:09.000Z",
+      "ocel:activity": "package items",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/package items"
+      },
+      "ocel:omap": [
+        "i21",
+        "o5",
+        "p14"
+      ]
+    },
+    "97.0": {
+      "ocel:timestamp": "2021-10-25T02:04:00.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i18",
+        "i19",
+        "i20",
+        "o5",
+        "p13"
+      ]
+    },
+    "98.0": {
+      "ocel:timestamp": "2021-10-25T02:24:25.000Z",
+      "ocel:activity": "send package to distribution center",
+      "ocel:vmap": {
+        "scope": "business/prepare shipment/send package to distribution center"
+      },
+      "ocel:omap": [
+        "i21",
+        "o5",
+        "p14"
+      ]
+    },
+    "99.0": {
+      "ocel:timestamp": "2021-10-25T04:50:54.000Z",
+      "ocel:activity": "load truck",
+      "ocel:vmap": {
+        "scope": "business/ship package/load truck"
+      },
+      "ocel:omap": [
+        "i18",
+        "i19",
+        "i20",
+        "i21",
+        "o5",
+        "p13",
+        "p14"
+      ]
+    },
+    "100.0": {
+      "ocel:timestamp": "2021-10-25T06:24:52.000Z",
+      "ocel:activity": "deliver package",
+      "ocel:vmap": {
+        "scope": "business/ship package/deliver package"
+      },
+      "ocel:omap": [
+        "i18",
+        "i19",
+        "i20",
+        "o5",
+        "p13"
+      ]
+    }
+  },
+  "ocel:objects": {
+    "i1": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i10": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/iPad"
+      }
+    },
+    "i11": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/smartphone"
+      }
+    },
+    "i12": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/iPad"
+      }
+    },
+    "i13": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i14": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/iPad"
+      }
+    },
+    "i15": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i16": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/iPad"
+      }
+    },
+    "i17": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/iPad"
+      }
+    },
+    "i18": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/smartphone"
+      }
+    },
+    "i19": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i2": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/iPad"
+      }
+    },
+    "i20": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i21": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i22": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i23": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/smartphone"
+      }
+    },
+    "i24": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/iPad"
+      }
+    },
+    "i3": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Galaxy Tab"
+      }
+    },
+    "i4": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/smartphone"
+      }
+    },
+    "i5": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/iPad"
+      }
+    },
+    "i6": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i7": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Kindle"
+      }
+    },
+    "i8": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/tablet/Galaxy Tab"
+      }
+    },
+    "i9": {
+      "ocel:type": "items",
+      "ocel:ovmap": {
+        "scope": "item/electronic/smartphone"
+      }
+    },
+    "o0": {
+      "ocel:type": "orders",
+      "ocel:ovmap": {}
+    },
+    "o1": {
+      "ocel:type": "orders",
+      "ocel:ovmap": {}
+    },
+    "o2": {
+      "ocel:type": "orders",
+      "ocel:ovmap": {}
+    },
+    "o3": {
+      "ocel:type": "orders",
+      "ocel:ovmap": {}
+    },
+    "o4": {
+      "ocel:type": "orders",
+      "ocel:ovmap": {}
+    },
+    "o5": {
+      "ocel:type": "orders",
+      "ocel:ovmap": {}
+    },
+    "o6": {
+      "ocel:type": "orders",
+      "ocel:ovmap": {}
+    },
+    "p1": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "UPS"
+      }
+    },
+    "p10": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "Amazon"
+      }
+    },
+    "p11": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DHL"
+      }
+    },
+    "p12": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "Amazon"
+      }
+    },
+    "p13": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DPD"
+      }
+    },
+    "p14": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DHL"
+      }
+    },
+    "p2": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DHL"
+      }
+    },
+    "p3": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DPD"
+      }
+    },
+    "p4": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "UPS"
+      }
+    },
+    "p5": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DHL"
+      }
+    },
+    "p6": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DHL"
+      }
+    },
+    "p7": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DHL"
+      }
+    },
+    "p8": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DPD"
+      }
+    },
+    "p9": {
+      "ocel:type": "packages",
+      "ocel:ovmap": {
+        "deliverer": "DHL"
+      }
+    }
+  }
+}
