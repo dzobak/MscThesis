@@ -21,8 +21,8 @@ class Applying(Resource):
                 scopes = [scope for scope in events.columns if "scope" in scope]
                 event_logs.append({"value":name, "scopes":scopes})
             return event_logs
-        elif method == "eventLog":
-            return {}
+        elif  "eventLog" in method:
+            return {"good": method.split("eventLog", maxsplit=1)[1]}
         else:
             return {
                 "good": "niddce",

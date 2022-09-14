@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
 // import { catchError, retry } from 'rxjs/operators';
 
-interface EventLog{
+interface EventLogHeading{
   value: string,
   scopes: String[]
 }
@@ -14,11 +14,11 @@ interface EventLog{
 export class ApplyingService {
   constructor(private http: HttpClient) { }
 
-  getApplyingPage(): Observable<EventLog[]>{
-    return this.http.get<EventLog[]>('http://127.0.0.1:5002/applying/default');
+  getApplyingPage(): Observable<EventLogHeading[]>{
+    return this.http.get<EventLogHeading[]>('http://127.0.0.1:5002/applying/default');
   }
 
-  getEventLog(): Observable<Object> {
-    return this.http.get('http://127.0.0.1:5002/applying/eventLog'); 
+  getEventLog(logname:string): Observable<Object> {
+    return this.http.get('http://127.0.0.1:5002/applying/eventLog'+ logname); 
   }
 }

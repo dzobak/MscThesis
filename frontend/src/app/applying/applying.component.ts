@@ -25,7 +25,7 @@ interface Food {
 }
 
 
-interface EventLog{
+interface EventLogHeading{
   value: string,
   scopes: String[]
 }
@@ -42,9 +42,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     {value: 'tacos-2', viewValue: 'Tacos'},
   ];
 
-  applyingData: EventLog[] = [];
+  applyingData: EventLogHeading[] = [];
+  eventLog: JSON|any;
   ApplyingSubs!: Subscription;
-  
+  EventLogSubs!: Subscription;
 
   dataSource = ELEMENT_DATA; 
   selectedValue!: string;
@@ -64,7 +65,12 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   loadNewEventLog(value:any){
     console.log(value)
-    console.log(this.applyingData)
+    this.EventLogSubs = this.emplSer
+    .getEventLog(value)
+    .subscribe(res => {
+      this.eventLog = res;
+    }
+  );
   }
 
 
