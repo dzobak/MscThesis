@@ -19,13 +19,30 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 ];
 
+interface Food {
+  value: string;
+  viewValue: string;
+}
+
+
+interface EventLog{
+  value: string,
+  scopes: String[]
+}
+
 @Component({
   selector: 'app-applying',
   templateUrl: './applying.component.html',
   styleUrls: ['./applying.component.css']
 })
 export class ApplyingComponent implements OnInit, OnDestroy {
-  applyingData: JSON|any;
+  foods: Food[] = [
+    {value: 'steak-0', viewValue: 'Steak'},
+    {value: 'pizza-1', viewValue: 'Pizza'},
+    {value: 'tacos-2', viewValue: 'Tacos'},
+  ];
+
+  applyingData: EventLog[] = [];
   ApplyingSubs!: Subscription;
   
 
@@ -34,17 +51,20 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   constructor(private emplSer : ApplyingService) { }
 
   ngOnInit() {
-    console.log("hello")
     this.ApplyingSubs = this.emplSer
     .getApplyingPage()
     .subscribe(res => {
       this.applyingData = res;
     }
   );
-  console.log(this.applyingData)
   }
   ngOnDestroy() {
     this.ApplyingSubs.unsubscribe();
+  }
+
+  loadNewEventLog(value:any){
+    console.log(value)
+    console.log(this.applyingData)
   }
 
 
