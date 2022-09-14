@@ -36,20 +36,19 @@ interface EventLogHeading{
   styleUrls: ['./applying.component.css']
 })
 export class ApplyingComponent implements OnInit, OnDestroy {
-  foods: Food[] = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'},
-  ];
+
+  
 
   applyingData: EventLogHeading[] = [];
-  eventLog: JSON|any;
+  eventLog!: any;
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
 
   dataSource = ELEMENT_DATA; 
   selectedValue!: string;
   constructor(private emplSer : ApplyingService) { }
+
+  columnsToDisplay = ["ocel:activity"]
 
   ngOnInit() {
     this.ApplyingSubs = this.emplSer
@@ -68,7 +67,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     this.EventLogSubs = this.emplSer
     .getEventLog(value)
     .subscribe(res => {
-      this.eventLog = res;
+      this.eventLog = JSON.parse(res);
     }
   );
   }

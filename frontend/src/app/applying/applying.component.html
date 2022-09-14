@@ -24,10 +24,22 @@
         </ng-container>
     </mat-select>
     </mat-form-field>
-
+    <ng-container *ngIf="eventLog">
+        <p>{{eventLog[0]["ocel:activity"]}}</p>
+        
+    </ng-container>
 <mat-tab-group>
     <mat-tab label="Selection Function"> Content 1 
-        <ng-container *ngIf="eventLog" >{{eventLog.good}}</ng-container>
+        <ng-container *ngIf="eventLog" >
+            <table mat-table [dataSource]="eventLog">
+                <ng-container matColumnDef="activity">
+                    <th mat-header-cell *matHeaderCellDef> Activity </th>
+                    <td mat-cell *matCellDef="let event"> {{event["ocel:activity"]}} </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+            </table>
+        </ng-container>
         <div class="pad-top">
             <button mat-raised-button color="primary">Apply</button>
 
@@ -50,4 +62,5 @@
 <div class="pad-top">
 <button mat-raised-button color="success">Save</button>
 </div>
+
 

@@ -18,7 +18,7 @@ export class ApplyingService {
     return this.http.get<EventLogHeading[]>('http://127.0.0.1:5002/applying/default');
   }
 
-  getEventLog(logname:string): Observable<Object> {
-    return this.http.get('http://127.0.0.1:5002/applying/eventLog'+ logname); 
+  getEventLog(logname:string): Observable<string> {
+    return this.http.get<string>('http://127.0.0.1:5002/applying/eventLog'+ logname); 
   }
 }
