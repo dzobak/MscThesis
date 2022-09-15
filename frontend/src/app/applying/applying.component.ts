@@ -38,7 +38,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   //                 "scope2": null}]
 
   applyingData: EventLogHeading[] = [];
-  eventLog!: any;
+  eventLog: [] = [];
   
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
@@ -79,13 +79,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   sendRegex(value:string){
-    console.log(value);
-    console.log(this.selectedScope);
-    console.log(this.selectedLog);
     this.EventLogSubs = this.emplSer
-    .getSelection(value, this.eventLog, this.selectedScope)
+    .getSelection(value, this.selectedLog, this.selectedScope)
     .subscribe(res => {
-      this.eventLog = JSON.parse(res);
+      this.eventLog = JSON.parse(JSON.parse(res));
       this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
     }
   );

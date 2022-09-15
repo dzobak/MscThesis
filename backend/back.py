@@ -20,7 +20,7 @@ class FileUpload(Resource):
 
 api.add_resource(Employees, '/employees') # Route_1
 api.add_resource(FileUpload, '/fileUpload')
-api.add_resource(Applying, '/applying/<method>')
+api.add_resource(Applying, '/applying/<task>')
 
 if __name__ == '__main__':
      app.run(port=5002)
