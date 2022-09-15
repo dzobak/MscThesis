@@ -19,12 +19,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 ];
 
-interface Food {
-  value: string;
-  viewValue: string;
-}
-
-
 interface EventLogHeading{
   value: string,
   scopes: String[]
@@ -47,6 +41,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   eventLog!: any;
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
+
+  tabgroup_disabled: Boolean = true;
 
   dataSource = ELEMENT_DATA; 
   selectedValue!: string;
@@ -76,7 +72,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       console.log(this.eventLog)
     }
   );
-   
+   this.tabgroup_disabled = false;
   }
 
 

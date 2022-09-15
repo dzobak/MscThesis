@@ -25,9 +25,11 @@
     </mat-select>
     </mat-form-field>
 
-<mat-tab-group>
-    <mat-tab label="Selection Function"> 
+<mat-tab-group >
+    <mat-tab label="Selection Function" [disabled]="tabgroup_disabled"> 
+        <div *ngIf="!tabgroup_disabled">
         <ng-container *ngIf="eventLog" >
+
             <!-- <table mat-table [dataSource]="eventz">
                 <ng-container matColumnDef="activity">
                     <th mat-header-cell *matHeaderCellDef> Scope </th>
@@ -48,21 +50,22 @@
                 </tr>
             
             </table>
-        </div>
+            </div>
         </ng-container>
+        <div class="pad-top" >
+            <button mat-raised-button color="primary">Apply</button>
+
+        </div>
+        </div>
+    </mat-tab>
+    <mat-tab label="Aggregation" [disabled]="tabgroup_disabled"> Content 2 
         <div class="pad-top">
             <button mat-raised-button color="primary">Apply</button>
 
         </div>
     </mat-tab>
-    <mat-tab label="Aggregation"> Content 2 
-        <div class="pad-top">
-            <button mat-raised-button color="primary">Apply</button>
-
-        </div>
-    </mat-tab>
-    <mat-tab label="Relabeling function"> Content 3 
-        <div class="pad-top">
+    <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled"> Content 3 
+        <div class="pad-top" >
             <button mat-raised-button color="primary">Apply</button>
 
         </div>
