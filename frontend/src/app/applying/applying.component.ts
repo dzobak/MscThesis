@@ -41,6 +41,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   eventLog!: any;
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
+  regex: string = "";
 
   tabgroup_disabled: Boolean = true;
 
@@ -73,6 +74,17 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     }
   );
    this.tabgroup_disabled = false;
+  }
+
+  sendRegex(value:string){
+    console.log(value);
+    this.EventLogSubs = this.emplSer
+    .getSelection(value)
+    .subscribe(res => {
+      this.eventLog = JSON.parse(res);
+      this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
+    }
+  );
   }
 
 

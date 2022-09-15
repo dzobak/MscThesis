@@ -28,6 +28,12 @@
 <mat-tab-group >
     <mat-tab label="Selection Function" [disabled]="tabgroup_disabled"> 
         <div *ngIf="!tabgroup_disabled">
+            <form>
+                <mat-form-field [style.width.px]=283 appearance="fill" >
+                  <mat-label>Regular Expression for scope</mat-label>
+                  <input matInput placeholder="level1/*" [(ngModel)]="regex" name="regex">
+                </mat-form-field>
+            </form>    
         <ng-container *ngIf="eventLog" >
 
             <!-- <table mat-table [dataSource]="eventz">
@@ -53,7 +59,7 @@
             </div>
         </ng-container>
         <div class="pad-top" >
-            <button mat-raised-button color="primary">Apply</button>
+            <button mat-raised-button color="primary" (click)="sendRegex(regex)">Apply</button>
 
         </div>
         </div>

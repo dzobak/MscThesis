@@ -21,4 +21,8 @@ export class ApplyingService {
   getEventLog(logname:string): Observable<string> {
     return this.http.get<string>('http://127.0.0.1:5002/applying/eventLog'+ logname); 
   }
+
+  getSelection(regex:string): Observable<string> {
+    return this.http.get<string>('http://127.0.0.1:5002/applying/regex'+ regex); 
+  }
 }
