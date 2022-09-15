@@ -24,21 +24,31 @@
         </ng-container>
     </mat-select>
     </mat-form-field>
-    <ng-container *ngIf="eventLog">
-        <p>{{eventLog[0]["ocel:activity"]}}</p>
-        
-    </ng-container>
+
 <mat-tab-group>
-    <mat-tab label="Selection Function"> Content 1 
+    <mat-tab label="Selection Function"> 
         <ng-container *ngIf="eventLog" >
-            <table mat-table [dataSource]="eventLog">
+            <!-- <table mat-table [dataSource]="eventz">
                 <ng-container matColumnDef="activity">
-                    <th mat-header-cell *matHeaderCellDef> Activity </th>
-                    <td mat-cell *matCellDef="let event"> {{event["ocel:activity"]}} </td>
+                    <th mat-header-cell *matHeaderCellDef> Scope </th>
+                    <td mat-cell *matCellDef="let event"> {{event.scope}} </td>
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
                 <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+            </table> -->
+            <div id="table">
+            <table>
+                <th *ngFor="let column of columnsToDisplay">
+                    {{column}}
+                </th>
+                <tr *ngFor="let event of eventLog"> 
+                    <ng-container *ngFor="let column of columnsToDisplay">
+                    <td>{{event[column]}}</td>
+                    </ng-container>
+                </tr>
+            
             </table>
+        </div>
         </ng-container>
         <div class="pad-top">
             <button mat-raised-button color="primary">Apply</button>

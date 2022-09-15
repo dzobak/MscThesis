@@ -37,7 +37,11 @@ interface EventLogHeading{
 })
 export class ApplyingComponent implements OnInit, OnDestroy {
 
-  
+  // eventz: any = [{"ocel:eid": "2.0",
+  //                 "ocel:timestamp": 1634617587000,
+  //                 "ocel:activity": "add item to cart",
+  //                 "scope": "business/new order/add item to cart",
+  //                 "scope2": null}]
 
   applyingData: EventLogHeading[] = [];
   eventLog!: any;
@@ -48,7 +52,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   selectedValue!: string;
   constructor(private emplSer : ApplyingService) { }
 
-  columnsToDisplay = ["ocel:activity"]
+  columnsToDisplay: string[] = []
 
   ngOnInit() {
     this.ApplyingSubs = this.emplSer
@@ -68,8 +72,11 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     .getEventLog(value)
     .subscribe(res => {
       this.eventLog = JSON.parse(res);
+      this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
+      console.log(this.eventLog)
     }
   );
+   
   }
 
 
