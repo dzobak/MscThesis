@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http'
+import {HttpClient, HttpHeaders} from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
 // import { catchError, retry } from 'rxjs/operators';
 
@@ -22,7 +22,15 @@ export class ApplyingService {
     return this.http.get<string>('http://127.0.0.1:5002/applying/eventLog'+ logname); 
   }
 
-  getSelection(regex:string): Observable<string> {
-    return this.http.get<string>('http://127.0.0.1:5002/applying/regex'+ regex); 
+  getSelection(regex:string, eventlogname:string, scope:string): Observable<string> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+    return this.http.post<string>('http://127.0.0.1:5002/applying/regex', 
+           JSON.stringify({eventlog:eventlogname, scope:scope, regex:regex}),
+           httpOptions
+           ); 
   }
 }

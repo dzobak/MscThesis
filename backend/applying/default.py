@@ -27,6 +27,8 @@ class Applying(Resource):
             name = method.split("eventLog", maxsplit=1)[1]
             event_log = ocel_import.apply(self.get_path(name))
             return event_log.get_extended_table().head(10).to_json(orient="records")
+        elif method == "regex":
+            return {"hi":method}
         else:
             return {
                 "good": "niddce",

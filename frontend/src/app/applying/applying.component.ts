@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ComponentFactoryResolver } from '@angular/core';
 import { Subscription } from 'rxjs';
 import {ApplyingService} from './applying.service'
 
@@ -39,6 +39,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   applyingData: EventLogHeading[] = [];
   eventLog!: any;
+  
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
   regex: string = "";
@@ -46,7 +47,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   tabgroup_disabled: Boolean = true;
 
   dataSource = ELEMENT_DATA; 
-  selectedValue!: string;
+  selectedLog!: string;
+  selectedScope!: string;
   constructor(private emplSer : ApplyingService) { }
 
   columnsToDisplay: string[] = []
@@ -78,8 +80,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   sendRegex(value:string){
     console.log(value);
+    console.log(this.selectedScope);
+    console.log(this.selectedLog);
     this.EventLogSubs = this.emplSer
-    .getSelection(value)
+    .getSelection(value, this.eventLog, this.selectedScope)
     .subscribe(res => {
       this.eventLog = JSON.parse(res);
       this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];

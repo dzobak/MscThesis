@@ -1,6 +1,6 @@
 <mat-form-field appearance="fill">
     <mat-label>Select event log</mat-label>
-    <mat-select [(ngModel)]="selectedValue" (selectionChange)="loadNewEventLog($event.value)" >
+    <mat-select [(ngModel)]="selectedLog" (selectionChange)="loadNewEventLog($event.value)" >
        <ng-container *ngIf="applyingData">
             <mat-option *ngFor="let log of applyingData" [value]="log.value">
             {{log.value}}
@@ -11,11 +11,11 @@
 
     <mat-form-field appearance="fill">
     <mat-label>Select scope column</mat-label>
-    <mat-select>
+    <mat-select [(ngModel)]="selectedScope">
         <ng-container *ngIf="applyingData">
             <ng-container *ngFor="let log of applyingData">
                 <!-- <p>{{log.value}}</p> -->
-                <ng-container *ngIf="log.value == selectedValue">
+                <ng-container *ngIf="log.value == selectedLog">
                     <mat-option *ngFor="let scope of log.scopes" [value]="scope">
                         {{scope}}
                     </mat-option>
