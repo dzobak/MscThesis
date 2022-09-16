@@ -31,7 +31,7 @@
             <form>
                 <mat-form-field [style.width.px]=283 appearance="fill" >
                   <mat-label>Regular Expression for scope</mat-label>
-                  <input matInput placeholder="level1/*" [(ngModel)]="regex" name="regex">
+                  <input matInput placeholder="Ex. level0/*/level3" [(ngModel)]="regex" name="regex">
                 </mat-form-field>
             </form>    
         <ng-container *ngIf="eventLog" >
@@ -44,19 +44,11 @@
                 <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
                 <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
             </table> -->
-            <div id="table">
-            <table>
-                <th *ngFor="let column of columnsToDisplay">
-                    {{column}}
-                </th>
-                <tr *ngFor="let event of eventLog"> 
-                    <ng-container *ngFor="let column of columnsToDisplay">
-                    <td>{{event[column]}}</td>
-                    </ng-container>
-                </tr>
-            
-            </table>
-            </div>
+        
+            <app-eventtable
+                [columnsToDisplay]= "columnsToDisplay"
+                [eventLog] = "eventLog">
+            </app-eventtable>
         </ng-container>
         <div class="pad-top" >
             <button mat-raised-button color="primary" (click)="sendRegex(regex)">Apply</button>
@@ -64,7 +56,11 @@
         </div>
         </div>
     </mat-tab>
-    <mat-tab label="Aggregation" [disabled]="tabgroup_disabled"> Content 2 
+    <mat-tab label="Aggregation" [disabled]="tabgroup_disabled"> 
+        <app-eventtable
+            [columnsToDisplay]= "columnsToDisplay"
+            [eventLog] = "eventLog">
+        </app-eventtable>
         <div class="pad-top">
             <button mat-raised-button color="primary">Apply</button>
 

@@ -82,7 +82,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     this.EventLogSubs = this.emplSer
     .getSelection(value, this.selectedLog, this.selectedScope)
     .subscribe(res => {
-      this.eventLog = JSON.parse(JSON.parse(res));
+      this.eventLog = JSON.parse(res);
       this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
     }
   );
