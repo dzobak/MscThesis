@@ -40,19 +40,23 @@ class Applying(Resource):
     def post(self, task):
         if task == "regex":
             data = request.get_json()
-            print(data)
-            print(type(data))
             log = ocel_import.apply(self.get_path(data["eventlog"])).get_extended_table()
             sel = Selection()
             filtered_log = sel.selection_function(regex=data["regex"], df=log
             ,scope_column=data["scope"])
             return filtered_log.head(10).to_json(orient="records")
+        elif task == "scopelevel":
+            data = request.get_json()  
+            log = ocel_import.apply(self.get_path(data["eventlog"])).get_extended_table()
+# Hardcoded levels
+            return json.dumps({"levels": [0,1,2,3,4]})
         elif task == "aggregation":
             data = request.get_json()
-            log = ocel_import.apply(self.get_path(data["eventlog"])).get_extended_table()
+            log = ocel_import.apply(self.get_path(data["eventlog"]))
             agg = Aggregation()
             aggregated_log = agg.aggregate_log(log=log, level=data["level"], scope=data["scope"])
-            return aggregated_log.head(10).to_json(orient="records")
+            return aggregated_log.get_extended_table()\
+                .head(10).to_json(orient="records")
         else:
             return {
                 "good": "niddce",

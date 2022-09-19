@@ -11,7 +11,7 @@
 
     <mat-form-field appearance="fill">
     <mat-label>Select scope column</mat-label>
-    <mat-select [(ngModel)]="selectedScope">
+    <mat-select [(ngModel)]="selectedScope" (selectionChange)="getScopeLevels($event.value)">
         <ng-container *ngIf="applyingData">
             <ng-container *ngFor="let log of applyingData">
                 <!-- <p>{{log.value}}</p> -->
@@ -56,13 +56,23 @@
         </div>
         </div>
     </mat-tab>
-    <mat-tab label="Aggregation" [disabled]="tabgroup_disabled"> 
+    <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
+        <mat-form-field appearance="fill">
+            <mat-label>Select scope level</mat-label>
+            <mat-select [(ngModel)]="selectedScopeLevel">
+               <ng-container *ngIf="applyingData">
+                    <mat-option *ngFor="let level of scopeLevels" [value]="level">
+                    {{level}}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field> 
         <app-eventtable
             [columnsToDisplay]= "columnsToDisplay"
             [eventLog] = "eventLog">
         </app-eventtable>
         <div class="pad-top">
-            <button mat-raised-button color="primary">Apply</button>
+            <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>
 
         </div>
     </mat-tab>

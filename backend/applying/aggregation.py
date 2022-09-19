@@ -11,7 +11,7 @@ class Aggregation():
         return id_act_map[eid]
 
     def switch_event_scope(self, log: OCEL, level:int, scope:str):
-        events =log.events
+        events = log.events
         log.events.loc[:,"ocel:activity"] = events[scope].apply(self.get_event_scope,level=level)
         id_act_map = pd.Series(events['ocel:activity'].values,index=events['ocel:eid']).to_dict()
         log.relations.loc[:,"ocel:activity"] = log.relations['ocel:eid'].apply(self.get_act_name, id_act_map=id_act_map)

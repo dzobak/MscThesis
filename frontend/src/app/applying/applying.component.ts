@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ComponentFactoryResolver } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { Subscription } from 'rxjs';
 import {ApplyingService} from './applying.service'
 
@@ -39,6 +40,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   applyingData: EventLogHeading[] = [];
   eventLog: [] = [];
+  scopeLevels!: number[];
   
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
@@ -49,6 +51,9 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   dataSource = ELEMENT_DATA; 
   selectedLog!: string;
   selectedScope!: string;
+  selectedScopeLevel!: number;
+
+
   constructor(private emplSer : ApplyingService) { }
 
   columnsToDisplay: string[] = []
@@ -66,16 +71,23 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   loadNewEventLog(value:any){
-    console.log(value)
     this.EventLogSubs = this.emplSer
     .getEventLog(value)
     .subscribe(res => {
       this.eventLog = JSON.parse(res);
       this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
-      console.log(this.eventLog)
     }
   );
    this.tabgroup_disabled = false;
+  }
+
+  getScopeLevels(value:any){
+    this.EventLogSubs = this.emplSer
+    .getScopeLevels(this.selectedLog, value)
+    .subscribe(res => {
+      this.scopeLevels = JSON.parse(res).levels;
+    }
+  );
   }
 
   sendRegex(value:string){
@@ -84,6 +96,15 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     .subscribe(res => {
       this.eventLog = JSON.parse(res);
       this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
+    }
+  );
+  }
+
+  getAggregation(){
+    this.ApplyingSubs = this.emplSer
+    .getAggregation(this.selectedLog,this.selectedScope, this.selectedScopeLevel)
+    .subscribe(res => {
+      this.eventLog = JSON.parse(res);
     }
   );
   }
