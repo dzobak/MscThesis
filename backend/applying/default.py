@@ -24,8 +24,10 @@ class Applying(Resource):
             for name in event_log_names:
                 event_log = ocel_import.apply(self.get_path(name))
                 events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes.get_dataframes_from_ocel(event_log)
+                # events = ocel_import.apply(self.get_path(name)).get_extended_table()
                 scopes = [scope for scope in events.columns if "scope" in scope]
-                event_logs.append({"value":name, "scopes":scopes})
+                columns = [event for event in events.columns]
+                event_logs.append({"value":name, "scopes":scopes, "columns": columns})
             return event_logs
         elif  "eventLog" in task:
             name = task.split("eventLog", maxsplit=1)[1]

@@ -5,7 +5,8 @@ import { Observable, throwError } from 'rxjs';
 
 interface EventLogHeading{
   value: string,
-  scopes: String[]
+  scopes: string[],
+  columns: string[],
 }
 
 @Injectable({

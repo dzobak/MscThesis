@@ -22,7 +22,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 interface EventLogHeading{
   value: string,
-  scopes: String[]
+  scopes: string[],
+  columns: string[],
 }
 
 @Component({
@@ -71,14 +72,19 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   loadNewEventLog(value:any){
+    for (let log_head of this.applyingData)  if(log_head.value == value){
+      this.columnsToDisplay = log_head.columns
+    }; 
+    this.eventLog = [];
     this.EventLogSubs = this.emplSer
     .getEventLog(value)
     .subscribe(res => {
       this.eventLog = JSON.parse(res);
-      this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
+      // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
     }
   );
-   this.tabgroup_disabled = false;
+
+    this.tabgroup_disabled = false;
   }
 
   getScopeLevels(value:any){
@@ -95,7 +101,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     .getSelection(value, this.selectedLog, this.selectedScope)
     .subscribe(res => {
       this.eventLog = JSON.parse(res);
-      this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
+      // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
     }
   );
   }
