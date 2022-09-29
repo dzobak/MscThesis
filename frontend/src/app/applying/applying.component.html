@@ -25,6 +25,8 @@
     </mat-select>
     </mat-form-field>
 
+    
+
 <mat-tab-group >
     <mat-tab label="Selection Function" [disabled]="tabgroup_disabled"> 
         <div *ngIf="!tabgroup_disabled">
@@ -34,6 +36,7 @@
                   <input matInput placeholder="Ex. level0/*/level3" [(ngModel)]="regex" name="regex">
                 </mat-form-field>
             </form>    
+            
         <ng-container *ngIf="eventLog" >
 
             <!-- <table mat-table [dataSource]="eventz">
@@ -57,7 +60,7 @@
         </div>
     </mat-tab>
     <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
-        <mat-form-field appearance="fill">
+        <!-- <mat-form-field appearance="fill">
             <mat-label>Select scope level</mat-label>
             <mat-select [(ngModel)]="selectedScopeLevel">
                <ng-container *ngIf="applyingData">
@@ -66,7 +69,16 @@
                     </mat-option>
                 </ng-container>
             </mat-select>
-        </mat-form-field> 
+        </mat-form-field>  -->
+        <mat-label>Select scope level</mat-label>
+        <div>
+            <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider>
+            <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle">
+        </div>   
+        <!-- <div>
+            <mat-label>Select scope level:</mat-label>
+            <mat-slider  tickInterval="1" min="0" max="5" step="1" value="0"></mat-slider>
+        </div> -->
         <app-eventtable
             [columnsToDisplay]= "columnsToDisplay"
             [eventLog] = "eventLog">

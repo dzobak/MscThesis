@@ -5,3 +5,11 @@
     background-color: green;
     color: #fff;
 }
+
+.mat-black{
+    color:black;
+}
+
+.mat-slider-vertical {
+    height: 250px;
+  }

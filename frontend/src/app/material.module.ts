@@ -11,7 +11,8 @@ import {MatCardModule} from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
-import {MatInputModule} from '@angular/material/input'
+import {MatInputModule} from '@angular/material/input';
+import {MatSliderModule} from '@angular/material/slider';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import {MatInputModule} from '@angular/material/input'
         MatSelectModule,
         MatTabsModule,
         MatInputModule,
+        MatSliderModule,
     ]
 })
 export class MatModules{}
