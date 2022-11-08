@@ -17,10 +17,11 @@ def truncate_lvl(scope_value,level):
 
 def truncate(series):
     first_scope = series.iloc[0] #After truncating, all scopes will be the same, so a representative is picked
+    
     tuple_series = series.apply(get_scope_tuple)
-    # first_tuple = tuple_series.iloc[0]
     scope_df = pd.DataFrame(tuple_series.to_list())
-    scope_equality_lvl =  -1 #holds the value until which scope level the
+    
+    scope_equality_lvl =  -1 #holds the value until which scope level the scope should be truncated
     for i in range(len(scope_df.columns)):
         if not is_unique(scope_df[i]):
             scope_equality_lvl = i-1
@@ -28,15 +29,12 @@ def truncate(series):
         elif i == len(scope_df.columns)-1:
             scope_equality_lvl = i
     
-    # truncated_scope = ""
-    # for i in range(scope_equality_lvl+1):
-    #     truncated_scope += first_tuple[i] + "/"
     truncated_scope = truncate_lvl(first_scope, scope_equality_lvl)
             
     return truncated_scope
 
 def dtype_to_func(col,dtype):
-    if re.search(r"scope", col):
+    if re.search(r"scope", col, re.IGNORECASE):
         return truncate
     elif dtype == type(""):
         return 'mode'
@@ -57,7 +55,7 @@ def aggregation(log):
             }
         print("Scope examples: ")
 
-        log.events["scope1"] = log.events[special_columns["sc_column"]]
+        log.events["Scope1"] = log.events[special_columns["sc_column"]]
         for i in range(5):
             print(log.events[special_columns["sc_column"]][i*5])
         
@@ -73,11 +71,16 @@ def aggregation(log):
         
         log.events[special_columns["sc_column"]] = log.events[special_columns["sc_column"]].apply(truncate_lvl, level=sc_lvl)
         
-        agg_log = log.events.groupby(special_columns["sc_column"]).agg(col_func_map)
+        agg_log = log.events.groupby([special_columns["sc_column"],
+            pd.Grouper(key=special_columns["ts_column"], freq='20h')],
+            as_index=False).agg(col_func_map)
+
+        agg_log.columns = agg_log.columns.droplevel(1) 
 
         
-    print(col_func_map)
+    # print(col_func_map)
     print(agg_log)
+    print(agg_log.columns)
     
 
 
@@ -95,7 +98,7 @@ if method == "s":
     print("s")
 elif method == "a":
     aggregation(log)
-elif method =="t":
+elif method =="t": #test
     print(type(log.events["scope"]))
     print(truncate(log.events["scope"]))
 else:
