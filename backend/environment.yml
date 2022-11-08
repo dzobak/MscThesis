@@ -6,3 +6,4 @@ pm4py=2.2.28
 flask=2.2.2
 flask-cors=3.0.10
 flask-restful=0.3.9
+networkx=2.8
