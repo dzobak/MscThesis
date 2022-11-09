@@ -51,10 +51,11 @@ def aggregation(log):
             "id_column": "ocel:eid",
             "ts_column": "ocel:timestamp",
             "act_column": "ocel:activity",
-            "sc_column": str(input("Select scope column: "))
+            "sc_column": str(input("Select scope column: ")) 
             }
         print("Scope examples: ")
 
+        log.events[special_columns["id_column"]] = log.events[special_columns["id_column"]].astype(float) 
         log.events["Scope1"] = log.events[special_columns["sc_column"]]
         for i in range(5):
             print(log.events[special_columns["sc_column"]][i*5])
@@ -75,8 +76,18 @@ def aggregation(log):
             pd.Grouper(key=special_columns["ts_column"], freq='20h')],
             as_index=False).agg(col_func_map)
 
-        agg_log.columns = agg_log.columns.droplevel(1) 
-
+        # agg_log.columns[3] = ('ocel:timestamp:start', 'min')
+        # agg_log.columns.set_levels()
+        # agg_log.index = agg_log.index.to_frame()
+        new_columns = []
+        for x in agg_log.columns:
+            if x == (special_columns["ts_column"],'min'):
+                new_columns.append(special_columns["ts_column"] + ':start')
+            else:
+                new_columns.append(x[0])
+        agg_log.columns = new_columns   
+        agg_log.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
+        # agg_log.reindex()
         
     # print(col_func_map)
     print(agg_log)
