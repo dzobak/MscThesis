@@ -2,11 +2,14 @@ import pm4py
 from pm4py.objects.ocel.importer import jsonocel
 import re
 import pandas as pd
+import scipy
 
+#For aggregation and relabelling
 def get_scope_tuple(scope):
     return tuple(scope.rsplit('/'))
 
-def is_unique(s):
+#For aggregation, checks if all the values provided in the series are the same
+def is_unique(s:pd.Series):
     a = s.to_numpy()
     return (a[0] == a).all()
 
@@ -33,6 +36,7 @@ def truncate(series):
             
     return truncated_scope
 
+#For Aggregation
 def dtype_to_func(col,dtype):
     if re.search(r"scope", col, re.IGNORECASE):
         return truncate
@@ -42,7 +46,7 @@ def dtype_to_func(col,dtype):
         return 'sum'
     
 
-def aggregation(log):
+def aggregation(log, scope_column):
     agg = "events"
     
     col_func_map = {}
@@ -51,7 +55,7 @@ def aggregation(log):
             "id_column": "ocel:eid",
             "ts_column": "ocel:timestamp",
             "act_column": "ocel:activity",
-            "sc_column": str(input("Select scope column: ")) 
+            "sc_column": scope_column
             }
         print("Scope examples: ")
 
@@ -69,7 +73,8 @@ def aggregation(log):
             
         col_func_map[special_columns["id_column"]] = "min"
         col_func_map[special_columns["ts_column"]] = ['min','max']
-        
+        col_func_map[special_columns["act_column"]] = lambda x: pd.Series.mode(x)[0]
+
         log.events[special_columns["sc_column"]] = log.events[special_columns["sc_column"]].apply(truncate_lvl, level=sc_lvl)
         
         agg_log = log.events.groupby([special_columns["sc_column"],
@@ -93,27 +98,43 @@ def aggregation(log):
     print(agg_log)
     print(agg_log.columns)
     
+def compare_paths(path1, path2):
+        if re.search(path2,path1):
+            return True
+        else:
+            return False
 
+# "*" means any deepness of scope is allowed 
+def selection_function(regex :str, df: pd.DataFrame ,scope_column: str, scope_sep = "/"):
+    scope = df[scope_column]
+    regex = re.sub("\?"+ scope_sep,'((\\\w+|\\\s)+'+scope_sep+')?',regex)
+    regex = re.sub("\*" + scope_sep,'(.*'+scope_sep+')*',regex)
+    print(regex)
+    paths = scope.apply(compare_paths, path2=(regex))
+    paths = paths[paths] #Only where values True i.e. paths match
+    return df.loc[paths.index]
 
 
 # filepath = str(input("Filepath: "))
 filepath = "/Users/dzoba/Studies/MasterThesis/Preparation/toy_log2.jsonocel"
-method =  str(input("Selection function(s) or aggregation(a): "))
+method =  str(input("Selection function (s), aggregation (a) or relabelling (r): "))
+if method not in ["s","a","r","test"]:
+    print("wrong method")
+else:
+    log = jsonocel.importer.apply(filepath)
+    log_df = log.get_extended_table()
 
-log = jsonocel.importer.apply(filepath)
-log_df = log.get_extended_table()
+    print(log_df.columns)
 
-print(log_df.columns)
+    scope_column = str(input("Select scope column: ")) 
 
 if method == "s":
-    print("s")
+    regex = str(input("Specify regex: ")) 
+    print(selection_function(regex, log.get_extended_table(),scope_column))
 elif method == "a":
-    aggregation(log)
-elif method =="t": #test
+    aggregation(log, scope_column)
+elif method == 'r':
+    print('r')
+elif method =="test": 
     print(type(log.events["scope"]))
     print(truncate(log.events["scope"]))
-else:
-    print("wrong method")
-
-
-
