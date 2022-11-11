@@ -46,26 +46,27 @@ def dtype_to_func(col,dtype):
         return 'sum'
     
 
-def aggregation(log, scope_column):
-    agg = "events"
+def aggregation(log, **kwargs):
     
     col_func_map = {}
-    if agg == "events":
+    if  kwargs["evt_or_obj"] == "e":
         special_columns = {
             "id_column": "ocel:eid",
             "ts_column": "ocel:timestamp",
             "act_column": "ocel:activity",
-            "sc_column": scope_column
+            "sc_column": kwargs["scope_column"]
             }
-        print("Scope examples: ")
 
         log.events[special_columns["id_column"]] = log.events[special_columns["id_column"]].astype(float) 
         log.events["Scope1"] = log.events[special_columns["sc_column"]]
+        
+        print("Scope examples: ")
         for i in range(5):
             print(log.events[special_columns["sc_column"]][i*5])
         
         sc_lvl = int(input("Select the scope level: ")) 
 
+        
         for col in log.events.columns:
             if col not in special_columns.values():
                 col_func_map[col] = dtype_to_func(col,type(log.events[col][0]))
@@ -81,9 +82,7 @@ def aggregation(log, scope_column):
             pd.Grouper(key=special_columns["ts_column"], freq='20h')],
             as_index=False).agg(col_func_map)
 
-        # agg_log.columns[3] = ('ocel:timestamp:start', 'min')
-        # agg_log.columns.set_levels()
-        # agg_log.index = agg_log.index.to_frame()
+
         new_columns = []
         for x in agg_log.columns:
             if x == (special_columns["ts_column"],'min'):
@@ -92,11 +91,12 @@ def aggregation(log, scope_column):
                 new_columns.append(x[0])
         agg_log.columns = new_columns   
         agg_log.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
-        # agg_log.reindex()
         
-    # print(col_func_map)
     print(agg_log)
     print(agg_log.columns)
+
+
+#________________________SELECTION FUNCTION___________________________    
     
 def compare_paths(path1, path2):
         if re.search(path2,path1):
@@ -105,15 +105,34 @@ def compare_paths(path1, path2):
             return False
 
 # "*" means any deepness of scope is allowed 
-def selection_function(regex :str, df: pd.DataFrame ,scope_column: str, scope_sep = "/"):
-    scope = df[scope_column]
-    regex = re.sub("\?"+ scope_sep,'((\\\w+|\\\s)+'+scope_sep+')?',regex)
+def selection_function(df: pd.DataFrame , scope_sep = "/", **kwargs):
+    scope = df[kwargs["scope_column"]]
+    regex = re.sub("\?"+ scope_sep,'((\\\w+|\\\s)+'+scope_sep+')?',kwargs["regex"])
     regex = re.sub("\*" + scope_sep,'(.*'+scope_sep+')*',regex)
     print(regex)
     paths = scope.apply(compare_paths, path2=(regex))
     paths = paths[paths] #Only where values True i.e. paths match
     return df.loc[paths.index]
 
+def execute_selection(log, **kwargs):
+    kwargs["regex"] = str(input("Specify regex: ")) 
+    if kwargs["evt_or_obj"] == 'e':
+        df = selection_function(log.events, **kwargs)
+    elif kwargs["evt_or_obj"] == 'o':
+        grouped = log.objects.groupby(log.objects[kwargs["object_column"]])
+        df = grouped.get_group(kwargs["object_type"])
+        df = selection_function(df, **kwargs)
+        # df = pd.DataFrame()
+        # for name in log.objects[kwargs["object_column"]].unique():
+        #     df2 = grouped.get_group(name)
+        #     if name == kwargs["object_type"]:
+        #         df2 = selection_function(df2, **kwargs)
+        #     df = pd.concat([df,df2])
+    
+    print(df) 
+
+
+#_____________________________START OF SCRIPT___________________________________________________
 
 # filepath = str(input("Filepath: "))
 filepath = "/Users/dzoba/Studies/MasterThesis/Preparation/toy_log2.jsonocel"
@@ -122,19 +141,26 @@ if method not in ["s","a","r","test"]:
     print("wrong method")
 else:
     log = jsonocel.importer.apply(filepath)
-    log_df = log.get_extended_table()
+    kwargs = {}
+    kwargs["evt_or_obj"] = str(input("Should the action be performed on events (e) or objects (o)?: "))
+    if kwargs["evt_or_obj"] == 'e':
+        print(log.events.columns)
+    elif kwargs["evt_or_obj"] == 'o':
+        print(log.objects.columns)
+        # object_column = str(input("Select the column specifyng the object type: "))
+        kwargs["object_column"] = "ocel:type"
+        print(log.objects[log.object_type_column].value_counts().to_dict())
+        kwargs["object_type"] = str(input("Select the object type: "))
+    kwargs["scope_column"] = str(input("Select scope column: ")) 
 
-    print(log_df.columns)
-
-    scope_column = str(input("Select scope column: ")) 
 
 if method == "s":
-    regex = str(input("Specify regex: ")) 
-    print(selection_function(regex, log.get_extended_table(),scope_column))
+    execute_selection(log, **kwargs)
 elif method == "a":
-    aggregation(log, scope_column)
+    aggregation(log, **kwargs)
 elif method == 'r':
-    print('r')
+    print("r")
+    # relabel(log, scope_column, evt_or_obj)
 elif method =="test": 
     print(type(log.events["scope"]))
     print(truncate(log.events["scope"]))
