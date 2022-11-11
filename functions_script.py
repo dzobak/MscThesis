@@ -132,6 +132,32 @@ def execute_selection(log, **kwargs):
     print(df) 
 
 
+#_____________________________Relabeling________________________________
+def get_scope_at_level(scope, lvl, sep="/"):
+    split = tuple(scope.rsplit(sep))
+    return split[min(len(split)-1,lvl)]
+
+def relabel_function(df: pd.DataFrame, column:str, **kwargs):
+    print("Scope examples: ")
+    for i in range(5):
+        print(df[kwargs["scope_column"]][i*5 % len(df)])
+    sc_lvl = int(input("Select the scope level: ")) 
+    df[column] = df[kwargs["scope_column"]].apply(get_scope_at_level, lvl = sc_lvl)
+    return df
+
+
+    
+
+def execute_relabel(log, **kwargs):
+    
+    if kwargs["evt_or_obj"] == 'e':
+        df = relabel_function(log.events, column="ocel:activity", **kwargs)
+    elif kwargs["evt_or_obj"] == 'o':
+       df = relabel_function(log.objects, column=kwargs["object_column"], **kwargs)
+    
+    print(df)
+
+
 #_____________________________START OF SCRIPT___________________________________________________
 
 # filepath = str(input("Filepath: "))
@@ -159,8 +185,7 @@ if method == "s":
 elif method == "a":
     aggregation(log, **kwargs)
 elif method == 'r':
-    print("r")
-    # relabel(log, scope_column, evt_or_obj)
+    execute_relabel(log, **kwargs)
 elif method =="test": 
     print(type(log.events["scope"]))
     print(truncate(log.events["scope"]))
