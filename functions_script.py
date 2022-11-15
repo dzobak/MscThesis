@@ -2,11 +2,31 @@ import pm4py
 from pm4py.objects.ocel.importer import jsonocel
 import re
 import pandas as pd
-import scipy
 
 #For aggregation and relabelling
 def get_scope_tuple(scope):
     return tuple(scope.rsplit('/'))
+
+def concat_dicts(series):
+    new_dict = {}
+    for dict in series:
+        new_dict = {**new_dict , **dict}
+    return new_dict
+
+def get_values_mapping(df,old_ids_column, new_id_column):
+    mapping = dict()
+    for old_id in df[old_ids_column]:
+        mapping[old_id] = df[new_id_column]
+    return mapping
+
+def map_ids(df, column, values_mapping):
+    new_df = pd.DataFrame(columns=df.columns)
+    for i in range(len(df)):
+        if float(df[column].iloc[i]) in values_mapping:
+            df[column].iloc[i] = values_mapping[float(df[column].iloc[i])]
+            print(df.iloc[i].transpose())
+            new_df = pd.concat([new_df, df.iloc[i].to_frame().transpose()])
+    return new_df
 
 #For aggregation, checks if all the values provided in the series are the same
 def is_unique(s:pd.Series):
@@ -18,6 +38,7 @@ def truncate_lvl(scope_value,level):
     truncated_scope = '/'.join(scope_tuple[:level+1])
     return truncated_scope
 
+#Lowest common Ancestor
 def truncate(series):
     first_scope = series.iloc[0] #After truncating, all scopes will be the same, so a representative is picked
     
@@ -41,28 +62,31 @@ def dtype_to_func(col,dtype):
     if re.search(r"scope", col, re.IGNORECASE):
         return truncate
     elif dtype == type(""):
-        return 'mode'
+        return lambda x: pd.Series.mode(x)[0]
     elif dtype == type(3) or dtype == type(3.0):
         return 'sum'
-    
 
-def aggregation(log, **kwargs):
+
+def setify(series):
+    new_set = set()
+    for i in range(len(series)):
+        new_set.add(series.iloc[i])
+    return new_set
     
-    col_func_map = {}
-    if  kwargs["evt_or_obj"] == "e":
+def aggregate_events(log, **kwargs):
+        col_func_map = {}
         special_columns = {
             "id_column": "ocel:eid",
             "ts_column": "ocel:timestamp",
             "act_column": "ocel:activity",
-            "sc_column": kwargs["scope_column"]
             }
 
         log.events[special_columns["id_column"]] = log.events[special_columns["id_column"]].astype(float) 
-        log.events["Scope1"] = log.events[special_columns["sc_column"]]
+        log.events["Scope1"] = log.events[kwargs["scope_column"]]
         
         print("Scope examples: ")
         for i in range(5):
-            print(log.events[special_columns["sc_column"]][i*5])
+            print(log.events[kwargs["scope_column"]][i*5])
         
         sc_lvl = int(input("Select the scope level: ")) 
 
@@ -72,28 +96,75 @@ def aggregation(log, **kwargs):
                 col_func_map[col] = dtype_to_func(col,type(log.events[col][0]))
             
             
-        col_func_map[special_columns["id_column"]] = "min"
+        col_func_map[special_columns["id_column"]] = ["min", setify]
         col_func_map[special_columns["ts_column"]] = ['min','max']
         col_func_map[special_columns["act_column"]] = lambda x: pd.Series.mode(x)[0]
 
-        log.events[special_columns["sc_column"]] = log.events[special_columns["sc_column"]].apply(truncate_lvl, level=sc_lvl)
+        log.events[kwargs["scope_column"]] = log.events[kwargs["scope_column"]].apply(truncate_lvl, level=sc_lvl)
         
-        agg_log = log.events.groupby([special_columns["sc_column"],
+        agg_events = log.events.groupby([kwargs["scope_column"],
             pd.Grouper(key=special_columns["ts_column"], freq='20h')],
             as_index=False).agg(col_func_map)
 
 
         new_columns = []
-        for x in agg_log.columns:
+        for x in agg_events.columns:
             if x == (special_columns["ts_column"],'min'):
                 new_columns.append(special_columns["ts_column"] + ':start')
+            elif x == (special_columns["id_column"], 'setify'):
+                new_columns.append("old_ids")
             else:
                 new_columns.append(x[0])
-        agg_log.columns = new_columns   
-        agg_log.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
+        agg_events.columns = new_columns   
+        agg_events.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
+        print(agg_events[["old_ids", special_columns["id_column"]]])
+        value_mapping = agg_events.apply(get_values_mapping, axis=1,
+                        old_ids_column="old_ids", new_id_column=special_columns["id_column"])
+        value_mapping = value_mapping.aggregate(concat_dicts)
         
-    print(agg_log)
-    print(agg_log.columns)
+        log.events = agg_events
+        # print(log.relations)
+        log.relations = map_ids(log.relations, special_columns["id_column"], value_mapping)
+        print(log.relations)
+        return log
+
+def aggregate_objects(log, **kwargs):
+    col_func_map = {}
+    special_columns = {
+            "id_column": "ocel:oid",
+            }
+    col_func_map[special_columns["id_column"]] = "min"
+
+    for col in log.objects.columns:
+            if col not in special_columns.values():
+                col_func_map[col] = dtype_to_func(col,type(log.objects[col][0]))
+
+    print("Scope examples: ")
+    for i in range(5):
+        print(log.objects[kwargs["scope_column"]][i*5 % len(log.objects)])
+
+    sc_lvl = int(input("Select the scope level: ")) 
+    agg_df = log.objects[log.objects[kwargs["object_column"]] == kwargs["object_type"]]
+    print(agg_df)
+    not_agg_df = log.objects[log.objects[kwargs["object_column"]] != kwargs["object_type"]]
+    agg_df[kwargs["scope_column"]] = agg_df[kwargs["scope_column"]].apply(truncate_lvl, level=sc_lvl)
+    agg_df = agg_df.groupby([kwargs["scope_column"]],
+            as_index=False).agg(col_func_map)
+    agg_df.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
+    log.objects = pd.concat([agg_df,not_agg_df])
+    
+    return log
+
+def execute_aggregation(log, **kwargs):
+    
+   
+    if  kwargs["evt_or_obj"] == "e":
+        agg_log = aggregate_events(log, **kwargs)
+    elif kwargs["evt_or_obj"] == "o":
+        agg_log = aggregate_objects(log, **kwargs)
+        
+    return agg_log
+
 
 
 #________________________SELECTION FUNCTION___________________________    
@@ -118,10 +189,12 @@ def execute_selection(log, **kwargs):
     kwargs["regex"] = str(input("Specify regex: ")) 
     if kwargs["evt_or_obj"] == 'e':
         df = selection_function(log.events, **kwargs)
+        log.events = df
     elif kwargs["evt_or_obj"] == 'o':
         grouped = log.objects.groupby(log.objects[kwargs["object_column"]])
         df = grouped.get_group(kwargs["object_type"])
         df = selection_function(df, **kwargs)
+        log.objects = df
         # df = pd.DataFrame()
         # for name in log.objects[kwargs["object_column"]].unique():
         #     df2 = grouped.get_group(name)
@@ -129,7 +202,7 @@ def execute_selection(log, **kwargs):
         #         df2 = selection_function(df2, **kwargs)
         #     df = pd.concat([df,df2])
     
-    print(df) 
+    return log
 
 
 #_____________________________Relabeling________________________________
@@ -152,10 +225,13 @@ def execute_relabel(log, **kwargs):
     
     if kwargs["evt_or_obj"] == 'e':
         df = relabel_function(log.events, column="ocel:activity", **kwargs)
+        log.events = df
     elif kwargs["evt_or_obj"] == 'o':
-       df = relabel_function(log.objects, column=kwargs["object_column"], **kwargs)
+        df = log.objects[log.objects[kwargs["object_column"]] == kwargs["object_type"]]
+        df = relabel_function(df, column=kwargs["object_column"], **kwargs)
+        log.objects = df
     
-    print(df)
+    return log
 
 
 #_____________________________START OF SCRIPT___________________________________________________
@@ -179,13 +255,14 @@ else:
         kwargs["object_type"] = str(input("Select the object type: "))
     kwargs["scope_column"] = str(input("Select scope column: ")) 
 
-
+# print(log.relations)
+agg_log = pm4py.objects.ocel.obj.OCEL()
 if method == "s":
-    execute_selection(log, **kwargs)
+    agg_log = execute_selection(log, **kwargs)
 elif method == "a":
-    aggregation(log, **kwargs)
+    agg_log = execute_aggregation(log, **kwargs)
 elif method == 'r':
-    execute_relabel(log, **kwargs)
+    agg_log = execute_relabel(log, **kwargs)
 elif method =="test": 
     print(type(log.events["scope"]))
     print(truncate(log.events["scope"]))
