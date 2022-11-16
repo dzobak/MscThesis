@@ -215,19 +215,21 @@ def selection_function(df: pd.DataFrame , scope_sep = "/", **kwargs):
 def execute_selection(log, **kwargs):
     kwargs["regex"] = str(input("Specify regex: ")) 
     if kwargs["evt_or_obj"] == 'e':
-        df = selection_function(log.events, **kwargs)
-        log.events = df
+        log.events = selection_function(log.events, **kwargs)
+        log.relations = log.relations[log.relations[log.event_id_column].isin(set(log.events[log.event_id_column]))]
+        log.objects = log.objects[log.objects[log.object_id_column].isin(set(log.relations[log.object_id_column]))]
+        # log.relations.drop(rows_to_drop, inplace=True)
+
     elif kwargs["evt_or_obj"] == 'o':
-        grouped = log.objects.groupby(log.objects[kwargs["object_column"]])
-        df = grouped.get_group(kwargs["object_type"])
+        df = log.objects[log.objects[log.object_type_column] == kwargs['object_type']]
         df = selection_function(df, **kwargs)
         log.objects = df
-        # df = pd.DataFrame()
-        # for name in log.objects[kwargs["object_column"]].unique():
-        #     df2 = grouped.get_group(name)
-        #     if name == kwargs["object_type"]:
-        #         df2 = selection_function(df2, **kwargs)
-        #     df = pd.concat([df,df2])
+        log.relations = log.relations[log.relations[log.object_id_column].isin(set(log.objects[log.object_id_column]))]
+        log.events = log.events[log.events[log.event_id_column].isin(set(log.relations[log.event_id_column]))]
+    print(log.events)
+    print(log.relations)
+    print(log.objects)
+
     
     return log
 
