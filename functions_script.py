@@ -22,9 +22,8 @@ def get_values_mapping(df,old_ids_column, new_id_column):
 def map_ids(df, column, values_mapping):
     new_df = pd.DataFrame(columns=df.columns)
     for i in range(len(df)):
-        if float(df[column].iloc[i]) in values_mapping:
-            df[column].iloc[i] = values_mapping[float(df[column].iloc[i])]
-            print(df.iloc[i].transpose())
+        if (df[column].iloc[i]) in values_mapping:
+            df[column].iloc[i] = values_mapping[(df[column].iloc[i])]
             new_df = pd.concat([new_df, df.iloc[i].to_frame().transpose()])
     return new_df
 
@@ -82,8 +81,8 @@ def aggregate_events(log, **kwargs):
             }
 
         log.events[special_columns["id_column"]] = log.events[special_columns["id_column"]].astype(float) 
+        log.relations[special_columns["id_column"]] = log.relations[special_columns["id_column"]].astype(float) 
         log.events["Scope1"] = log.events[kwargs["scope_column"]]
-        
         print("Scope examples: ")
         for i in range(5):
             print(log.events[kwargs["scope_column"]][i*5])
@@ -117,14 +116,13 @@ def aggregate_events(log, **kwargs):
                 new_columns.append(x[0])
         agg_events.columns = new_columns   
         agg_events.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
-        print(agg_events[["old_ids", special_columns["id_column"]]])
         value_mapping = agg_events.apply(get_values_mapping, axis=1,
                         old_ids_column="old_ids", new_id_column=special_columns["id_column"])
         value_mapping = value_mapping.aggregate(concat_dicts)
         
-        log.events = agg_events
-        # print(log.relations)
+        log.events = agg_events.drop(columns="old_ids")
         log.relations = map_ids(log.relations, special_columns["id_column"], value_mapping)
+        print(log.events)
         print(log.relations)
         return log
 
@@ -133,7 +131,7 @@ def aggregate_objects(log, **kwargs):
     special_columns = {
             "id_column": "ocel:oid",
             }
-    col_func_map[special_columns["id_column"]] = "min"
+    col_func_map[special_columns["id_column"]] = ["min", setify]
 
     for col in log.objects.columns:
             if col not in special_columns.values():
@@ -144,15 +142,26 @@ def aggregate_objects(log, **kwargs):
         print(log.objects[kwargs["scope_column"]][i*5 % len(log.objects)])
 
     sc_lvl = int(input("Select the scope level: ")) 
-    agg_df = log.objects[log.objects[kwargs["object_column"]] == kwargs["object_type"]]
-    print(agg_df)
-    not_agg_df = log.objects[log.objects[kwargs["object_column"]] != kwargs["object_type"]]
-    agg_df[kwargs["scope_column"]] = agg_df[kwargs["scope_column"]].apply(truncate_lvl, level=sc_lvl)
-    agg_df = agg_df.groupby([kwargs["scope_column"]],
+    agg_objs = log.objects[log.objects[kwargs["object_column"]] == kwargs["object_type"]]
+  
+    not_agg_objs = log.objects[log.objects[kwargs["object_column"]] != kwargs["object_type"]]
+    agg_objs[kwargs["scope_column"]] = agg_objs[kwargs["scope_column"]].apply(truncate_lvl, level=sc_lvl)
+    agg_objs = agg_objs.groupby([kwargs["scope_column"]],
             as_index=False).agg(col_func_map)
-    agg_df.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
-    log.objects = pd.concat([agg_df,not_agg_df])
+    print(agg_objs)
     
+    value_mapping = agg_objs.apply(get_values_mapping, axis=1,
+                    old_ids_column=(special_columns["id_column"],"setify"), new_id_column=(special_columns["id_column"],"min"))
+    value_mapping = value_mapping.aggregate(concat_dicts)
+    agg_objs = agg_objs.drop(columns=(special_columns["id_column"],"setify"))
+    agg_objs = agg_objs.droplevel(1, axis=1)
+    agg_objs.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
+
+    log.relations = map_ids(log.relations, special_columns["id_column"], value_mapping)
+    log.objects = pd.concat([agg_objs,not_agg_objs])
+    print(log.objects)
+    print(log.relations)
+
     return log
 
 def execute_aggregation(log, **kwargs):
@@ -255,7 +264,6 @@ else:
         kwargs["object_type"] = str(input("Select the object type: "))
     kwargs["scope_column"] = str(input("Select scope column: ")) 
 
-# print(log.relations)
 agg_log = pm4py.objects.ocel.obj.OCEL()
 if method == "s":
     agg_log = execute_selection(log, **kwargs)
