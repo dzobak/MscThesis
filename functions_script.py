@@ -97,7 +97,9 @@ def aggregate_events(log, **kwargs):
             
         col_func_map[special_columns["id_column"]] = ["min", setify]
         col_func_map[special_columns["ts_column"]] = ['min','max']
-        col_func_map[special_columns["act_column"]] = lambda x: pd.Series.mode(x)[0]
+
+        ###TODO: needs to be changed to scope
+        col_func_map[special_columns["act_column"]] = lambda x: pd.Series.mode(x)[0] 
 
         log.events[kwargs["scope_column"]] = log.events[kwargs["scope_column"]].apply(truncate_lvl, level=sc_lvl)
         
@@ -116,12 +118,22 @@ def aggregate_events(log, **kwargs):
                 new_columns.append(x[0])
         agg_events.columns = new_columns   
         agg_events.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
+
+        #change relations eid column
         value_mapping = agg_events.apply(get_values_mapping, axis=1,
                         old_ids_column="old_ids", new_id_column=special_columns["id_column"])
         value_mapping = value_mapping.aggregate(concat_dicts)
+        log.relations = map_ids(log.relations, special_columns["id_column"], value_mapping)
         
         log.events = agg_events.drop(columns="old_ids")
-        log.relations = map_ids(log.relations, special_columns["id_column"], value_mapping)
+
+        #change relation columns besides id
+        log.relations[log.event_activity] = log.relations[log.event_id_column]\
+                                .map(log.events.set_index(log.event_id_column)[log.event_activity])
+        log.relations[log.event_timestamp] = log.relations[log.event_id_column]\
+                                .map(log.events.set_index(log.event_id_column)[log.event_timestamp])  
+        log.relations.drop_duplicates(inplace=True)
+        log.relations.reset_index(drop=True,inplace=True)
         print(log.events)
         print(log.relations)
         return log
@@ -150,17 +162,23 @@ def aggregate_objects(log, **kwargs):
             as_index=False).agg(col_func_map)
     print(agg_objs)
     
+    # change oid in relations table
     value_mapping = agg_objs.apply(get_values_mapping, axis=1,
                     old_ids_column=(special_columns["id_column"],"setify"), new_id_column=(special_columns["id_column"],"min"))
     value_mapping = value_mapping.aggregate(concat_dicts)
+    log.relations = map_ids(log.relations, special_columns["id_column"], value_mapping)
+
     agg_objs = agg_objs.drop(columns=(special_columns["id_column"],"setify"))
     agg_objs = agg_objs.droplevel(1, axis=1)
     agg_objs.sort_values(special_columns["id_column"], inplace=True, ignore_index=True)
 
-    log.relations = map_ids(log.relations, special_columns["id_column"], value_mapping)
     log.objects = pd.concat([agg_objs,not_agg_objs])
+
+    log.relations.drop_duplicates(inplace=True)
+    log.relations.reset_index(drop=True, inplace=True)
+
     print(log.objects)
-    print(log.relations)
+    print(log.relations.head(30))
 
     return log
 
