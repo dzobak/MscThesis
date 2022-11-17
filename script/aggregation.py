@@ -78,20 +78,14 @@ def setify(series):
 
 def aggregate_events(log, **kwargs):
     col_func_map = {}
-    special_columns = {
-        'id_column': 'ocel:eid',
-        'ts_column': 'ocel:timestamp',
-        'act_column': 'ocel:activity',
-    }
 
     log.events[log.event_id_column] =\
         log.events[log.event_id_column].astype(float)
     log.relations[log.event_id_column] =\
         log.relations[log.event_id_column].astype(float)
-    log.events['Scope1'] = log.events[kwargs['scope_column']]
-    print('Scope examples: ')
-    for i in range(5):
-        print(log.events[kwargs['scope_column']][i*5])
+    # log.events['Scope1'] = log.events[kwargs['scope_column']]
+
+    show_scope_examples(log.events,kwargs['scope_column'])
 
     sc_lvl = int(input('Select the scope level: '))
 
@@ -156,9 +150,7 @@ def aggregate_objects(log, **kwargs):
         if col not in special_columns.values():
             col_func_map[col] = dtype_to_func(col, type(log.objects[col][0]))
 
-    print('Scope examples: ')
-    for i in range(5):
-        print(log.objects[kwargs['scope_column']][i*5 % len(log.objects)])
+    show_scope_examples(log.objects, kwargs['scope_column'])
 
     sc_lvl = int(input('Select the scope level: '))
     agg_objs = log.objects[log.objects[kwargs['object_column']]

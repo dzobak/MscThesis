@@ -1,5 +1,6 @@
 import re
 import pandas as pd
+from utils import show_scope_examples
 # ________________________SELECTION FUNCTION___________________________
 
 def compare_paths(path1, path2):
@@ -21,8 +22,11 @@ def selection_function(df: pd.DataFrame, scope_sep='/', **kwargs):
 
 
 def execute_selection(log, **kwargs):
-    kwargs['regex'] = str(input('Specify regex: '))
+    
+  
     if kwargs['is_event_transformation']:
+        show_scope_examples(log.events, kwargs['scope_column'])
+        kwargs['regex'] = str(input('Specify regex: '))
         log.events = selection_function(log.events, **kwargs)
         log.relations = log.relations[log.relations[log.event_id_column].isin(
             set(log.events[log.event_id_column]))]
@@ -30,9 +34,11 @@ def execute_selection(log, **kwargs):
             set(log.relations[log.object_id_column]))]
         # log.relations.drop(rows_to_drop, inplace=True)
 
-    elif kwargs['is_object_transfromation']:
+    elif kwargs['is_object_transformation']:
         df = log.objects[log.objects[log.object_type_column]
                          == kwargs['object_type']]
+        show_scope_examples(df, kwargs['scope_column'])
+        kwargs['regex'] = str(input('Specify regex: '))
         df = selection_function(df, **kwargs)
         log.objects = df
         log.relations = log.relations[log.relations[log.object_id_column].isin(

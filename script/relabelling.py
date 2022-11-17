@@ -9,9 +9,7 @@ def get_scope_at_level(scope, lvl, sep='/'):
 
 
 def relabel_function(df: pd.DataFrame, column: str, **kwargs):
-    print('Scope examples: ')
-    for i in range(5):
-        print(df[kwargs['scope_column']][i*5 % len(df)])
+    show_scope_examples(df, kwargs['scope_column'])
     sc_lvl = int(input('Select the scope level: '))
     df[column] = df[kwargs['scope_column']].apply(
         get_scope_at_level, lvl=sc_lvl)
