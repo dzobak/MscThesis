@@ -15,7 +15,6 @@ def selection_function(df: pd.DataFrame, scope_sep='/', **kwargs):
                    scope_sep+')?', kwargs['regex'])
     # '*' means any deepness of scope is allowed
     regex = re.sub('\*' + scope_sep, '(.*'+scope_sep+')*', regex)
-    print(regex)
     paths = scope.apply(compare_paths, path2=(regex))
     paths = paths[paths]  # Only where values True i.e. paths match
     return df.loc[paths.index]
@@ -23,7 +22,7 @@ def selection_function(df: pd.DataFrame, scope_sep='/', **kwargs):
 
 def execute_selection(log, **kwargs):
     kwargs['regex'] = str(input('Specify regex: '))
-    if kwargs['evt_or_obj'] == 'e':
+    if kwargs['is_event_transformation']:
         log.events = selection_function(log.events, **kwargs)
         log.relations = log.relations[log.relations[log.event_id_column].isin(
             set(log.events[log.event_id_column]))]
@@ -31,7 +30,7 @@ def execute_selection(log, **kwargs):
             set(log.relations[log.object_id_column]))]
         # log.relations.drop(rows_to_drop, inplace=True)
 
-    elif kwargs['evt_or_obj'] == 'o':
+    elif kwargs['is_object_transfromation']:
         df = log.objects[log.objects[log.object_type_column]
                          == kwargs['object_type']]
         df = selection_function(df, **kwargs)
@@ -40,9 +39,6 @@ def execute_selection(log, **kwargs):
             set(log.objects[log.object_id_column]))]
         log.events = log.events[log.events[log.event_id_column].isin(
             set(log.relations[log.event_id_column]))]
-    print(log.events)
-    print(log.relations)
-    print(log.objects)
 
     return log
 

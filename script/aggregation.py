@@ -1,13 +1,13 @@
 import pandas as pd
 import re
-from functions import *
+from utils import *
 
 
-def get_values_mapping(row, old_ids_column, new_id_column) -> dict:
+def get_values_mapping(row:pd.Series, old_ids_column:str, new_id_column:str) -> dict:
     return {old_id: row[new_id_column] for old_id in row[old_ids_column]}
 
 
-def map_ids(df, column, values_mapping):
+def map_ids(df:pd.DataFrame, column:str, values_mapping:dict)->pd.DataFrame:
     new_df = pd.DataFrame(columns=df.columns)
     for row in df.itertuples(index=False):
         loc = df.columns.get_loc(column)
@@ -20,12 +20,12 @@ def map_ids(df, column, values_mapping):
 # For aggregation, checks if all the values provided in the series are the same
 
 
-def is_unique(s: pd.Series):
+def is_unique(s: pd.Series)->bool:
     a = s.to_numpy()
     return (a[0] == a).all()
 
 
-def truncate_lvl(scope_str, level):
+def truncate_lvl(scope_str:str, level:int)->str:
     scope_tuple = get_scope_tuple(scope_str)
     truncated_scope = '/'.join(scope_tuple[:level+1])
     return truncated_scope
@@ -95,16 +95,18 @@ def aggregate_events(log, **kwargs):
 
     sc_lvl = int(input('Select the scope level: '))
 
-    for col in log.events.columns:
-        if col not in special_columns.values():
-            col_func_map[col] = dtype_to_func(col, type(log.events[col][0]))
-
     col_func_map[log.event_id_column] = ['min', setify]
     col_func_map[log.event_timestamp] = ['min', 'max']
 
     # TODO: needs to be changed to scope
     col_func_map[log.event_activity] = lambda x: pd.Series.mode(x)[0]
 
+
+    for col in log.events.columns:
+        if col not in col_func_map:
+            col_func_map[col] = dtype_to_func(col, type(log.events[col][0]))
+
+   
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         truncate_lvl, level=sc_lvl)
 
@@ -140,8 +142,6 @@ def aggregate_events(log, **kwargs):
         log.events.set_index(log.event_id_column)[log.event_timestamp])
     log.relations.drop_duplicates(inplace=True)
     log.relations.reset_index(drop=True, inplace=True)
-    print(log.events)
-    print(log.relations)
     return log
 
 
@@ -170,7 +170,6 @@ def aggregate_objects(log, **kwargs):
         truncate_lvl, level=sc_lvl)
     agg_objs = agg_objs.groupby(
         [kwargs['scope_column']], as_index=False).agg(col_func_map)
-    print(agg_objs)
 
     # change oid in relations table
     value_mapping = agg_objs.apply(get_values_mapping, axis=1, old_ids_column=(
@@ -189,17 +188,14 @@ def aggregate_objects(log, **kwargs):
     log.relations.drop_duplicates(inplace=True)
     log.relations.reset_index(drop=True, inplace=True)
 
-    print(log.objects)
-    print(log.relations.head(30))
-
     return log
 
 
 def execute_aggregation(log, **kwargs):
 
-    if kwargs['evt_or_obj'] == 'e':
+    if kwargs['is_event_transformation']:
         agg_log = aggregate_events(log, **kwargs)
-    elif kwargs['evt_or_obj'] == 'o':
+    elif kwargs['is_object_transformation']:
         agg_log = aggregate_objects(log, **kwargs)
 
     return agg_log
