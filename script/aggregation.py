@@ -25,10 +25,7 @@ def is_unique(s: pd.Series)->bool:
     return (a[0] == a).all()
 
 
-def truncate_lvl(scope_str:str, level:int)->str:
-    scope_tuple = get_scope_tuple(scope_str)
-    truncated_scope = '/'.join(scope_tuple[:level+1])
-    return truncated_scope
+
 
 
 def get_scope_equality_level(scope_df):
@@ -53,7 +50,7 @@ def truncate(series):
     scope_df = pd.DataFrame(tuple_series.to_list())
     scope_equality_lvl = get_scope_equality_level(scope_df)
 
-    truncated_scope = truncate_lvl(first_scope, scope_equality_lvl)
+    truncated_scope = keep_n_levels(first_scope, n=scope_equality_lvl)
 
     return truncated_scope
 
@@ -102,7 +99,7 @@ def aggregate_events(log, **kwargs):
 
    
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
-        truncate_lvl, level=sc_lvl)
+        keep_n_levels, n=sc_lvl)
 
     agg_events = log.events.groupby([kwargs['scope_column'],
                                     pd.Grouper(key=log.event_timestamp,
@@ -150,16 +147,17 @@ def aggregate_objects(log, **kwargs):
         if col not in special_columns.values():
             col_func_map[col] = dtype_to_func(col, type(log.objects[col][0]))
 
-    show_scope_examples(log.objects, kwargs['scope_column'])
 
-    sc_lvl = int(input('Select the scope level: '))
     agg_objs = log.objects[log.objects[kwargs['object_column']]
                            == kwargs['object_type']]
+
+    show_scope_examples(agg_objs, kwargs['scope_column'])
+    sc_lvl = int(input('Select the scope level: '))
 
     not_agg_objs = log.objects[log.objects[kwargs['object_column']]
                                != kwargs['object_type']]
     agg_objs[kwargs['scope_column']] = agg_objs[kwargs['scope_column']].apply(
-        truncate_lvl, level=sc_lvl)
+        keep_n_levels, n=sc_lvl)
     agg_objs = agg_objs.groupby(
         [kwargs['scope_column']], as_index=False).agg(col_func_map)
 

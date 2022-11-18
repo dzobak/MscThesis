@@ -20,3 +20,12 @@ def show_scope_examples(df: pd.DataFrame, scope_column: str,amount_examples=5) -
     else: 
         for scope in df[scope_column]:
             print(scope)
+
+def keep_n_levels(scope_str:str, n:int, left_side=True)->str:
+    scope_tuple = get_scope_tuple(scope_str)
+    n = min(len(scope_tuple),n)
+    if left_side:
+        truncated_scope = '/'.join(scope_tuple[:n])
+    else:
+        truncated_scope = '/'.join(scope_tuple[-n:])
+    return truncated_scope
