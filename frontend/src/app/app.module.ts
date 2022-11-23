@@ -7,14 +7,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
+// import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MatModules } from './material.module';
 import { FormsModule } from '@angular/forms';
 
 import { ImportComponent } from './import/import.component';
 import { ApplyingComponent } from './applying/applying.component';
-import { ExportComponent } from './export/export.component';
 import { LogDetailsComponent } from './log-details/log-details.component';
 import { EventtableComponent } from './eventtable/eventtable.component';
 
@@ -24,7 +23,6 @@ import { EventtableComponent } from './eventtable/eventtable.component';
     AppComponent,
     ImportComponent,
     ApplyingComponent,
-    ExportComponent,
     LogDetailsComponent,
     EventtableComponent
   ],
@@ -33,7 +31,6 @@ import { EventtableComponent } from './eventtable/eventtable.component';
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    FlexLayoutModule,
     FormsModule,
     MatModules,
   ],

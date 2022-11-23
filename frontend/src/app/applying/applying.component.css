@@ -10,6 +10,8 @@
     color:black;
 }
 
-.mat-slider-vertical {
+.mat-mdc-slider {
     height: 250px;
+    width: $thickness;
+    min-height: $min-size;
   }

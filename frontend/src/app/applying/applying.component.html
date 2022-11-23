@@ -1,15 +1,15 @@
 <mat-form-field appearance="fill">
     <mat-label>Select event log</mat-label>
-    <mat-select [(ngModel)]="selectedLog" (selectionChange)="loadNewEventLog($event.value)" >
-       <ng-container *ngIf="applyingData">
+    <mat-select [(ngModel)]="selectedLog" (selectionChange)="loadNewEventLog($event.value)">
+        <ng-container *ngIf="applyingData">
             <mat-option *ngFor="let log of applyingData" [value]="log.value">
-            {{log.value}}
+                {{log.value}}
             </mat-option>
         </ng-container>
     </mat-select>
-    </mat-form-field>
+</mat-form-field>
 
-    <mat-form-field appearance="fill">
+<mat-form-field appearance="fill">
     <mat-label>Select scope column</mat-label>
     <mat-select [(ngModel)]="selectedScope" (selectionChange)="getScopeLevels($event.value)">
         <ng-container *ngIf="applyingData">
@@ -23,23 +23,23 @@
             </ng-container>
         </ng-container>
     </mat-select>
-    </mat-form-field>
+</mat-form-field>
 
-    
 
-<mat-tab-group >
-    <mat-tab label="Selection Function" [disabled]="tabgroup_disabled"> 
+
+<mat-tab-group>
+    <mat-tab label="Selection Function" [disabled]="tabgroup_disabled">
         <div *ngIf="!tabgroup_disabled">
             <form>
-                <mat-form-field [style.width.px]=283 appearance="fill" >
-                  <mat-label>Regular Expression for scope</mat-label>
-                  <input matInput placeholder="Ex. level0/*/level3" [(ngModel)]="regex" name="regex">
+                <mat-form-field [style.width.px]=283 appearance="fill">
+                    <mat-label>Regular Expression for scope</mat-label>
+                    <input matInput placeholder="Ex. level0/*/level3" [(ngModel)]="regex" name="regex">
                 </mat-form-field>
-            </form>    
-            
-        <ng-container *ngIf="eventLog" >
+            </form>
 
-            <!-- <table mat-table [dataSource]="eventz">
+            <ng-container *ngIf="eventLog">
+
+                <!-- <table mat-table [dataSource]="eventz">
                 <ng-container matColumnDef="activity">
                     <th mat-header-cell *matHeaderCellDef> Scope </th>
                     <td mat-cell *matCellDef="let event"> {{event.scope}} </td>
@@ -48,15 +48,13 @@
                 <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
             </table> -->
 
-            <app-eventtable
-                [columnsToDisplay]= "columnsToDisplay"
-                [eventLog] = "eventLog">
-            </app-eventtable>
-        </ng-container>
-        <div class="pad-top" >
-            <button mat-raised-button color="primary" (click)="sendRegex(regex)">Apply</button>
+                <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="eventLog">
+                </app-eventtable>
+            </ng-container>
+            <div class="pad-top">
+                <button mat-raised-button color="primary" (click)="sendRegex(regex)">Apply</button>
 
-        </div>
+            </div>
         </div>
     </mat-tab>
     <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
@@ -72,24 +70,27 @@
         </mat-form-field>  -->
         <mat-label>Select scope level</mat-label>
         <div>
-            <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider>
+            <!-- TODO: The 'vertical' property no longer exists -->
+            <!-- TODO: The 'invert' property no longer exists -->
+            <!-- TODO: The 'tickInterval' property no longer exists -->
+            <mat-slider  min="0" max="3" step="1"
+                 align="middle" color="primary"><input [(ngModel)]="selectedScopeLevel" matSliderThumb />
+                </mat-slider>
             <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle">
-        </div>   
+        </div>
         <!-- <div>
             <mat-label>Select scope level:</mat-label>
             <mat-slider  tickInterval="1" min="0" max="5" step="1" value="0"></mat-slider>
         </div> -->
-        <app-eventtable
-            [columnsToDisplay]= "columnsToDisplay"
-            [eventLog] = "eventLog">
+        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="eventLog">
         </app-eventtable>
         <div class="pad-top">
             <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>
 
         </div>
     </mat-tab>
-    <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled"> Content 3 
-        <div class="pad-top" >
+    <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled"> Content 3
+        <div class="pad-top">
             <button mat-raised-button color="primary">Apply</button>
 
         </div>
@@ -97,7 +98,5 @@
 
 </mat-tab-group>
 <div class="pad-top">
-<button mat-raised-button color="success">Save</button>
+    <button mat-raised-button color="success">Save</button>
 </div>
-
-

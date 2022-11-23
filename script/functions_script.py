@@ -17,7 +17,7 @@ while(True):
         filename = None      
     if not filename or not samelog:
         print("Logs_available:")
-        print(os.listdir(os.path.join('.', 'logs'm1)))
+        print(os.listdir(os.path.join('.', 'logs')))
         filename = str(input('Specify filename: '))
         # filepath = '/Users/dzoba/Studies/MasterThesis/Preparation/toy_log2.jsonocel'
         filepath = os.path.join('.', 'logs', filename + '.jsonocel')

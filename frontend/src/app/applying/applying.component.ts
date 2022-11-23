@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, ComponentFactoryResolver } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+// import { TestBed } from '@angular/core/testing';
 import { Subscription } from 'rxjs';
-import {ApplyingService} from './applying.service'
+import { ApplyingService } from './applying.service'
 
 export interface PeriodicElement {
   name: string
@@ -12,15 +12,15 @@ export interface PeriodicElement {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'event_log1', events: 30000, symbol: 'H', panelOpenState: false},
-  {position: 2, name: 'event_log2', events: 40026, symbol: 'He', panelOpenState: false},
-  {position: 3, name: 'event_log3', events: 6941, symbol: 'Li', panelOpenState: false},
-  {position: 4, name: 'event_log4', events: 90122, symbol: 'Be', panelOpenState: false},
-  {position: 5, name: 'event_log5', events: 10811, symbol: 'B', panelOpenState: false},
+  { position: 1, name: 'event_log1', events: 30000, symbol: 'H', panelOpenState: false },
+  { position: 2, name: 'event_log2', events: 40026, symbol: 'He', panelOpenState: false },
+  { position: 3, name: 'event_log3', events: 6941, symbol: 'Li', panelOpenState: false },
+  { position: 4, name: 'event_log4', events: 90122, symbol: 'Be', panelOpenState: false },
+  { position: 5, name: 'event_log5', events: 10811, symbol: 'B', panelOpenState: false },
 
 ];
 
-interface EventLogHeading{
+interface EventLogHeading {
   value: string,
   scopes: string[],
   columns: string[],
@@ -42,77 +42,78 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   applyingData: EventLogHeading[] = [];
   eventLog: [] = [];
   scopeLevels!: number[];
-  
+
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
   regex: string = "";
 
   tabgroup_disabled: Boolean = true;
 
-  dataSource = ELEMENT_DATA; 
+  dataSource = ELEMENT_DATA;
   selectedLog!: string;
   selectedScope!: string;
   selectedScopeLevel!: number;
 
 
-  constructor(private emplSer : ApplyingService) { }
+  constructor(private emplSer: ApplyingService) { }
 
   columnsToDisplay: string[] = []
 
   ngOnInit() {
     this.ApplyingSubs = this.emplSer
-    .getApplyingPage()
-    .subscribe(res => {
-      this.applyingData = res;
-    }
-  );
+      .getApplyingPage()
+      .subscribe(res => {
+        this.applyingData = res;
+      }
+      );
   }
   ngOnDestroy() {
     this.ApplyingSubs.unsubscribe();
   }
 
-  loadNewEventLog(value:any){
-    for (let log_head of this.applyingData)  if(log_head.value == value){
+  loadNewEventLog(value: any) {
+    for (let log_head of this.applyingData) if (log_head.value == value) {
       this.columnsToDisplay = log_head.columns
-    }; 
+    };
     this.eventLog = [];
     this.EventLogSubs = this.emplSer
-    .getEventLog(value)
-    .subscribe(res => {
-      this.eventLog = JSON.parse(res);
-      // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
-    }
-  );
+      .getEventLog(value)
+      .subscribe(res => {
+        this.eventLog = JSON.parse(res);
+        // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
+      }
+      );
 
     this.tabgroup_disabled = false;
   }
 
-  getScopeLevels(value:any){
+  getScopeLevels(value: any) {
     this.EventLogSubs = this.emplSer
-    .getScopeLevels(this.selectedLog, value)
-    .subscribe(res => {
-      this.scopeLevels = JSON.parse(res).levels;
-    }
-  );
+      .getScopeLevels(this.selectedLog, value)
+      .subscribe(res => {
+        this.scopeLevels = JSON.parse(res).levels;
+      }
+      );
   }
 
-  sendRegex(value:string){
+  sendRegex(value: string) {
     this.EventLogSubs = this.emplSer
-    .getSelection(value, this.selectedLog, this.selectedScope)
-    .subscribe(res => {
-      this.eventLog = JSON.parse(res);
-      // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
-    }
-  );
+      .getSelection(value, this.selectedLog, this.selectedScope)
+      .subscribe(res => {
+        this.eventLog = JSON.parse(res);
+        // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
+      }
+      );
   }
 
-  getAggregation(){
+  getAggregation() {
+    // objectsmissing, select object type
     this.ApplyingSubs = this.emplSer
-    .getAggregation(this.selectedLog,this.selectedScope, this.selectedScopeLevel)
-    .subscribe(res => {
-      this.eventLog = JSON.parse(res);
-    }
-  );
+      .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel)
+      .subscribe(res => {
+        this.eventLog = JSON.parse(res);
+      }
+      );
   }
 
 
