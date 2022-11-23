@@ -50,7 +50,7 @@ class Applying(Resource):
         elif task == "scopelevel":
             data = request.get_json()  
             log = ocel_import.apply(self.get_path(data["eventlog"])).get_extended_table()
-# Hardcoded levels
+# Hardcoded levels, should return the levels of scope or deepest scope level
             return json.dumps({"levels": [0,1,2,3,4]})
         elif task == "aggregation":
             data = request.get_json()
