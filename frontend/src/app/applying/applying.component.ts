@@ -52,7 +52,9 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   dataSource = ELEMENT_DATA;
   selectedLog!: string;
   selectedScope!: string;
-  selectedScopeLevel!: number;
+  selectedScopeLevel = 0;
+
+  selectedOEoption = "event"
 
 
   constructor(private emplSer: ApplyingService) { }
@@ -73,6 +75,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   loadNewEventLog(value: any) {
     for (let log_head of this.applyingData) if (log_head.value == value) {
+      console.log(log_head)
       this.columnsToDisplay = log_head.columns
     };
     this.eventLog = [];
@@ -108,8 +111,9 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   getAggregation() {
     // objectsmissing, select object type
+    console.log(this.selectedScopeLevel)
     this.ApplyingSubs = this.emplSer
-      .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel)
+      .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel, this.selectedOEoption=="event", this.selectedOEoption=="object", "items")
       .subscribe(res => {
         this.eventLog = JSON.parse(res);
       }

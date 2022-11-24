@@ -25,7 +25,10 @@
     </mat-select>
 </mat-form-field>
 
-
+<mat-radio-group aria-label="Apply transformation on:" [(ngModel)]="selectedOEoption">
+    <mat-radio-button checked value="event">events</mat-radio-button>
+    <mat-radio-button  value="object">objects</mat-radio-button>
+  </mat-radio-group>
 
 <mat-tab-group>
     <mat-tab label="Selection Function" [disabled]="tabgroup_disabled">
@@ -73,9 +76,10 @@
             <!-- TODO: The 'vertical' property no longer exists -->
             <!-- TODO: The 'invert' property no longer exists -->
             <!-- TODO: The 'tickInterval' property no longer exists -->
-            <mat-slider  min="0" max="3" step="1"
-                 align="middle" color="primary"><input [(ngModel)]="selectedScopeLevel" matSliderThumb />
-                </mat-slider>
+            <mat-slider  [min]="0" [max]="3" [step]="1" [discrete]="true" color="primary">
+                <input matSliderThumb [(ngModel)]="selectedScopeLevel">
+            </mat-slider>
+                <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
             <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle">
         </div>
         <!-- <div>

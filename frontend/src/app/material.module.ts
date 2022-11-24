@@ -12,7 +12,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatInputModule} from '@angular/material/input';
-import {MatSliderModule} from '@angular/material/slider'
+import {MatRadioModule} from '@angular/material/radio'
+import {MatSliderModule} from '@angular/material/slider';
+// import {MatLegacySliderModule} from '@angular/material/legacy-slider';
 
 
 @NgModule({
@@ -32,6 +34,7 @@ import {MatSliderModule} from '@angular/material/slider'
         MatInputModule,
         MatSliderModule,
         // MatLegacySliderModule,
+        MatRadioModule,
     ]
 })
 export class MatModules{}
