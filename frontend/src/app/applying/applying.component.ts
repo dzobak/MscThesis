@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 // import { TestBed } from '@angular/core/testing';
 import { Subscription } from 'rxjs';
-import { ApplyingService } from './applying.service'
+import { ApplyingService, EventLogHeading } from './applying.service'
 
 export interface PeriodicElement {
   name: string
@@ -20,11 +20,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 ];
 
-interface EventLogHeading {
-  value: string,
-  scopes: string[],
-  columns: string[],
-}
 
 @Component({
   selector: 'app-applying',
@@ -40,11 +35,16 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   //                 "scope2": null}]
 
   applyingData: EventLogHeading[] = [];
+  table: [] = [];
   eventLog: [] = [];
+  eventColumns!: string[];
+  objects: [] = [];
+  objectColumns!: string[];
   scopeLevels!: number[];
 
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
+  ObjectsSubs!: Subscription;
   regex: string = "";
 
   tabgroup_disabled: Boolean = true;
@@ -54,7 +54,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   selectedScope!: string;
   selectedScopeLevel = 0;
 
-  selectedOEoption = "event"
+  selectedOEoption = "event";
+
+
+
 
 
   constructor(private emplSer: ApplyingService) { }
@@ -75,19 +78,43 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   loadNewEventLog(value: any) {
     for (let log_head of this.applyingData) if (log_head.value == value) {
-      console.log(log_head)
-      this.columnsToDisplay = log_head.columns
+      this.eventColumns = log_head["e_columns"]
+      this.objectColumns = log_head["o_columns"]
     };
-    this.eventLog = [];
+    this.table = [];
     this.EventLogSubs = this.emplSer
-      .getEventLog(value)
+      .getEvents(value)
       .subscribe(res => {
         this.eventLog = JSON.parse(res);
-        // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
+        if (this.selectedOEoption = "event") {
+          this.table = this.eventLog;
+          this.columnsToDisplay = this.eventColumns;
+        }
+      }
+      );
+    this.ObjectsSubs = this.emplSer
+      .getObjects(value)
+      .subscribe(res => {
+        this.objects = JSON.parse(res);
+        console.log(this.objects)
+        if (this.selectedOEoption = "object") {
+          this.table = this.objects;
+          this.columnsToDisplay = this.objectColumns;
+        }
       }
       );
 
     this.tabgroup_disabled = false;
+  }
+
+  switchEventObject(event: any) {
+    if (this.selectedOEoption == "event") {
+      this.table = this.eventLog;
+      this.columnsToDisplay = this.eventColumns;
+    } else if (this.selectedOEoption == "object") {
+      this.table = this.objects;
+      this.columnsToDisplay = this.objectColumns;
+    }
   }
 
   getScopeLevels(value: any) {
@@ -103,7 +130,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     this.EventLogSubs = this.emplSer
       .getSelection(value, this.selectedLog, this.selectedScope)
       .subscribe(res => {
-        this.eventLog = JSON.parse(res);
+        this.table = JSON.parse(res);
         // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
       }
       );
@@ -113,9 +140,9 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     // objectsmissing, select object type
     console.log(this.selectedScopeLevel)
     this.ApplyingSubs = this.emplSer
-      .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel, this.selectedOEoption=="event", this.selectedOEoption=="object", "items")
+      .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel, this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
-        this.eventLog = JSON.parse(res);
+        this.table = JSON.parse(res);
       }
       );
   }

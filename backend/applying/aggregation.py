@@ -146,11 +146,15 @@ def aggregate_objects(log, **kwargs):
 
     show_scope_examples(agg_objs, kwargs['scope_column'])
     sc_lvl = kwargs['scope_level']
+    print(sc_lvl)
 
     not_agg_objs = log.objects[log.objects[log.object_type_column]
                                != kwargs['object_type']]
     agg_objs[kwargs['scope_column']] = agg_objs[kwargs['scope_column']].apply(
         keep_n_levels, n=sc_lvl)
+    print("************************")
+    print(agg_objs)
+
     agg_objs = agg_objs.groupby(
         [kwargs['scope_column']], as_index=False).agg(col_func_map)
 

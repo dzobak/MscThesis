@@ -15,8 +15,13 @@
         <ng-container *ngIf="applyingData">
             <ng-container *ngFor="let log of applyingData">
                 <!-- <p>{{log.value}}</p> -->
-                <ng-container *ngIf="log.value == selectedLog">
-                    <mat-option *ngFor="let scope of log.scopes" [value]="scope">
+                <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption=='event'">
+                    <mat-option *ngFor="let scope of log.e_scopes" [value]="scope">
+                        {{scope}}
+                    </mat-option>
+                </ng-container>
+                <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption=='object'">
+                    <mat-option *ngFor="let scope of log.o_scopes" [value]="scope">
                         {{scope}}
                     </mat-option>
                 </ng-container>
@@ -25,7 +30,7 @@
     </mat-select>
 </mat-form-field>
 
-<mat-radio-group aria-label="Apply transformation on:" [(ngModel)]="selectedOEoption">
+<mat-radio-group aria-label="Apply transformation on:" [(ngModel)]="selectedOEoption" (change)="switchEventObject($event)">
     <mat-radio-button checked value="event">events</mat-radio-button>
     <mat-radio-button  value="object">objects</mat-radio-button>
   </mat-radio-group>
@@ -40,7 +45,7 @@
                 </mat-form-field>
             </form>
 
-            <ng-container *ngIf="eventLog">
+            <ng-container *ngIf="table">
 
                 <!-- <table mat-table [dataSource]="eventz">
                 <ng-container matColumnDef="activity">
@@ -51,7 +56,7 @@
                 <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
             </table> -->
 
-                <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="eventLog">
+                <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
                 </app-eventtable>
             </ng-container>
             <div class="pad-top">
@@ -86,7 +91,7 @@
             <mat-label>Select scope level:</mat-label>
             <mat-slider  tickInterval="1" min="0" max="5" step="1" value="0"></mat-slider>
         </div> -->
-        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="eventLog">
+        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
         </app-eventtable>
         <div class="pad-top">
             <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>

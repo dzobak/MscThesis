@@ -3,10 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
 // import { catchError, retry } from 'rxjs/operators';
 
-interface EventLogHeading {
+export interface EventLogHeading {
   value: string,
-  scopes: string[],
-  columns: string[],
+  e_scopes: string[],
+  e_columns: string[],
+  o_scopes: string[],
+  o_columns: string[],
 }
 
 @Injectable({
@@ -19,8 +21,12 @@ export class ApplyingService {
     return this.http.get<EventLogHeading[]>('http://127.0.0.1:5002/applying/default');
   }
 
-  getEventLog(logname: string): Observable<string> {
+  getEvents(logname: string): Observable<string> {
     return this.http.get<string>('http://127.0.0.1:5002/applying/eventLog' + logname);
+  }
+
+  getObjects(logname: string): Observable<string> {
+    return this.http.get<string>('http://127.0.0.1:5002/applying/objects' + logname);
   }
 
   getSelection(regex: string, eventlogname: string, scope: string): Observable<string> {
