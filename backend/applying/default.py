@@ -8,10 +8,10 @@ import json
 from flask import request
 from applying.selection import Selection
 from applying.aggregation import *
+from applying.utils import get_max_scope_depth
 
 event_log_names = ['toy_log2.1', 'running-example']
 # event_log = ocel_import.apply(os.path.join('.','event_logs','toy_log2'+'.jsonocel'))
-
 
 class Applying(Resource):
     def get_path(self, name: str):
@@ -61,10 +61,11 @@ class Applying(Resource):
             return filtered_log.head(10).to_json(orient='records')
         elif task == 'scopelevel':
             data = request.get_json()
-            log = ocel_import.apply(self.get_path(
-                data['eventlog'])).get_extended_table()
+            log = ocel_import.apply(self.get_path(data['eventlog']))
+            df = log.events if data["is_event_transformation"] else log.objects
+            max_scope_depth = get_max_scope_depth(df[data["scope_column"]])
 # Hardcoded levels, should return the levels of scope or deepest scope level
-            return json.dumps({'levels': [0, 1, 2, 3, 4]})
+            return json.dumps({'levels': list(range(max_scope_depth))})
         elif task == 'aggregation':
             data = request.get_json()
             log = ocel_import.apply(self.get_path(data['eventlogname']))

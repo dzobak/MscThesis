@@ -40,7 +40,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   eventColumns!: string[];
   objects: [] = [];
   objectColumns!: string[];
-  scopeLevels!: number[];
+  eventScopeLevels!: number[];
 
   ApplyingSubs!: Subscription;
   EventLogSubs!: Subscription;
@@ -86,7 +86,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       .getEvents(value)
       .subscribe(res => {
         this.eventLog = JSON.parse(res);
-        if (this.selectedOEoption = "event") {
+        if (this.selectedOEoption == "event") {
           this.table = this.eventLog;
           this.columnsToDisplay = this.eventColumns;
         }
@@ -97,7 +97,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.objects = JSON.parse(res);
         console.log(this.objects)
-        if (this.selectedOEoption = "object") {
+        if (this.selectedOEoption == "object") {
           this.table = this.objects;
           this.columnsToDisplay = this.objectColumns;
         }
@@ -115,13 +115,14 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       this.table = this.objects;
       this.columnsToDisplay = this.objectColumns;
     }
+    // this.getScopeLevels()
   }
 
   getScopeLevels(value: any) {
     this.EventLogSubs = this.emplSer
-      .getScopeLevels(this.selectedLog, value)
+      .getScopeLevels(this.selectedLog, value, this.selectedOEoption == "event", this.selectedOEoption == "object")
       .subscribe(res => {
-        this.scopeLevels = JSON.parse(res).levels;
+        this.eventScopeLevels = JSON.parse(res).levels;
       }
       );
   }
@@ -131,13 +132,12 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       .getSelection(value, this.selectedLog, this.selectedScope)
       .subscribe(res => {
         this.table = JSON.parse(res);
-        // this.columnsToDisplay = ["ocel:timestamp", "ocel:activity", "scope"];
       }
       );
   }
 
   getAggregation() {
-    // objectsmissing, select object type
+    // missing select object type
     console.log(this.selectedScopeLevel)
     this.ApplyingSubs = this.emplSer
       .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel, this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
