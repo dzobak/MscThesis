@@ -1,19 +1,45 @@
-import pandas as pd
 import re
-class Selection():
+import pandas as pd
 
-    def compare_paths(self, path1, path2):
-        if re.search(path2,path1):
-            return True
-        else:
-            return False
 
-    # "*" means any deepness of scope is allowed 
-    def selection_function(self,regex :str, df: pd.DataFrame ,scope_column: str, scope_sep = "/"):
-        scope = df[scope_column]
-        regex = re.sub("\?"+ scope_sep,'((\\\w+|\\\s)+'+scope_sep+')?',regex)
-        regex = re.sub("\*" + scope_sep,'(.*'+scope_sep+')*',regex)
+def compare_paths(path1, path2):
+    if re.search(path2, path1):
+        return True
+    else:
+        return False
 
-        paths = scope.apply(self.compare_paths, path2=(regex))
-        paths = paths[paths] #Only where values True i.e. paths match
-        return df.loc[paths.index]
+
+def selection_function(df: pd.DataFrame, scope_sep='/', **kwargs):
+    scope = df[kwargs['scope_column']]
+    regex = re.sub('\?' + scope_sep, '((\\\w+|\\\s)+' +
+                   scope_sep+')?', kwargs['regex'])
+    # '*' means any deepness of scope is allowed
+    regex = re.sub('\*' + scope_sep, '(.*'+scope_sep+')*', regex)
+    paths = scope.apply(compare_paths, path2=(regex))
+    paths = paths[paths]  # Only where values True i.e. paths match
+    return df.loc[paths.index]
+
+
+def execute_selection(log, **kwargs):
+
+    if kwargs['is_event_transformation']:
+        # kwargs['regex'] = str(input('Specify regex: '))
+        log.events = selection_function(log.events, **kwargs)
+        log.relations = log.relations[log.relations[log.event_id_column].isin(
+            set(log.events[log.event_id_column]))]
+        log.objects = log.objects[log.objects[log.object_id_column].isin(
+            set(log.relations[log.object_id_column]))]
+        # log.relations.drop(rows_to_drop, inplace=True)
+
+    elif kwargs['is_object_transformation']:
+        df = log.objects[log.objects[log.object_type_column]
+                         == kwargs['object_type']]
+        # kwargs['regex'] = str(input('Specify regex: '))
+        df = selection_function(df, **kwargs)
+        log.objects = df
+        log.relations = log.relations[log.relations[log.object_id_column].isin(
+            set(log.objects[log.object_id_column]))]
+        log.events = log.events[log.events[log.event_id_column].isin(
+            set(log.relations[log.event_id_column]))]
+
+    return log

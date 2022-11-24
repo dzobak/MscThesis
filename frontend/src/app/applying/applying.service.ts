@@ -29,19 +29,28 @@ export class ApplyingService {
     return this.http.get<string>('http://127.0.0.1:5002/applying/objects' + logname);
   }
 
-  getSelection(regex: string, eventlogname: string, scope_column: string): Observable<string> {
+  getSelection(regex: string, eventlogname: string, scope_column: string,
+    isEventTransformation: boolean, isObjectTransformation: boolean, object_type=""): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
     };
     return this.http.post<string>('http://127.0.0.1:5002/applying/regex',
-      JSON.stringify({ eventlog: eventlogname, scope_column: scope_column, regex: regex }),
+      JSON.stringify({
+        eventlog: eventlogname,
+        scope_column: scope_column,
+        regex: regex,
+        is_event_transformation: isEventTransformation,
+        is_object_transformation: isObjectTransformation,
+        object_type: object_type
+      }),
       httpOptions
     );
   }
 
-  getScopeLevels(eventlogname: string, scope_column: string, isEventTransformation: boolean, isObjectTransformation: boolean): Observable<string> {
+  getScopeLevels(eventlogname: string, scope_column: string, isEventTransformation: boolean,
+    isObjectTransformation: boolean): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -59,7 +68,8 @@ export class ApplyingService {
   }
 
 
-  getAggregation(eventlogname: string, scope: string, level: number, isEventTransformation: boolean, isObjectTransformation: boolean, object_type: string): Observable<string> {
+  getAggregation(eventlogname: string, scope: string, level: number, isEventTransformation: boolean,
+    isObjectTransformation: boolean, object_type: string): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'

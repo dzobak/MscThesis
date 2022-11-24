@@ -1,17 +1,17 @@
 from flask_restful import Resource
 import pm4py
 import pandas as pd
-import re
 from pm4py.objects.ocel.importer.jsonocel import importer as ocel_import
 import os
 import json
 from flask import request
-from applying.selection import Selection
+from applying.selection import *
 from applying.aggregation import *
 from applying.utils import get_max_scope_depth
 
 event_log_names = ['toy_log2.1', 'running-example']
 # event_log = ocel_import.apply(os.path.join('.','event_logs','toy_log2'+'.jsonocel'))
+
 
 class Applying(Resource):
     def get_path(self, name: str):
@@ -54,11 +54,15 @@ class Applying(Resource):
         if task == 'regex':
             data = request.get_json()
             log = ocel_import.apply(self.get_path(
-                data['eventlog'])).get_extended_table()
-            sel = Selection()
-            filtered_log = sel.selection_function(
-                regex=data['regex'], df=log, scope_column=data['scope'])
-            return filtered_log.head(10).to_json(orient='records')
+                data['eventlog']))
+            filtered_log = execute_selection(log, **data)
+            # sel = Selection()
+            # filtered_log = sel.selection_function(
+            #     regex=data['regex'], df=log, scope_column=data['scope'])
+            if data['is_event_transformation']:
+                return filtered_log.events.head(10).to_json(orient='records')
+            elif data['is_object_transformation']:
+                return filtered_log.objects.head(10).to_json(orient='records')
         elif task == 'scopelevel':
             data = request.get_json()
             log = ocel_import.apply(self.get_path(data['eventlog']))
@@ -73,7 +77,6 @@ class Applying(Resource):
             if data['is_event_transformation']:
                 return aggregated_log.events.head(10).to_json(orient='records')
             elif data['is_object_transformation']:
-                print(aggregated_log.objects)
                 return aggregated_log.objects.head(10).to_json(orient='records')
         else:
             return {

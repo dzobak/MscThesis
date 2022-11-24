@@ -129,7 +129,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   sendRegex(value: string) {
     this.EventLogSubs = this.emplSer
-      .getSelection(value, this.selectedLog, this.selectedScope)
+      .getSelection(value, this.selectedLog, this.selectedScope,
+        this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
       }
@@ -140,7 +141,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     // missing select object type
     console.log(this.selectedScopeLevel)
     this.ApplyingSubs = this.emplSer
-      .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel, this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
+      .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel,
+        this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
       }
