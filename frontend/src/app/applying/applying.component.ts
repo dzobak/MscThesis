@@ -139,7 +139,6 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   getAggregation() {
     // missing select object type
-    console.log(this.selectedScopeLevel)
     this.ApplyingSubs = this.emplSer
       .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel,
         this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
@@ -149,5 +148,13 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       );
   }
 
-
+  getRelabelling(){
+    this.ApplyingSubs = this.emplSer
+      .getRelabelling(this.selectedLog, this.selectedScope, [this.selectedScopeLevel],
+        this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
+      .subscribe(res => {
+        this.table = JSON.parse(res);
+      }
+      );    
+  }
 }

@@ -5,8 +5,9 @@ from pm4py.objects.ocel.importer.jsonocel import importer as ocel_import
 import os
 import json
 from flask import request
-from applying.selection import *
-from applying.aggregation import *
+from applying.selection import execute_selection
+from applying.aggregation import execute_aggregation
+from applying.relabelling import execute_relabelling
 from applying.utils import get_max_scope_depth
 
 event_log_names = ['toy_log2.1', 'running-example']
@@ -78,6 +79,14 @@ class Applying(Resource):
                 return aggregated_log.events.head(10).to_json(orient='records')
             elif data['is_object_transformation']:
                 return aggregated_log.objects.head(10).to_json(orient='records')
+        elif task == 'relabel':
+            data = request.get_json()
+            log = ocel_import.apply(self.get_path(data['eventlogname']))
+            relabeled_log = execute_relabelling(log, **data)
+            if data['is_event_transformation']:
+                return relabeled_log.events.head(10).to_json(orient='records')
+            elif data['is_object_transformation']:
+                return relabeled_log.objects.head(10).to_json(orient='records')
         else:
             return {
                 'good': 'niddce',

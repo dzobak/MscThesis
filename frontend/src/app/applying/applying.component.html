@@ -98,9 +98,26 @@
 
         </div>
     </mat-tab>
-    <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled"> Content 3
+    <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled"> 
+        <mat-label>Select scope level</mat-label>
+        <div>
+            <!-- TODO: The 'vertical' property no longer exists -->
+            <!-- TODO: The 'invert' property no longer exists -->
+            <!-- TODO: The 'tickInterval' property no longer exists -->
+            <mat-slider  [min]="0" [max]="3" [step]="1" [discrete]="true" color="primary">
+                <input matSliderThumb [(ngModel)]="selectedScopeLevel">
+            </mat-slider>
+                <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
+            <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle">
+        </div>
+        <!-- <div>
+            <mat-label>Select scope level:</mat-label>
+            <mat-slider  tickInterval="1" min="0" max="5" step="1" value="0"></mat-slider>
+        </div> -->
+        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
+        </app-eventtable>
         <div class="pad-top">
-            <button mat-raised-button color="primary">Apply</button>
+            <button mat-raised-button color="primary" (click)="getRelabelling()">Apply</button>
 
         </div>
     </mat-tab>

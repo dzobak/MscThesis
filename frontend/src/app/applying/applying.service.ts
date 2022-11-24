@@ -30,7 +30,7 @@ export class ApplyingService {
   }
 
   getSelection(regex: string, eventlogname: string, scope_column: string,
-    isEventTransformation: boolean, isObjectTransformation: boolean, object_type=""): Observable<string> {
+    isEventTransformation: boolean, isObjectTransformation: boolean, object_type = ""): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ export class ApplyingService {
     };
     return this.http.post<string>('http://127.0.0.1:5002/applying/regex',
       JSON.stringify({
-        eventlog: eventlogname,
+        eventlogname: eventlogname,
         scope_column: scope_column,
         regex: regex,
         is_event_transformation: isEventTransformation,
@@ -83,6 +83,27 @@ export class ApplyingService {
         is_event_transformation: isEventTransformation,
         is_object_transformation: isObjectTransformation,
         object_type: object_type
+      }),
+      httpOptions
+    );
+  }
+
+
+  getRelabelling(eventlogname: string, scope_column: string, levels: number[], isEventTransformation: boolean,
+    isObjectTransformation: boolean, object_type?: string): Observable<string> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post<string>('http://127.0.0.1:5002/applying/relabel',
+      JSON.stringify({
+        eventlogname: eventlogname,
+        scope_column: scope_column,
+        is_event_transformation: isEventTransformation,
+        is_object_transformation: isObjectTransformation,
+        object_type: object_type,
+        levels: levels
       }),
       httpOptions
     );
