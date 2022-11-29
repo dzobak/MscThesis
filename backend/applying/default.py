@@ -1,7 +1,7 @@
 from flask_restful import Resource
 import pm4py
 import pandas as pd
-from OCEL_extended import OCEL
+from OCEL_extended import OCEL_ext
 from pm4py.objects.ocel.importer.jsonocel import importer as ocel_import
 import json
 from flask import request
@@ -22,7 +22,7 @@ class Applying(Resource):
             if task == 'default':
                 event_logs = []
                 for name in event_log_names:
-                    event_log = OCEL(ocel_import.apply(
+                    event_log = OCEL_ext(ocel_import.apply(
                         get_filepath_from_name(name)))
                     events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes\
                         .get_dataframes_from_ocel(event_log)
@@ -39,15 +39,14 @@ class Applying(Resource):
                     })
                 return event_logs
             elif task == 'names':
-                print(event_log_names)
                 return event_log_names
         elif 'eventLog' in task:
             name = task.split('eventLog', maxsplit=1)[1]
-            event_log = OCEL(ocel_import.apply(get_filepath_from_name(name)))
+            event_log = OCEL_ext(ocel_import.apply(get_filepath_from_name(name)))
             return event_log.events.head(10).to_json(orient='records')
         elif 'objects' in task:
             name = task.split('objects', maxsplit=1)[1]
-            event_log = OCEL(ocel_import.apply(get_filepath_from_name(name)))
+            event_log = OCEL_ext(ocel_import.apply(get_filepath_from_name(name)))
             return event_log.objects.head(10).to_json(orient='records')
         else:
             return {
@@ -58,7 +57,7 @@ class Applying(Resource):
     def post(self, task):
         if task == 'regex':
             data = request.get_json()
-            log = OCEL(ocel_import.apply(get_filepath_from_name(
+            log = OCEL_ext(ocel_import.apply(get_filepath_from_name(
                 data['eventlogname'])))
             filtered_log = execute_selection(log, **data)
             # sel = Selection()
@@ -70,14 +69,14 @@ class Applying(Resource):
                 return filtered_log.objects.head(10).to_json(orient='records')
         elif task == 'scopelevel':
             data = request.get_json()
-            log = OCEL(ocel_import.apply(
+            log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(data['eventlog'])))
             df = log.events if data["is_event_transformation"] else log.objects
             max_scope_depth = get_max_scope_depth(df[data["scope_column"]])
             return json.dumps({'levels': list(range(max_scope_depth))})
         elif task == 'aggregation':
             data = request.get_json()
-            log = OCEL(ocel_import.apply(
+            log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(data['eventlogname'])))
             aggregated_log = execute_aggregation(log, **data)
             if data['is_event_transformation']:
@@ -86,7 +85,7 @@ class Applying(Resource):
                 return aggregated_log.objects.head(10).to_json(orient='records')
         elif task == 'relabel':
             data = request.get_json()
-            log = OCEL(ocel_import.apply(
+            log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(data['eventlogname'])))
             relabeled_log = execute_relabelling(log, **data)
             if data['is_event_transformation']:
