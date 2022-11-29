@@ -2,8 +2,8 @@
     <mat-label>Select event log</mat-label>
     <mat-select [(ngModel)]="selectedLog" (selectionChange)="loadNewEventLog($event.value)">
         <ng-container *ngIf="applyingData">
-            <mat-option *ngFor="let log of applyingData" [value]="log.value">
-                {{log.value}}
+            <mat-option *ngFor="let log of eventlognames" [value]="log">
+                {{log}}
             </mat-option>
         </ng-container>
     </mat-select>

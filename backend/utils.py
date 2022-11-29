@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+
 def get_scope_tuple(scope: str, sep='/') -> tuple:
     scope_tup = tuple(scope.rsplit(sep)) if type(scope) == str else tuple()
     return scope_tup
@@ -37,5 +38,17 @@ def keep_n_levels(scope_str: str, n: int, left_side=True) -> str:
         truncated_scope = '/'.join(scope_tuple[-n:])
     return truncated_scope
 
-def get_filepath(name: str):
-        return os.path.join('.', 'event_log_files', name+'.jsonocel')
+
+def get_file_folder() -> str:
+    return os.path.join('event_log_files', '')
+
+
+def get_filepath_from_name(name: str) -> str:
+    return os.path.join('.', 'event_log_files', name+'.jsonocel')
+
+
+def get_name_from_filepath(path: str, filetype='jsonocel') -> str:
+    folder = get_file_folder()
+    name = path.split(folder)[1]
+    name = name.split('.'+filetype)[0]
+    return name

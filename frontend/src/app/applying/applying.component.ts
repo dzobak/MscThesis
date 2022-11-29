@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 // import { TestBed } from '@angular/core/testing';
 import { Subscription } from 'rxjs';
@@ -35,6 +36,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   //                 "scope2": null}]
 
   applyingData: EventLogHeading[] = [];
+  eventlognames: string[] = [];
   table: [] = [];
   eventLog: [] = [];
   eventColumns!: string[];
@@ -43,6 +45,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   eventScopeLevels!: number[];
 
   ApplyingSubs!: Subscription;
+  NamesSubs!: Subscription;
   EventLogSubs!: Subscription;
   ObjectsSubs!: Subscription;
   regex: string = "";
@@ -56,19 +59,28 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   selectedOEoption = "event";
 
-
-
-
+  applyingDataNeeded = false;
+  currentEventLogName!: string
 
   constructor(private emplSer: ApplyingService) { }
 
   columnsToDisplay: string[] = []
 
   ngOnInit() {
+    this.NamesSubs = this.emplSer
+      .getEventLogNames()
+      .subscribe(res => {
+        this.eventlognames = res;
+        console.log(this.eventlognames)
+      }
+      );
     this.ApplyingSubs = this.emplSer
       .getApplyingPage()
       .subscribe(res => {
         this.applyingData = res;
+        if (this.applyingDataNeeded) {
+          this.loadNewEventLog(this.currentEventLogName)
+        }
       }
       );
   }
@@ -77,34 +89,40 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   loadNewEventLog(value: any) {
-    for (let log_head of this.applyingData) if (log_head.value == value) {
-      this.eventColumns = log_head["e_columns"]
-      this.objectColumns = log_head["o_columns"]
-    };
-    this.table = [];
-    this.EventLogSubs = this.emplSer
-      .getEvents(value)
-      .subscribe(res => {
-        this.eventLog = JSON.parse(res);
-        if (this.selectedOEoption == "event") {
-          this.table = this.eventLog;
-          this.columnsToDisplay = this.eventColumns;
-        }
-      }
-      );
-    this.ObjectsSubs = this.emplSer
-      .getObjects(value)
-      .subscribe(res => {
-        this.objects = JSON.parse(res);
-        console.log(this.objects)
-        if (this.selectedOEoption == "object") {
-          this.table = this.objects;
-          this.columnsToDisplay = this.objectColumns;
-        }
-      }
-      );
 
-    this.tabgroup_disabled = false;
+    if (this.applyingData.length) {
+      for (let log_head of this.applyingData) if (log_head.value == value) {
+        this.eventColumns = log_head["e_columns"]
+        this.objectColumns = log_head["o_columns"]
+      };
+      this.table = [];
+      this.EventLogSubs = this.emplSer
+        .getEvents(value)
+        .subscribe(res => {
+          this.eventLog = JSON.parse(res);
+          if (this.selectedOEoption == "event") {
+            this.table = this.eventLog;
+            this.columnsToDisplay = this.eventColumns;
+          }
+        }
+        );
+      this.ObjectsSubs = this.emplSer
+        .getObjects(value)
+        .subscribe(res => {
+          this.objects = JSON.parse(res);
+          console.log(this.objects)
+          if (this.selectedOEoption == "object") {
+            this.table = this.objects;
+            this.columnsToDisplay = this.objectColumns;
+          }
+        }
+        );
+
+      this.tabgroup_disabled = false;
+    }else{
+      this.applyingDataNeeded = true;
+      this.currentEventLogName = value
+    }
   }
 
   switchEventObject(event: any) {
@@ -148,13 +166,13 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       );
   }
 
-  getRelabelling(){
+  getRelabelling() {
     this.ApplyingSubs = this.emplSer
       .getRelabelling(this.selectedLog, this.selectedScope, [this.selectedScopeLevel],
         this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
       }
-      );    
+      );
   }
 }

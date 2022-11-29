@@ -16,6 +16,9 @@ export interface EventLogHeading {
 })
 export class ApplyingService {
   constructor(private http: HttpClient) { }
+  getEventLogNames(): Observable<string[]>{
+    return this.http.get<string[]>('http://127.0.0.1:5002/applying/names');
+  }
 
   getApplyingPage(): Observable<EventLogHeading[]> {
     return this.http.get<EventLogHeading[]>('http://127.0.0.1:5002/applying/default');
