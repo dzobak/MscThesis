@@ -62,19 +62,19 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   applyingDataNeeded = false;
   currentEventLogName!: string
 
-  constructor(private emplSer: ApplyingService) { }
+  constructor(private aplService: ApplyingService) { }
 
   columnsToDisplay: string[] = []
 
   ngOnInit() {
-    this.NamesSubs = this.emplSer
+    this.NamesSubs = this.aplService
       .getEventLogNames()
       .subscribe(res => {
         this.eventlognames = res;
         console.log(this.eventlognames)
       }
       );
-    this.ApplyingSubs = this.emplSer
+    this.ApplyingSubs = this.aplService
       .getApplyingPage()
       .subscribe(res => {
         this.applyingData = res;
@@ -96,7 +96,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         this.objectColumns = log_head["o_columns"]
       };
       this.table = [];
-      this.EventLogSubs = this.emplSer
+      this.EventLogSubs = this.aplService
         .getEvents(value)
         .subscribe(res => {
           this.eventLog = JSON.parse(res);
@@ -106,7 +106,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
           }
         }
         );
-      this.ObjectsSubs = this.emplSer
+      this.ObjectsSubs = this.aplService
         .getObjects(value)
         .subscribe(res => {
           this.objects = JSON.parse(res);
@@ -137,7 +137,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   getScopeLevels(value: any) {
-    this.EventLogSubs = this.emplSer
+    this.EventLogSubs = this.aplService
       .getScopeLevels(this.selectedLog, value, this.selectedOEoption == "event", this.selectedOEoption == "object")
       .subscribe(res => {
         this.eventScopeLevels = JSON.parse(res).levels;
@@ -146,7 +146,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   sendRegex(value: string) {
-    this.EventLogSubs = this.emplSer
+    this.EventLogSubs = this.aplService
       .getSelection(value, this.selectedLog, this.selectedScope,
         this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
@@ -157,7 +157,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   getAggregation() {
     // missing select object type
-    this.ApplyingSubs = this.emplSer
+    this.ApplyingSubs = this.aplService
       .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel,
         this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
@@ -167,7 +167,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   getRelabelling() {
-    this.ApplyingSubs = this.emplSer
+    this.ApplyingSubs = this.aplService
       .getRelabelling(this.selectedLog, this.selectedScope, [this.selectedScopeLevel],
         this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {

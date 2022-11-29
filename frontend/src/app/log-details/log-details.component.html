@@ -27,7 +27,7 @@
 <mat-accordion class="example-headers-align"  multi>
 
   <mat-expansion-panel 
-  *ngFor="let log of dataSource" 
+  *ngFor="let log of log_details" 
   (opened)="log.panelOpenState = true"
   (closed)="log.panelOpenState = false"
   >
@@ -40,7 +40,7 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
 
-    <p>Number of events: {{log.events}}</p>
+    <p>Details</p>
   </mat-expansion-panel>
 </mat-accordion>
 </div>
