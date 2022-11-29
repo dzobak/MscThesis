@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-from .utils import *
+from utils import *
 
 
 def get_values_mapping(row: pd.Series, old_ids_column: str, new_id_column: str) -> dict:

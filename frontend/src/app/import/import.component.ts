@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient} from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 
 
 
@@ -9,28 +9,31 @@ import {HttpClient} from '@angular/common/http'
   styleUrls: ['./import.component.css']
 })
 export class ImportComponent implements OnInit {
-  fileName ='';
+  fileName = '';
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-    onFileSelected(event:any) {
+  onFileSelected(event: any) {
 
-        const file:File = event.target.files[0];
+    const file: File = event.target.files[0];
 
-        if (file) {
+    if (file) {
 
-            this.fileName = file.name;
+      this.fileName = file.name;
 
-            const formData = new FormData();
+      const formData = new FormData();
 
-            formData.append("thumbnail", file);
+      formData.append("log", file);
+      formData.append("name", file.name.split(".jsonocel")[0]);
+    
 
-            const upload$ = this.http.post("/api/thumbnail-upload", formData);
+      const upload$ = this.http.post("http://127.0.0.1:5002/eventlogs/import", formData);
 
-            upload$.subscribe();
-        }
+      upload$.subscribe();
+      console.log(formData.get("name"))
     }
+  }
 
   ngOnInit(): void {
   }

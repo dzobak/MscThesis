@@ -1,5 +1,5 @@
 import pandas as pd
-
+import os
 
 def get_scope_tuple(scope: str, sep='/') -> tuple:
     scope_tup = tuple(scope.rsplit(sep)) if type(scope) == str else tuple()
@@ -36,3 +36,6 @@ def keep_n_levels(scope_str: str, n: int, left_side=True) -> str:
     else:
         truncated_scope = '/'.join(scope_tuple[-n:])
     return truncated_scope
+
+def get_filepath(name: str):
+        return os.path.join('.', 'event_log_files', name+'.jsonocel')

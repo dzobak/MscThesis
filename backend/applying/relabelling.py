@@ -1,5 +1,5 @@
 import pandas as pd
-from applying.utils import *
+from utils import *
 from enum import Enum
 
 
