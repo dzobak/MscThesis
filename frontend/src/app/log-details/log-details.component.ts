@@ -1,8 +1,8 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { MatModules } from '../material.module';
 import { MatAccordion } from '@angular/material/expansion';
 import { ApplyingService } from '../applying/applying.service'
 import { Subscription } from 'rxjs';
+import { LogDetailsService } from './log-details.service';
 
 
 export interface PeriodicElement {
@@ -25,6 +25,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export interface LogDetails {
   name: string;
   panelOpenState: boolean;
+  details: object;
 }
 
 
@@ -35,7 +36,7 @@ export interface LogDetails {
 })
 export class LogDetailsComponent implements OnInit {
   @ViewChild(MatAccordion) accordion!: MatAccordion;
-
+  fileName = '';
   // panelOpenState = false;
   displayedColumns: string[] = ['name', 'events'];
   dataSource = ELEMENT_DATA;
@@ -43,32 +44,62 @@ export class LogDetailsComponent implements OnInit {
   log_details: LogDetails[] = [];
 
   NamesSubs!: Subscription;
+  DetailSubs!: Subscription;
   eventlognames: string[] = [];
+  newEventlogs: string[] = []
 
-  constructor(private aplService: ApplyingService) { }
+  constructor(private aplService: ApplyingService, private logDetService: LogDetailsService) { }
 
   ngOnInit(): void {
     this.NamesSubs = this.aplService
       .getEventLogNames()
       .subscribe(res => {
         this.eventlognames = res;
-        console.log(this.eventlognames)
         for (let i in this.eventlognames) {
-          this.log_details.push(
-            {
-              "name": this.eventlognames[i],
-              "panelOpenState": false
-            }
-          )
+          if (!this.log_details.some(e => e.name == this.eventlognames[i])) {
+            this.log_details.push(
+              {
+                "name": this.eventlognames[i],
+                "panelOpenState": false,
+                "details": {}
+              }
+            )
+          }
         }
-        console.log(this.log_details)
+        this.loadDetails()
       }
       );
+
   }
 
-  visibility(log: any) {
-    log.visibility = !log.visibility;
+  loadDetails() {
+    for (let i in this.eventlognames) {
+      for (let j in this.log_details) {
+        if (this.log_details[j].name == this.eventlognames[i] && !Object.keys(this.log_details[j].details).length) {
+          this.DetailSubs = this.logDetService
+            .getDetails(this.eventlognames[i])
+            .subscribe(res => {
+              this.log_details[j].details = JSON.parse(res)
+            }
+
+            );
+        }
+      }
+    }
   }
 
-
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.fileName = file.name;
+      this.DetailSubs = this.logDetService
+        .importFile(file)
+        .subscribe(res => {
+          this.ngOnInit()
+          console.log(res)
+        }
+        );
+  }
+  }
 }
+

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http';
+import { LogDetailsComponent } from '../log-details/log-details.component';
 
 
 
@@ -17,7 +18,6 @@ export class ImportComponent implements OnInit {
   onFileSelected(event: any) {
 
     const file: File = event.target.files[0];
-
     if (file) {
 
       this.fileName = file.name;
@@ -30,8 +30,8 @@ export class ImportComponent implements OnInit {
 
       const upload$ = this.http.post("http://127.0.0.1:5002/eventlogs/import", formData);
 
-      upload$.subscribe();
-      console.log(formData.get("name"))
+      upload$.subscribe(
+      );
     }
   }
 

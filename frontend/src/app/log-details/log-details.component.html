@@ -6,8 +6,8 @@
     <button mat-icon-button disabled></button>
     <mat-card *ngIf="log.visibility">Number of events: {{log.events}}</mat-card>
   </mat-list-item> -->
-  
-  <!-- <mat-list-item> Pepper </mat-list-item>
+
+<!-- <mat-list-item> Pepper </mat-list-item>
   <mat-list-item> Salt </mat-list-item>
   <mat-list-item *ngIf="true"> Paprika </mat-list-item>
   <button mat-list-item (click)="save()"> 
@@ -18,31 +18,48 @@
     <mat-card *ngIf="saveVal">Simple card</mat-card>
   </mat-list-item> 
  </mat-list> -->
- <app-import></app-import>
- <div class="example-action-buttons">
+ <input type="file" accept=".jsonocel, ,.json" class="file-input multiple"
+       (change)="onFileSelected($event)" #fileUpload>
+<!-- <p>Last uploaded file:</p> -->
+
+<div class="file-upload">
+
+   {{fileName || "No file uploaded yet."}}
+
+    <button mat-mini-fab color="success" class="upload-btn"
+      (click)="fileUpload.click()">
+        <mat-icon>attach_file</mat-icon>
+    </button>
+</div>
+<!-- <app-import></app-import> -->
+<div class="example-action-buttons" style="padding: 2em 2em">
   <button mat-button (click)="accordion.openAll()">Expand All</button>
   <button mat-button (click)="accordion.closeAll()">Collapse All</button>
 </div>
-<div style="padding: 3em 3em;">
-<mat-accordion class="example-headers-align"  multi>
+<div style="padding: 0em 3em;">
+  <mat-accordion class="example-headers-align" multi>
 
-  <mat-expansion-panel 
-  *ngFor="let log of log_details" 
-  (opened)="log.panelOpenState = true"
-  (closed)="log.panelOpenState = false"
-  >
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{log.name}}
-      </mat-panel-title>
-      <mat-panel-description>
-        Click for {{log.panelOpenState ? 'less' : 'more'}} details
-      </mat-panel-description>
-    </mat-expansion-panel-header>
+    <mat-expansion-panel *ngFor="let log of log_details" (opened)="log.panelOpenState = true"
+      (closed)="log.panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{log.name}}
+        </mat-panel-title>
+        <mat-panel-description>
+          Click for {{log.panelOpenState ? 'less' : 'more'}} details
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-list>
+        <mat-list-item *ngFor="let detail of log.details | keyvalue">
+          <span matListItemTitle>{{detail.key}}</span>
+          <span matTooltip="detail.value">{{detail.value}}</span>
+        </mat-list-item>
+        <!-- <mat-divider></mat-divider> -->
 
-    <p>Details</p>
-  </mat-expansion-panel>
-</mat-accordion>
+      </mat-list>
+
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>
 <!-- 
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
