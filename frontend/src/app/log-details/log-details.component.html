@@ -50,9 +50,9 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       <mat-list>
-        <mat-list-item *ngFor="let detail of log.details | keyvalue">
+        <mat-list-item *ngFor="let detail of log.details | keyvalue" lines="3" matTooltip="hello" matTooltipPosition="above">
           <span matListItemTitle>{{detail.key}}</span>
-          <span matTooltip="detail.value">{{detail.value}}</span>
+          <span>{{detail.value}}</span>
         </mat-list-item>
         <!-- <mat-divider></mat-divider> -->
 
