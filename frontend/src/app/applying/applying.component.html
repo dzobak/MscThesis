@@ -14,7 +14,6 @@
     <mat-select [(ngModel)]="selectedScope" (selectionChange)="getScopeLevels($event.value)">
         <ng-container *ngIf="applyingData">
             <ng-container *ngFor="let log of applyingData">
-                <!-- <p>{{log.value}}</p> -->
                 <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption=='event'">
                     <mat-option *ngFor="let scope of log.e_scopes" [value]="scope">
                         {{scope}}
@@ -30,10 +29,11 @@
     </mat-select>
 </mat-form-field>
 
-<mat-radio-group aria-label="Apply transformation on:" [(ngModel)]="selectedOEoption" (change)="switchEventObject($event)">
+<mat-radio-group aria-label="Apply transformation on:" [(ngModel)]="selectedOEoption"
+    (change)="switchEventObject($event)">
     <mat-radio-button checked value="event">events</mat-radio-button>
-    <mat-radio-button  value="object">objects</mat-radio-button>
-  </mat-radio-group>
+    <mat-radio-button value="object">objects</mat-radio-button>
+</mat-radio-group>
 
 <mat-tab-group>
     <mat-tab label="Selection Function" [disabled]="tabgroup_disabled">
@@ -47,15 +47,6 @@
 
             <ng-container *ngIf="table">
 
-                <!-- <table mat-table [dataSource]="eventz">
-                <ng-container matColumnDef="activity">
-                    <th mat-header-cell *matHeaderCellDef> Scope </th>
-                    <td mat-cell *matCellDef="let event"> {{event.scope}} </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-                <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
-            </table> -->
-
                 <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
                 </app-eventtable>
             </ng-container>
@@ -66,31 +57,18 @@
         </div>
     </mat-tab>
     <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
-        <!-- <mat-form-field appearance="fill">
-            <mat-label>Select scope level</mat-label>
-            <mat-select [(ngModel)]="selectedScopeLevel">
-               <ng-container *ngIf="applyingData">
-                    <mat-option *ngFor="let level of scopeLevels" [value]="level">
-                    {{level}}
-                    </mat-option>
-                </ng-container>
-            </mat-select>
-        </mat-form-field>  -->
+
         <mat-label>Select scope level</mat-label>
         <div>
             <!-- TODO: The 'vertical' property no longer exists -->
             <!-- TODO: The 'invert' property no longer exists -->
             <!-- TODO: The 'tickInterval' property no longer exists -->
-            <mat-slider  [min]="0" [max]="3" [step]="1" [discrete]="true" color="primary">
+            <mat-slider [min]="0" [max]="3" [step]="1" [discrete]="true" color="primary">
                 <input matSliderThumb [(ngModel)]="selectedScopeLevel">
             </mat-slider>
-                <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
+            <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
             <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle">
         </div>
-        <!-- <div>
-            <mat-label>Select scope level:</mat-label>
-            <mat-slider  tickInterval="1" min="0" max="5" step="1" value="0"></mat-slider>
-        </div> -->
         <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
         </app-eventtable>
         <div class="pad-top">
@@ -98,22 +76,19 @@
 
         </div>
     </mat-tab>
-    <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled"> 
+    <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled">
         <mat-label>Select scope level</mat-label>
         <div>
             <!-- TODO: The 'vertical' property no longer exists -->
             <!-- TODO: The 'invert' property no longer exists -->
             <!-- TODO: The 'tickInterval' property no longer exists -->
-            <mat-slider  [min]="0" [max]="3" [step]="1" [discrete]="true" color="primary">
+            <mat-slider [min]="0" [max]="3" [step]="1" [discrete]="true" color="primary">
                 <input matSliderThumb [(ngModel)]="selectedScopeLevel">
             </mat-slider>
-                <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
+            <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
             <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle">
         </div>
-        <!-- <div>
-            <mat-label>Select scope level:</mat-label>
-            <mat-slider  tickInterval="1" min="0" max="5" step="1" value="0"></mat-slider>
-        </div> -->
+
         <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
         </app-eventtable>
         <div class="pad-top">
