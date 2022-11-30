@@ -11,10 +11,13 @@ table {
   td {
     border: 1px solid#ddd;
   }
+  .mat-header-row{
+    background: rgb(40, 72, 152);
+  }
   th{
-    border: 1px solid #ddd;
-    background-color: #424faf;
-    color: white;
+    border: 1px solid rgb(68, 67, 67);
+    background: rgb(40, 72, 152);
+    color: rgb(7, 3, 116);
   }
    #table div {
     padding: 10px 20px 10px 20px;

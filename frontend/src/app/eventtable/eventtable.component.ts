@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-eventtable',
@@ -6,13 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./eventtable.component.css'],
   inputs: ['columnsToDisplay', 'eventLog']
 })
-export class EventtableComponent implements OnInit {
+export class EventtableComponent {
   columnsToDisplay!: string[];
+  displayedColumns: string[] = ["ocel:eid", "ocel:timestamp"]
   eventLog!: [];
 
   constructor() { }
-
-  ngOnInit():void {
-  }
 
 }

@@ -18,6 +18,7 @@ import { LogDetailsComponent } from './log-details/log-details.component';
 import { EventtableComponent } from './eventtable/eventtable.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,

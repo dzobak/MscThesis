@@ -110,7 +110,6 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         .getObjects(value)
         .subscribe(res => {
           this.objects = JSON.parse(res);
-          console.log(this.objects)
           if (this.selectedOEoption == "object") {
             this.table = this.objects;
             this.columnsToDisplay = this.objectColumns;
