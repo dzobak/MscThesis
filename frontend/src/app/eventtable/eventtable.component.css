@@ -16,9 +16,24 @@ table {
   }
   th{
     border: 1px solid rgb(68, 67, 67);
-    background: rgb(40, 72, 152);
-    color: rgb(7, 3, 116);
+    color: rgb(233, 240, 232);
   }
    #table div {
     padding: 10px 20px 10px 20px;
    }
+
+   .mat-mdc-header-row{
+    background-color: rgb(54,75,168);
+   }
+
+   .mat-mdc-row:hover .mat-mdc-cell {
+    background-color: rgba(212, 226, 210, 0.263);
+  }
+
+
+  :host {
+    display: block;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 16px;
+  }

@@ -17,6 +17,7 @@ import { ApplyingComponent } from './applying/applying.component';
 import { LogDetailsComponent } from './log-details/log-details.component';
 import { EventtableComponent } from './eventtable/eventtable.component';
 
+import { OverlayModule } from '@angular/cdk/overlay';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { EventtableComponent } from './eventtable/eventtable.component';
     HttpClientModule,
     FormsModule,
     MatModules,
+    OverlayModule,
   ],
   bootstrap: [AppComponent]
 })

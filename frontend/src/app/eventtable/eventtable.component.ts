@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-eventtable',
@@ -10,7 +11,30 @@ export class EventtableComponent {
   columnsToDisplay!: string[];
   displayedColumns: string[] = ["ocel:eid", "ocel:timestamp"]
   eventLog!: [];
+  isOpen = false;
 
-  constructor() { }
+  constructor(public dialog: Dialog) { }
 
+  showRowInformation(row: any) {
+    console.log(row)
+    this.dialog.open(CdkDialogDataExampleDialog, {
+      minWidth: '300px',
+      data: {
+        animal: 'panda',
+      },
+    });
+  }
 }
+export interface DialogData {
+  animal: 'panda' | 'unicorn' | 'lion';
+}
+
+@Component({
+  selector: 'cdk-dialog-data-example-dialog',
+  templateUrl: './cdk-dialog-data-example-dialog.html',
+  styleUrls: ['./eventtable.component.css'],
+})
+export class CdkDialogDataExampleDialog {
+  constructor(@Inject(DIALOG_DATA) public data: DialogData) { }
+}
+
