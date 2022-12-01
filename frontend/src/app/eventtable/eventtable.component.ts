@@ -9,7 +9,7 @@ import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 })
 export class EventtableComponent {
   columnsToDisplay!: string[];
-  columnSelect!: object ;
+  columnSelect!: string[][];
   displayedColumns: string[] = ["ocel:eid", "ocel:timestamp"]
   eventLog!: [];
   isOpen = false;
@@ -26,13 +26,17 @@ export class EventtableComponent {
     });
   }
 
-  dictKeysToList(d: object){
-    return Object.keys(d)
+  StringToInt(i: string) {
+    return parseInt(i)
+  }
+
+  getStringArray() {
+    var n = this.columnsToDisplay.length;
+    var array = [...Array(n).keys()].map(String);
+    return array
+  }
+
 }
-
-
-
- }
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
 }

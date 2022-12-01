@@ -1,5 +1,7 @@
+from typing import List
 import pandas as pd
 import os
+from OCEL_extended import OCEL_ext
 
 
 def get_scope_tuple(scope: str, sep='/') -> tuple:
@@ -52,3 +54,41 @@ def get_name_from_filepath(path: str, filetype='jsonocel') -> str:
     name = path.split(folder)[1]
     name = name.split('.'+filetype)[0]
     return name
+
+
+def get_column_functions_by_dtype(dtype: type) -> List[str]:
+    if dtype == type(''):
+        return ['MODE', 'CONCAT', 'MAX', 'MIN', 'DISCARD']
+    elif dtype == type(0) or dtype == type(1.0):
+        return ['SUM','MAX', 'MIN', 'COUNT', 'AVG', 'MODE']
+    return ["good job"]
+
+
+def get_column_functions(log: OCEL_ext, **kwargs) -> dict:
+    col_functions = {}
+    if kwargs['is_event_transformation']:
+        df = log.events
+        col_functions[log.event_id_column] = ['MIN', 'MAX', 'MODE']
+        col_functions[log.event_timestamp] = ['MIN and MAX', 'MIN', 'MAX']
+        col_functions[log.event_activity] = ['TRUNCATE'] if log.event_activity in log.event_scope_columns\
+            else ['GROUP BY']
+
+        for scope in log.event_scope_columns:
+            if scope not in col_functions:
+                col_functions[scope] = ['TRUNCATE', 'MODE', 'COUNT', 'DISCARD']
+
+    elif kwargs['is_object_transformation']:
+        df = log.objects
+        col_functions[log.object_id_column] = ['MIN', 'MAX', 'MODE']
+        col_functions[log.object_type_column] = ['GROUP BY']
+
+        for scope in log.object_scope_columns:
+            print(scope)
+            if scope not in col_functions:
+                col_functions[scope] = ['TRUNCATE', 'DISCARD']
+
+    for column in df.columns:
+        if column not in col_functions:
+            col_functions[column] = get_column_functions_by_dtype(
+                type(df.iloc[0][column]))
+    return col_functions

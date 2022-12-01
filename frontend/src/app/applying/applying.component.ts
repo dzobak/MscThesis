@@ -1,7 +1,7 @@
 import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 // import { TestBed } from '@angular/core/testing';
-import { Subscription } from 'rxjs';
+import { isEmpty, Subscription } from 'rxjs';
 import { ApplyingService, EventLogHeading } from './applying.service'
 
 export interface PeriodicElement {
@@ -48,6 +48,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   NamesSubs!: Subscription;
   EventLogSubs!: Subscription;
   ObjectsSubs!: Subscription;
+  ColumnSubs!: Subscription;
   regex: string = "";
 
   tabgroup_disabled: Boolean = true;
@@ -60,12 +61,13 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   selectedOEoption = "event";
 
   applyingDataNeeded = false;
-  currentEventLogName!: string
+  currentEventLogNametmp!: string
 
   constructor(private aplService: ApplyingService) { }
 
   columnsToDisplay: string[] = []
-  columnSelect = { 'ocel:eids': [1, 2, 3, 4], 'ocel:timestamps': [1, 3, 4], 'ocel:activitys': [1, 2, 3], 'scopes': [7, 3, 4] };
+  columnSelect: string[][] = [];
+  columnSelectCandidates!: any;
 
   ngOnInit() {
     this.NamesSubs = this.aplService
@@ -79,7 +81,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.applyingData = res;
         if (this.applyingDataNeeded) {
-          this.loadNewEventLog(this.currentEventLogName)
+          this.loadNewEventLog(this.currentEventLogNametmp)
         }
       }
       );
@@ -89,7 +91,6 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   loadNewEventLog(value: any) {
-
     if (this.applyingData.length) {
       for (let log_head of this.applyingData) if (log_head.value == value) {
         this.eventColumns = log_head["e_columns"]
@@ -116,11 +117,12 @@ export class ApplyingComponent implements OnInit, OnDestroy {
           }
         }
         );
+      this.getColumnAggregationFunctions()
 
       this.tabgroup_disabled = false;
     } else {
       this.applyingDataNeeded = true;
-      this.currentEventLogName = value
+      this.currentEventLogNametmp = value
     }
   }
 
@@ -132,6 +134,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       this.table = this.objects;
       this.columnsToDisplay = this.objectColumns;
     }
+    this.getColumnAggregationFunctions()
     // this.getScopeLevels()
   }
 
@@ -140,6 +143,20 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       .getScopeLevels(this.selectedLog, value, this.selectedOEoption == "event", this.selectedOEoption == "object")
       .subscribe(res => {
         this.eventScopeLevels = JSON.parse(res).levels;
+      }
+      );
+  }
+
+  getColumnAggregationFunctions() {
+    this.ColumnSubs = this.aplService
+      .getColumnFuctions(this.selectedLog, this.selectedOEoption == "event", this.selectedOEoption == "object")
+      .subscribe(res => {
+        this.columnSelectCandidates = JSON.parse(res);
+        this.columnSelect = []
+        for (let column of this.columnsToDisplay) {
+          this.columnSelect.push(this.columnSelectCandidates[column]);
+        }
+        console.log(this.columnSelect)
       }
       );
   }

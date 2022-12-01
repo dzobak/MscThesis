@@ -8,7 +8,7 @@ from flask import request
 from applying.selection import execute_selection
 from applying.aggregation import execute_aggregation
 from applying.relabelling import execute_relabelling
-from utils import get_max_scope_depth, get_filepath_from_name, get_name_from_filepath, get_file_folder
+from utils import get_max_scope_depth, get_filepath_from_name, get_name_from_filepath, get_file_folder, get_column_functions
 from glob import glob
 
 
@@ -31,7 +31,7 @@ class Applying(Resource):
                     event_logs.append({
                         'value': name,
                         # need to change that to actual scope columns
-                        'e_scopes': [scope for scope in events.columns if 'scope' in scope],
+                        'e_scopes': event_log.event_scope_columns,
                         'e_columns': [col for col in events.columns],
                         # need to change that to actual scope columns
                         'o_scopes': [scope for scope in objects.columns if 'scope' in scope],
@@ -42,11 +42,13 @@ class Applying(Resource):
                 return event_log_names
         elif 'eventLog' in task:
             name = task.split('eventLog', maxsplit=1)[1]
-            event_log = OCEL_ext(ocel_import.apply(get_filepath_from_name(name)))
+            event_log = OCEL_ext(ocel_import.apply(
+                get_filepath_from_name(name)))
             return event_log.events.head(10).to_json(orient='records')
         elif 'objects' in task:
             name = task.split('objects', maxsplit=1)[1]
-            event_log = OCEL_ext(ocel_import.apply(get_filepath_from_name(name)))
+            event_log = OCEL_ext(ocel_import.apply(
+                get_filepath_from_name(name)))
             return event_log.objects.head(10).to_json(orient='records')
         else:
             return {
@@ -83,6 +85,11 @@ class Applying(Resource):
                 return aggregated_log.events.head(10).to_json(orient='records')
             elif data['is_object_transformation']:
                 return aggregated_log.objects.head(10).to_json(orient='records')
+        elif task == 'aggregation_functions':
+            data = request.get_json()
+            log = OCEL_ext(ocel_import.apply(
+                get_filepath_from_name(data['eventlogname'])))    
+            return json.dumps(get_column_functions(log, **data))
         elif task == 'relabel':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(

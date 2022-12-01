@@ -53,7 +53,7 @@ def truncate(series):
 # For Aggregation
 
 
-def dtype_to_func(col, dtype):
+def dtype_to_func_defaults(col, dtype):
     if re.search(r'scope', col, re.IGNORECASE):
         return truncate
     elif dtype == type(''):
@@ -70,6 +70,7 @@ def setify(series):
 
 
 def aggregate_events(log, **kwargs):
+    #TODO change toi kwargs colfuncmap
     col_func_map = {}
 
     log.events[log.event_id_column] =\
@@ -90,7 +91,7 @@ def aggregate_events(log, **kwargs):
 
     for col in log.events.columns:
         if col not in col_func_map:
-            col_func_map[col] = dtype_to_func(col, type(log.events[col][0]))
+            col_func_map[col] = dtype_to_func_defaults(col, type(log.events[col][0]))
 
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         keep_n_levels, n=sc_lvl)
@@ -139,7 +140,7 @@ def aggregate_objects(log, **kwargs):
 
     for col in log.objects.columns:
         if col not in special_columns.values():
-            col_func_map[col] = dtype_to_func(col, type(log.objects[col][0]))
+            col_func_map[col] = dtype_to_func_defaults(col, type(log.objects[col][0]))
 
     agg_objs = log.objects[log.objects[log.object_type_column]
                            == kwargs['object_type']]
