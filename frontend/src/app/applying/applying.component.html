@@ -9,9 +9,9 @@
     </mat-select>
 </mat-form-field>
 
-<mat-form-field appearance="fill">
+<mat-form-field appearance="fill" >
     <mat-label>Select scope column</mat-label>
-    <mat-select [(ngModel)]="selectedScope" (selectionChange)="getScopeLevels($event.value)">
+    <mat-select [(ngModel)]="selectedScope" (selectionChange)="getScopeLevels($event.value)" >
         <ng-container *ngIf="applyingData">
             <ng-container *ngFor="let log of applyingData">
                 <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption=='event'">
@@ -34,6 +34,22 @@
     <mat-radio-button checked value="event">events</mat-radio-button>
     <mat-radio-button value="object">objects</mat-radio-button>
 </mat-radio-group>
+
+<div>
+    <mat-expansion-panel hideToggle [disabled]="tabgroup_disabled" (opened)="getEventDetails()">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Log details
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+            <mat-list-item *ngFor="let detail of log_details| keyvalue" lines="3">
+                <span matListItemTitle>{{detail.key}}</span>
+                <span>{{detail.value}}</span>
+            </mat-list-item>
+        </mat-list>
+    </mat-expansion-panel>
+</div>
 
 <mat-tab-group>
     <mat-tab label="Selection Function" [disabled]="tabgroup_disabled">
@@ -58,35 +74,40 @@
     </mat-tab>
     <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
 
-        <mat-label>Select scope level</mat-label>
-        <div>
+
+        <div class="pad-top">
             <!-- TODO: The 'vertical' property no longer exists -->
             <!-- TODO: The 'invert' property no longer exists -->
             <!-- TODO: The 'tickInterval' property no longer exists -->
-            <mat-slider [min]="0" [max]="3" [step]="1" [discrete]="true" color="primary">
+            <mat-label>Select scope level </mat-label>
+            <mat-slider [min]="0" [max]="3" [step]="1" discrete color="primary" showTickMarks>
                 <input matSliderThumb [(ngModel)]="selectedScopeLevel">
             </mat-slider>
             <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
-            <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle">
+            <!-- <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle"> -->
         </div>
-        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" [columnSelect]="columnSelect" [selectedMethods]="selectedMethods" (notify)="selectedMethodsChanged($event)">
+
+        <button mat-raised-button color="primary" (click)="getEventDetails()">Apply</button>
+
+        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" [columnSelect]="columnSelect"
+            [selectedMethods]="selectedMethods" (notify)="selectedMethodsChanged($event)">
         </app-eventtable>
         <div class="pad-top">
             <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>
-
         </div>
     </mat-tab>
     <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled">
-        <mat-label>Select scope level</mat-label>
+
 
         <form>
             <mat-form-field [style.width.px]=400 appearance="fill">
                 <mat-label>Relabelling </mat-label>
-                <input matInput placeholder="Ex. SCOPE scope1 KEEP LEFT 2 " [(ngModel)]="regex" name="regex">  <!--regex still old variables -->
+                <input matInput placeholder="Ex. SCOPE scope1 KEEP LEFT 2 " [(ngModel)]="regex" name="regex">
+                <!--regex still old variables -->
             </mat-form-field>
         </form>
 
-        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" >
+        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
         </app-eventtable>
         <div class="pad-top">
             <button mat-raised-button color="primary" (click)="getRelabelling()">Apply</button>

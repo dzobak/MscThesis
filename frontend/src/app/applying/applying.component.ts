@@ -2,6 +2,7 @@ import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 // import { TestBed } from '@angular/core/testing';
 import { isEmpty, Subscription } from 'rxjs';
+import { LogDetailsService } from '../log-details/log-details.service';
 import { ApplyingService, EventLogHeading } from './applying.service'
 
 export interface PeriodicElement {
@@ -43,12 +44,14 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   objects: [] = [];
   objectColumns!: string[];
   eventScopeLevels!: number[];
+  log_details!: object;
 
   ApplyingSubs!: Subscription;
   NamesSubs!: Subscription;
   EventLogSubs!: Subscription;
   ObjectsSubs!: Subscription;
   ColumnSubs!: Subscription;
+  DetailsSubs!: Subscription;
   regex: string = "";
 
   tabgroup_disabled: Boolean = true;
@@ -63,7 +66,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   applyingDataNeeded = false;
   currentEventLogNametmp!: string
 
-  constructor(private aplService: ApplyingService) { }
+  constructor(private aplService: ApplyingService, private logDetService: LogDetailsService) { }
 
   columnsToDisplay: string[] = []
   columnSelect: string[][] = [];
@@ -208,6 +211,16 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         this.table = JSON.parse(res);
       }
       );
+  }
+
+  getEventDetails(){
+    this.DetailsSubs = this.logDetService
+    .getDetails(this.selectedLog)
+    .subscribe(res => {
+      this.log_details = JSON.parse(res)
+      console.log(this.log_details)
+    }
+    );
   }
 }
 
