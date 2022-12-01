@@ -68,6 +68,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   columnsToDisplay: string[] = []
   columnSelect: string[][] = [];
   columnSelectCandidates!: any;
+  selectedMethods!: any;
 
   ngOnInit() {
     this.NamesSubs = this.aplService
@@ -138,6 +139,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     // this.getScopeLevels()
   }
 
+  selectedMethodsChanged(event: any) {
+    console.log(event)
+  }
+
   getScopeLevels(value: any) {
     this.EventLogSubs = this.aplService
       .getScopeLevels(this.selectedLog, value, this.selectedOEoption == "event", this.selectedOEoption == "object")
@@ -145,6 +150,14 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         this.eventScopeLevels = JSON.parse(res).levels;
       }
       );
+  }
+
+  getColumnFunctionMapping(){
+    let col_func_mapping = new Map<string, string>();
+    for (let i = 0; i < this.columnsToDisplay.length; i++) {
+        col_func_mapping.set(this.columnsToDisplay[i], this.selectedMethods[String(i)]); 
+    }
+    return col_func_mapping
   }
 
   getColumnAggregationFunctions() {
@@ -157,6 +170,11 @@ export class ApplyingComponent implements OnInit, OnDestroy {
           this.columnSelect.push(this.columnSelectCandidates[column]);
         }
         console.log(this.columnSelect)
+        this.selectedMethods = {};
+        for (let i = 0; i < this.columnSelect.length; i++) {
+          this.selectedMethods[String(i)] = this.columnSelect[i][0];
+        }
+        console.log(this.selectedMethods)
       }
       );
   }
@@ -175,7 +193,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     // missing select object type
     this.ApplyingSubs = this.aplService
       .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel,
-        this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
+        this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping() ,"items")
       .subscribe(res => {
         this.table = JSON.parse(res);
       }
@@ -192,3 +210,4 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       );
   }
 }
+

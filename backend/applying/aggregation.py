@@ -70,9 +70,8 @@ def setify(series):
 
 
 def aggregate_events(log, **kwargs):
-    #TODO change toi kwargs colfuncmap
-    col_func_map = {}
-
+    col_func_map = kwargs['col_func_map']
+    print(col_func_map) 
     log.events[log.event_id_column] =\
         log.events[log.event_id_column].astype(float)
     log.relations[log.event_id_column] =\

@@ -83,7 +83,6 @@ def get_column_functions(log: OCEL_ext, **kwargs) -> dict:
         col_functions[log.object_type_column] = ['GROUP BY']
 
         for scope in log.object_scope_columns:
-            print(scope)
             if scope not in col_functions:
                 col_functions[scope] = ['TRUNCATE', 'DISCARD']
 
