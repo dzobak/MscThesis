@@ -5,10 +5,11 @@ import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
   selector: 'app-eventtable',
   templateUrl: './eventtable.component.html',
   styleUrls: ['./eventtable.component.css'],
-  inputs: ['columnsToDisplay', 'eventLog']
+  inputs: ['columnsToDisplay', 'eventLog', 'columnSelect']
 })
 export class EventtableComponent {
   columnsToDisplay!: string[];
+  columnSelect!: object ;
   displayedColumns: string[] = ["ocel:eid", "ocel:timestamp"]
   eventLog!: [];
   isOpen = false;
@@ -24,7 +25,14 @@ export class EventtableComponent {
       },
     });
   }
+
+  dictKeysToList(d: object){
+    return Object.keys(d)
 }
+
+
+
+ }
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
 }

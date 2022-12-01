@@ -21,7 +21,23 @@
             <th mat-header-cell *matHeaderCellDef> {{column}}</th>
             <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
         </ng-container>
+        <ng-container *ngIf="columnSelect">
+            <ng-container [matColumnDef]="column.key" *ngFor="let column of columnSelect | keyvalue">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-form-field>
+                        <mat-select panelClass="example-panel-dark-blue">
+                            <mat-option *ngFor="let cust of column.value" [value]="cust"> {{cust}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </th>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="columnSelect">
+            <tr mat-header-row *matHeaderRowDef="dictKeysToList(columnSelect); sticky: true">
 
+            </tr>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: columnsToDisplay;" (click)="showRowInformation(row)"></tr>
     </table>

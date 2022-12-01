@@ -65,13 +65,13 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   constructor(private aplService: ApplyingService) { }
 
   columnsToDisplay: string[] = []
+  columnSelect = { 'ocel:eids': [1, 2, 3, 4], 'ocel:timestamps': [1, 3, 4], 'ocel:activitys': [1, 2, 3], 'scopes': [7, 3, 4] };
 
   ngOnInit() {
     this.NamesSubs = this.aplService
       .getEventLogNames()
       .subscribe(res => {
         this.eventlognames = res;
-        console.log(this.eventlognames)
       }
       );
     this.ApplyingSubs = this.aplService
@@ -118,7 +118,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         );
 
       this.tabgroup_disabled = false;
-    }else{
+    } else {
       this.applyingDataNeeded = true;
       this.currentEventLogName = value
     }

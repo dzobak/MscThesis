@@ -69,7 +69,7 @@
             <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
             <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle">
         </div>
-        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
+        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" [columnSelect]="columnSelect">
         </app-eventtable>
         <div class="pad-top">
             <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>
@@ -86,7 +86,7 @@
             </mat-form-field>
         </form>
 
-        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
+        <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" >
         </app-eventtable>
         <div class="pad-top">
             <button mat-raised-button color="primary" (click)="getRelabelling()">Apply</button>

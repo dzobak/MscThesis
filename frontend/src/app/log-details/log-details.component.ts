@@ -80,6 +80,7 @@ export class LogDetailsComponent implements OnInit {
             .getDetails(this.eventlognames[i])
             .subscribe(res => {
               this.log_details[j].details = JSON.parse(res)
+              console.log(this.log_details[j].details)
             }
 
             );
