@@ -1,12 +1,16 @@
 import pandas as pd
 from utils import *
 from enum import Enum
+import re
 
 
 class Variant(Enum):
-    KEEP_LEFT = 'l'
-    KEEP_RIGHT = 'r'
-    KEEP_INDEX = 'i'
+    KEEP_LEFT = 'kl'
+    KEEP_RIGHT = 'kr'
+    KEEP_INDEX = 'ki'
+    REMOVE_LEFT = 'rl'
+    REMOVE_RIGHT = 'rr'
+    REMOVE_INDEX = 'ri'
 
 
 def get_scope_by_index(scope: str, indexes: list[int], sep='/'):
@@ -23,21 +27,68 @@ def get_scope_by_index(scope: str, indexes: list[int], sep='/'):
 
 
 def relabel_function(df: pd.DataFrame, column: str, **kwargs):
-    # sc_indexes = list(map(int, input('Select the scope level: ').split(',')))
-    if kwargs['Variant'] == Variant.KEEP_INDEX.value:
-        df[column] = df[kwargs['scope_column']].apply(
-            get_scope_by_index, indexes=kwargs['sc_indexes'])
-    elif kwargs['Variant'] == Variant.KEEP_LEFT.value:
-        df[column] = df[kwargs['scope_column']].apply(
-            keep_n_levels, n=kwargs['n'])
-    elif kwargs['Variant'] == Variant.KEEP_RIGHT.value:
-        df[column] = df[kwargs['scope_column']].apply(
-            keep_n_levels, n=kwargs['n'], left_side=False)
+    commands = parse_command(kwargs['relabel_command'])
+    for kwargs in commands:
+        # sc_indexes = list(map(int, input('Select the scope level: ').split(',')))
+        if kwargs['Variant'] == Variant.KEEP_INDEX:
+            modified_col = df[kwargs['scope_column']].apply(
+                get_scope_by_index, indexes=kwargs['sc_indexes'])
+        elif kwargs['Variant'] == Variant.KEEP_LEFT:
+            modified_col = df[kwargs['scope_column']].apply(
+                keep_n_levels, n=kwargs['n'])
+        elif kwargs['Variant'] == Variant.KEEP_RIGHT:
+            modified_col = df[kwargs['scope_column']].apply(
+                keep_n_levels, n=kwargs['n'], left_side=False)
+        if column in df.columns:
+            print(df[column])
+            print('-------------------')
+            print(modified_col)
+            print('::::::::::::::::::::')
+            df[column] = [str(x) + '/' +str(y) for x, y in zip(df[column], modified_col)]
+            print(df[column])
+        else:
+            df[column] = modified_col
+    print(df)
     return df
 
 
+def parse_command(rel_command: str):
+    single_scope_commands = rel_command.split('CONCAT')
+    commands = []
+    for command in single_scope_commands:
+        if len(command) > 2:
+            kwargs = {}
+            if re.search('KEEP', command):
+                if re.search('LEFT', command):
+                    kwargs['Variant'] = Variant.KEEP_LEFT
+                elif re.search('RIGHT', command):
+                    kwargs['Variant'] = Variant.KEEP_RIGHT
+                elif re.search('INDEX', command):
+                    kwargs['Variant'] = Variant.KEEP_INDEX
+            elif re.search('REMOVE', command):
+                if re.search('LEFT', command):
+                    kwargs['Variant'] = Variant.REMOVE_LEFT
+                elif re.search('RIGHT', command):
+                    kwargs['Variant'] = Variant.REMOVE_RIGHT
+                elif re.search('INDEX', command):
+                    kwargs['Variant'] = Variant.REMOVE_INDEX
+            print(command)
+            scope_column = command.split('<')[1]
+            scope_column = scope_column.split('>')[0]
+            kwargs['scope_column'] = scope_column
+            n = command.split('<')[2]
+            n = n.split('>')[0]
+            if re.search('INDEX', command):
+                kwargs['sc_indexes'] = list(map(int, n.split(',')))
+            else:
+                kwargs['n'] = int(n)
+
+            commands.append(kwargs)
+    return commands
+
+
 def execute_relabelling(log, **kwargs):
-    df = log.events if kwargs['is_event_transformation'] else log.objects
+    # df = log.events if kwargs['is_event_transformation'] else log.objects
     # show_scope_examples(df, kwargs['scope_column'])
     # print('Possible variants for subscope are: Keep left(l), Keep right(r), Index(i)')
     # kwargs['Variant'] = input(str('Specify the variant for subscope: '))
@@ -48,15 +99,15 @@ def execute_relabelling(log, **kwargs):
     #         'Provides the Index(es) of scope levels to be kept: ').split(',')))
     # else:
     #     raise Exception("No such Variant")
-    kwargs['Variant'] = Variant.KEEP_LEFT.value
-    kwargs['n'] = kwargs['levels'][0]
+    # kwargs['Variant'] = Variant.KEEP_LEFT.value
+    # kwargs['n'] = kwargs['levels'][0]
     if kwargs['is_event_transformation']:
-        df = relabel_function(log.events, column='ocel:activity', **kwargs)
+        df = relabel_function(log.events, column='new:column', **kwargs)
         log.events = df
     elif kwargs['is_object_transformation']:
         df = log.objects[log.objects[log.object_type_column]
                          == kwargs['object_type']].copy()
-        df = relabel_function(df, column=log.object_type_column, **kwargs)
+        df = relabel_function(df, column='new:column', **kwargs)
         log.objects = df
         print(log.objects)
 

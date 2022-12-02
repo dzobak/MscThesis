@@ -32,12 +32,12 @@ export class EventtableComponent {
   }
   showRowInformation(row: any) {
     console.log(row)
-    this.dialog.open(CdkDialogDataExampleDialog, {
-      minWidth: '300px',
-      data: {
-        animal: 'panda',
-      },
-    });
+    // this.dialog.open(CdkDialogDataExampleDialog, {
+    //   minWidth: '300px',
+    //   data: {
+    //     animal: 'panda',
+    //   },
+    // });
   }
 
   StringToInt(i: string) {

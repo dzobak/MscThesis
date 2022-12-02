@@ -32,6 +32,10 @@ export class ApplyingService {
     return this.http.get<string>('http://127.0.0.1:5002/applying/objects' + logname);
   }
 
+  getLogData(logname: string): Observable<string> {
+    return this.http.get<string>('http://127.0.0.1:5002/applying/logdata' + logname);
+  }
+
   getColumnFuctions(eventlogname: string, isEventTransformation: boolean, isObjectTransformation: boolean): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -48,7 +52,7 @@ export class ApplyingService {
     );
   }
 
-  getSelection(regex: string, eventlogname: string, scope_column: string,
+  getSelection(regex: string, eventlogname: string, newLogName:string, scope_column: string, 
     isEventTransformation: boolean, isObjectTransformation: boolean, object_type = ""): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -59,6 +63,7 @@ export class ApplyingService {
       JSON.stringify({
         eventlogname: eventlogname,
         scope_column: scope_column,
+        newlogname: newLogName,
         regex: regex,
         is_event_transformation: isEventTransformation,
         is_object_transformation: isObjectTransformation,
@@ -87,7 +92,7 @@ export class ApplyingService {
   }
 
 
-  getAggregation(eventlogname: string, scope: string, level: number, isEventTransformation: boolean,
+  getAggregation(eventlogname: string, newLogName:string, scope: string, level: number, isEventTransformation: boolean,
     isObjectTransformation: boolean, columnFunctionMap:object, object_type: string): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -97,6 +102,7 @@ export class ApplyingService {
     return this.http.post<string>('http://127.0.0.1:5002/applying/aggregation',
       JSON.stringify({
         eventlogname: eventlogname,
+        newlogname: newLogName,
         scope_column: scope,
         scope_level: level,
         is_event_transformation: isEventTransformation,
@@ -109,7 +115,7 @@ export class ApplyingService {
   }
 
 
-  getRelabelling(eventlogname: string, scope_column: string, levels: number[], isEventTransformation: boolean,
+  getRelabelling(eventlogname: string, newLogName:string,relabelCommand: string , isEventTransformation: boolean,
     isObjectTransformation: boolean, object_type?: string): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -119,11 +125,11 @@ export class ApplyingService {
     return this.http.post<string>('http://127.0.0.1:5002/applying/relabel',
       JSON.stringify({
         eventlogname: eventlogname,
-        scope_column: scope_column,
+        newlogname: newLogName,
+        relabel_command: relabelCommand,
         is_event_transformation: isEventTransformation,
         is_object_transformation: isObjectTransformation,
         object_type: object_type,
-        levels: levels
       }),
       httpOptions
     );

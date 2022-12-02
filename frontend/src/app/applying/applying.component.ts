@@ -5,36 +5,12 @@ import { isEmpty, Subscription } from 'rxjs';
 import { LogDetailsService } from '../log-details/log-details.service';
 import { ApplyingService, EventLogHeading } from './applying.service'
 
-export interface PeriodicElement {
-  name: string
-  position: number;
-  events: number;
-  symbol: string;
-  panelOpenState: boolean;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'event_log1', events: 30000, symbol: 'H', panelOpenState: false },
-  { position: 2, name: 'event_log2', events: 40026, symbol: 'He', panelOpenState: false },
-  { position: 3, name: 'event_log3', events: 6941, symbol: 'Li', panelOpenState: false },
-  { position: 4, name: 'event_log4', events: 90122, symbol: 'Be', panelOpenState: false },
-  { position: 5, name: 'event_log5', events: 10811, symbol: 'B', panelOpenState: false },
-
-];
-
-
 @Component({
   selector: 'app-applying',
   templateUrl: './applying.component.html',
   styleUrls: ['./applying.component.css']
 })
 export class ApplyingComponent implements OnInit, OnDestroy {
-
-  // eventz: any = [{"ocel:eid": "2.0",
-  //                 "ocel:timestamp": 1634617587000,
-  //                 "ocel:activity": "add item to cart",
-  //                 "scope": "business/new order/add item to cart",
-  //                 "scope2": null}]
 
   applyingData: EventLogHeading[] = [];
   eventlognames: string[] = [];
@@ -53,10 +29,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   ColumnSubs!: Subscription;
   DetailsSubs!: Subscription;
   regex: string = "";
+  relabel: string = "";
 
   tabgroup_disabled: Boolean = true;
 
-  dataSource = ELEMENT_DATA;
   selectedLog!: string;
   selectedScope!: string;
   selectedScopeLevel = 0;
@@ -86,6 +62,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         this.applyingData = res;
         if (this.applyingDataNeeded) {
           this.loadNewEventLog(this.currentEventLogNametmp)
+          this.applyingDataNeeded = false;
         }
       }
       );
@@ -109,6 +86,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
             this.table = this.eventLog;
             this.columnsToDisplay = this.eventColumns;
           }
+          console.log(this.table)
         }
         );
       this.ObjectsSubs = this.aplService
@@ -122,12 +100,22 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         }
         );
       this.getColumnAggregationFunctions()
-
       this.tabgroup_disabled = false;
-    } else {
+    }else{
       this.applyingDataNeeded = true;
       this.currentEventLogNametmp = value
     }
+  }
+
+  getLogData(logname: string) {
+    this.ApplyingSubs = this.aplService
+      .getLogData(logname)
+      .subscribe(res => {
+        this.applyingData.push(JSON.parse(res))
+        this.selectedLog = logname
+        this.loadNewEventLog(logname)
+      }
+      )
   }
 
   switchEventObject(event: any) {
@@ -155,17 +143,18 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       );
   }
 
-  getColumnFunctionMapping(){
+  getColumnFunctionMapping() {
     let col_func_mapping = new Map<string, string>();
     for (let i = 0; i < this.columnsToDisplay.length; i++) {
-        col_func_mapping.set(this.columnsToDisplay[i], this.selectedMethods[String(i)]); 
+      col_func_mapping.set(this.columnsToDisplay[i], this.selectedMethods[String(i)]);
     }
     return col_func_mapping
   }
 
   getColumnAggregationFunctions() {
+    
     this.ColumnSubs = this.aplService
-      .getColumnFuctions(this.selectedLog, this.selectedOEoption == "event", this.selectedOEoption == "object")
+      .getColumnFuctions(this.selectedLog,  this.selectedOEoption == "event", this.selectedOEoption == "object")
       .subscribe(res => {
         this.columnSelectCandidates = JSON.parse(res);
         this.columnSelect = []
@@ -183,44 +172,60 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   sendRegex(value: string) {
+    var newfilename = this.getTempFileName()
     this.EventLogSubs = this.aplService
-      .getSelection(value, this.selectedLog, this.selectedScope,
+      .getSelection(value, this.selectedLog, newfilename, this.selectedScope,
         this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
+        this.getLogData(newfilename)
       }
       );
   }
 
   getAggregation() {
     // missing select object type
+    var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
-      .getAggregation(this.selectedLog, this.selectedScope, this.selectedScopeLevel,
-        this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping() ,"items")
+      .getAggregation(this.selectedLog, newfilename ,this.selectedScope, this.selectedScopeLevel,
+        this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
+
+        this.getLogData(newfilename)
       }
       );
   }
 
   getRelabelling() {
+    var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
-      .getRelabelling(this.selectedLog, this.selectedScope, [this.selectedScopeLevel],
+      .getRelabelling(this.selectedLog,newfilename, this.relabel,
         this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
+        this.getLogData(newfilename)
+        
       }
       );
   }
 
-  getEventDetails(){
+  getEventDetails() {
     this.DetailsSubs = this.logDetService
-    .getDetails(this.selectedLog)
-    .subscribe(res => {
-      this.log_details = JSON.parse(res)
-      console.log(this.log_details)
+      .getDetails(this.selectedLog)
+      .subscribe(res => {
+        this.log_details = JSON.parse(res)
+        console.log(this.log_details)
+      }
+      );
+  }
+
+  getTempFileName() {
+    if (this.selectedLog.search("@tmp") >= 0) {
+      return this.selectedLog
+    } else {
+      return this.selectedLog + "@tmp"
     }
-    );
   }
 }
 
