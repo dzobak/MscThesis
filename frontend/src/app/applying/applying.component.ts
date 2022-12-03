@@ -99,18 +99,28 @@ export class ApplyingComponent implements OnInit, OnDestroy {
           }
         }
         );
+
       this.getColumnAggregationFunctions()
       this.tabgroup_disabled = false;
-    }else{
+    } else {
       this.applyingDataNeeded = true;
       this.currentEventLogNametmp = value
     }
   }
 
   getLogData(logname: string) {
+    this.NamesSubs = this.aplService
+      .getEventLogNames()
+      .subscribe(res => {
+        this.eventlognames = res;
+      }
+      );
     this.ApplyingSubs = this.aplService
       .getLogData(logname)
       .subscribe(res => {
+        if (this.applyingData[this.applyingData.length - 1].value.search("@tmp") >= 0) {
+          this.applyingData.pop()
+        }
         this.applyingData.push(JSON.parse(res))
         this.selectedLog = logname
         this.loadNewEventLog(logname)
@@ -144,17 +154,18 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   getColumnFunctionMapping() {
-    let col_func_mapping = new Map<string, string>();
+    var col_func_mapping: {[key: string]: string} = {};
     for (let i = 0; i < this.columnsToDisplay.length; i++) {
-      col_func_mapping.set(this.columnsToDisplay[i], this.selectedMethods[String(i)]);
+      col_func_mapping[this.columnsToDisplay[i]] = this.selectedMethods[String(i)];
     }
+    console.log( typeof col_func_mapping)
     return col_func_mapping
   }
 
   getColumnAggregationFunctions() {
-    
+
     this.ColumnSubs = this.aplService
-      .getColumnFuctions(this.selectedLog,  this.selectedOEoption == "event", this.selectedOEoption == "object")
+      .getColumnFuctions(this.selectedLog, this.selectedOEoption == "event", this.selectedOEoption == "object")
       .subscribe(res => {
         this.columnSelectCandidates = JSON.parse(res);
         this.columnSelect = []
@@ -186,8 +197,9 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   getAggregation() {
     // missing select object type
     var newfilename = this.getTempFileName()
+    console.log(this.selectedScopeLevel )
     this.ApplyingSubs = this.aplService
-      .getAggregation(this.selectedLog, newfilename ,this.selectedScope, this.selectedScopeLevel,
+      .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel,
         this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
@@ -200,12 +212,12 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   getRelabelling() {
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
-      .getRelabelling(this.selectedLog,newfilename, this.relabel,
+      .getRelabelling(this.selectedLog, newfilename, this.relabel,
         this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
         this.getLogData(newfilename)
-        
+
       }
       );
   }

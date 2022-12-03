@@ -22,12 +22,21 @@ def get_scope_by_index(scope: str, indexes: list[int], sep='/'):
             sel_levels.append(split[i])
         elif i >= len(split)-1:
             sel_levels.append(split[i])
+            break
     # sel_levels = [min(i,len(split)-1)for i in indexes]
     return sep.join(sel_levels)
 
+def remove_scope_by_index(scope: str, indexes: list[int], sep='/'):
+    split = tuple(scope.rsplit(sep))
+    sel_levels = []
+    for i in len(split):
+        if i not in indexes:
+            sel_levels.append(split[i])
+    return sep.join(sel_levels)
 
-def relabel_function(df: pd.DataFrame, column: str, **kwargs):
+def relabel_function(df: pd.DataFrame, **kwargs):
     commands = parse_command(kwargs['relabel_command'])
+    column = 'new_column' #kwargs['new_column']
     for kwargs in commands:
         # sc_indexes = list(map(int, input('Select the scope level: ').split(',')))
         if kwargs['Variant'] == Variant.KEEP_INDEX:
@@ -39,16 +48,20 @@ def relabel_function(df: pd.DataFrame, column: str, **kwargs):
         elif kwargs['Variant'] == Variant.KEEP_RIGHT:
             modified_col = df[kwargs['scope_column']].apply(
                 keep_n_levels, n=kwargs['n'], left_side=False)
+        elif kwargs['Variant'] == Variant.REMOVE_LEFT:
+            modified_col = df[kwargs['scope_column']].apply(
+                remove_n_levels, n=kwargs['n'])
+        elif kwargs['Variant'] == Variant.REMOVE_RIGHT:
+            modified_col = df[kwargs['scope_column']].apply(
+                remove_n_levels, n=kwargs['n'], left_side=False)
+        elif kwargs['Variant'] == Variant.KEEP_INDEX:
+            modified_col = df[kwargs['scope_column']].apply(
+                get_scope_by_index, indexes=kwargs['sc_indexes'])
         if column in df.columns:
-            print(df[column])
-            print('-------------------')
-            print(modified_col)
-            print('::::::::::::::::::::')
             df[column] = [str(x) + '/' +str(y) for x, y in zip(df[column], modified_col)]
-            print(df[column])
         else:
             df[column] = modified_col
-    print(df)
+
     return df
 
 

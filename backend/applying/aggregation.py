@@ -1,6 +1,9 @@
 import pandas as pd
 import re
 from utils import *
+from enum import Enum
+from pandas.core.groupby.groupby import GroupBy
+
 
 
 def get_values_mapping(row: pd.Series, old_ids_column: str, new_id_column: str) -> dict:
@@ -71,13 +74,12 @@ def setify(series):
 
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
-    print(col_func_map) 
+
     log.events[log.event_id_column] =\
         log.events[log.event_id_column].astype(float)
     log.relations[log.event_id_column] =\
         log.relations[log.event_id_column].astype(float)
-    # log.events['Scope1'] = log.events[kwargs['scope_column']]
-
+    #TODO where col func is groupby need to add as key, where col func is discard need to remove from col_func
     show_scope_examples(log.events, kwargs['scope_column'])
 
     sc_lvl = kwargs['scope_level']
@@ -131,6 +133,7 @@ def aggregate_events(log, **kwargs):
 
 
 def aggregate_objects(log, **kwargs):
+    #TODO col function mappoing needs to be changed to kwarggs
     col_func_map = {}
     special_columns = {
         'id_column': 'ocel:oid',
@@ -188,3 +191,14 @@ def execute_aggregation(log, **kwargs):
         raise Exception("Objects or Events need to be selected")
 
     return agg_log
+
+
+class Method(Enum):
+    SUM = GroupBy.sum
+    MIN = GroupBy.min
+    MAX = GroupBy.max
+    AVG = GroupBy.mean
+    MODE = lambda x: pd.Series.mode(x)[0]
+    TRUNCATE = truncate
+    COUNT = GroupBy.count
+    CONCAT = lambda x: pd.Series.str.cat(x)[0] 

@@ -35,9 +35,18 @@ def keep_n_levels(scope_str: str, n: int, left_side=True) -> str:
     scope_tuple = get_scope_tuple(scope_str)
     n = min(len(scope_tuple), n)
     if left_side:
-        truncated_scope = '/'.join(scope_tuple[:n+1])
+        truncated_scope = '/'.join(scope_tuple[:n])
     else:
         truncated_scope = '/'.join(scope_tuple[-n:])
+    return truncated_scope
+
+def remove_n_levels(scope_str: str, n: int, left_side=True) -> str:
+    scope_tuple = get_scope_tuple(scope_str)
+    n = min(len(scope_tuple), n)
+    if left_side:
+        truncated_scope = '/'.join(scope_tuple[n:])
+    else:
+        truncated_scope = '/'.join(scope_tuple[:-n])
     return truncated_scope
 
 

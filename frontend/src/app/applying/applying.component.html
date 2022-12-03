@@ -87,7 +87,7 @@
             <!-- <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle"> -->
         </div>
 
-        <button mat-raised-button color="primary" (click)="getEventDetails()">Apply</button>
+        <!-- <button mat-raised-button color="primary" (click)="getEventDetails()">Apply</button> -->
 
         <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" [columnSelect]="columnSelect"
             [selectedMethods]="selectedMethods" (notify)="selectedMethodsChanged($event)">
@@ -100,7 +100,7 @@
 
 
         <form>
-            <mat-form-field [style.width.px]=400 appearance="fill">
+            <mat-form-field [style.width.px]=550 appearance="fill">
                 <mat-label>Relabelling </mat-label>
                 <input matInput placeholder="Ex. SCOPE <scope1> KEEP LEFT <2> " [(ngModel)]="relabel" name="relabel">
             </mat-form-field>
