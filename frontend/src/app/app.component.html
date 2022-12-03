@@ -1,5 +1,4 @@
-
-<div> 
+<div>
   <mat-toolbar color="primary">
     <!-- <div fxShow="true" fxHide.gt-sm="true">
       <button mat-icon-button (click)="sidenav.toggle()">
@@ -7,16 +6,16 @@
       </button>
     </div> -->
 
-    <a mat-button  class="companyName"  color="white" routerLink="/">
-      <span >OCEL tool</span>
+    <a mat-button class="companyName" color="white" routerLink="/">
+      <span>OCEL tool</span>
     </a>
     <span class="example-spacer"></span>
     <div fxShow="true" fxHide.lt-md="true">
       <!-- <a color="white" mat-button routerLink="/import">Import</a> -->
-      <a  color="white" mat-button routerLink="/logs">Event Logs</a>
-      <a  color="white" mat-button routerLink="/applying">Apply</a>
-  
-      
+      <a color="white" mat-button routerLink="/logs">Event Logs</a>
+      <a color="white" mat-button routerLink="/applying">Apply</a>
+
+
       <!-- <a mat-button routerLink="/contact">Contact</a> -->
     </div>
 
@@ -33,10 +32,8 @@
       </div>
     </mat-sidenav> -->
     <mat-sidenav-content fxFlexFill>
-      
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
- 
-</div>
 
+</div>

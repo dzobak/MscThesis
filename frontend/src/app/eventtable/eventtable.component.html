@@ -25,8 +25,8 @@
             <ng-container [matColumnDef]="column" *ngFor="let column of getStringArray()">
                 <th mat-header-cell *matHeaderCellDef>
                     <ng-container *ngIf="selectedMethods">
-                        <mat-form-field>
-                            <mat-select panelClass="example-panel-dark-blue" [(value)]="selectedMethods[column]"
+                        <mat-form-field class="mat-form-field">
+                            <mat-select class="mat-select-content" [(value)]="selectedMethods[column]"
                                 (selectionChange)="methodChanged($event)">
                                 <mat-option *ngFor="let option of columnSelect[StringToInt(column)]" [value]="option">
                                     {{option}}
@@ -38,11 +38,11 @@
             </ng-container>
         </ng-container>
         <ng-container *ngIf="columnSelect">
-            <tr mat-header-row *matHeaderRowDef="getStringArray(); sticky: true">
+            <tr mat-header-row class="select-header" *matHeaderRowDef="getStringArray(); sticky: true">
 
             </tr>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+        <tr mat-header-row class="mat-header-row" *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: columnsToDisplay;" (click)="showRowInformation(row)"></tr>
     </table>
 
