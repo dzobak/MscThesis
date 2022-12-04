@@ -2,13 +2,12 @@
  <input type="file" accept=".jsonocel, ,.json" class="file-input multiple"
        (change)="onFileSelected($event)" #fileUpload>
 
-<div class="file-upload">
+<div class="file-upload" class="upload-btn">
 
-   {{fileName || "No file uploaded yet."}}
+   <!-- {{fileName || "No file uploaded yet."}} -->
 
-    <button mat-mini-fab color="success" class="upload-btn"
-      (click)="fileUpload.click()">
-        <mat-icon>attach_file</mat-icon>
+    <button mat-mini-fab color="success" (click)="fileUpload.click()">
+      <mat-icon>cloud_upload</mat-icon>
     </button>
 </div>
 <div class="example-action-buttons" style="padding: 2em 2em">
@@ -19,7 +18,7 @@
   <mat-accordion class="example-headers-align" multi>
 
     <mat-expansion-panel *ngFor="let log of log_details" (opened)="log.panelOpenState = true"
-      (closed)="log.panelOpenState = false">
+      (closed)="log.panelOpenState = false" collapsedHeight="50px" expandedHeight="50px">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{log.name}}
@@ -28,8 +27,8 @@
           Click for {{log.panelOpenState ? 'less' : 'more'}} details
         </mat-panel-description>
       </mat-expansion-panel-header>
-      <mat-list>
-        <mat-list-item *ngFor="let detail of log.details | keyvalue" lines="3" matTooltip="hello" matTooltipPosition="above">
+      <mat-list >
+        <mat-list-item *ngFor="let detail of log.details | keyvalue" class="mat-list-item">
           <span matListItemTitle>{{detail.key}}</span>
           <span>{{detail.value}}</span>
         </mat-list-item>
