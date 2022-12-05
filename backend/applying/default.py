@@ -9,7 +9,7 @@ from flask import request
 from applying.selection import execute_selection
 from applying.aggregation import execute_aggregation
 from applying.relabelling import execute_relabelling
-from utils import get_max_scope_depth, get_filepath_from_name, get_name_from_filepath, get_file_folder, get_column_functions
+from utils import get_max_scope_depth, get_filepath_from_name, get_name_from_filepath, get_file_folder, get_column_function_options
 from glob import glob
 
 
@@ -115,7 +115,7 @@ class Applying(Resource):
             log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(data['eventlogname'])))
 
-            return json.dumps(get_column_functions(log, **data))
+            return json.dumps(get_column_function_options(log, **data))
         elif task == 'relabel':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(

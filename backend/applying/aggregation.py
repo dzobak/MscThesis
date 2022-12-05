@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from utils import *
 from enum import Enum
-from pandas.core.groupby.groupby import GroupBy
+from pandas.core.series import Series
 
 
 
@@ -64,6 +64,31 @@ def dtype_to_func_defaults(col, dtype):
     elif dtype == type(3) or dtype == type(3.0):
         return 'sum'
 
+def get_aggregation_functions(keyword:str):
+    #TODO group by and discard need to be dealt with differently (I think discard is handled)
+    if keyword == 'SUM':
+        print(type(Method.SUM))
+        return Method.SUM
+    elif keyword == 'MIN':
+        return Method.MIN
+    elif keyword == 'MAX':
+        return Method.MAX
+    elif keyword == 'MIN and MAX':
+        return [Method.MIN, Method.MAX]
+    elif keyword == 'AVG':
+        return Method.AVG
+    elif keyword == 'MEDIAN':
+        return Method.MEDIAN
+    elif keyword == 'MODE':
+        return Method.MODE
+    elif keyword == 'TRUNCATE': 
+        return Method.TRUNCATE
+    elif keyword == 'CONCAT':
+        return Method.CONCAT
+    elif keyword == 'COUNT':
+        return Method.COUNT
+    
+
 
 def setify(series):
     new_set = set()
@@ -74,32 +99,36 @@ def setify(series):
 
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
-
+    print(col_func_map)
     log.events[log.event_id_column] =\
         log.events[log.event_id_column].astype(float)
     log.relations[log.event_id_column] =\
         log.relations[log.event_id_column].astype(float)
     #TODO where col func is groupby need to add as key, where col func is discard need to remove from col_func
-    show_scope_examples(log.events, kwargs['scope_column'])
+    # show_scope_examples(log.events, kwargs['scope_column'])
+    
+    # for key,value in col_func_map.items():
+    #     col_func_map[key] = get_aggregation_functions(value)
+    col_func_map_mod = {k: get_aggregation_functions(v) for k,v in col_func_map.items() if get_aggregation_functions(v) is not None}
 
     sc_lvl = kwargs['scope_level']
 
-    col_func_map[log.event_id_column] = ['min', setify]
-    col_func_map[log.event_timestamp] = ['min', 'max']
+    col_func_map_mod[log.event_id_column] = [col_func_map_mod[log.event_id_column], setify]
+    # col_func_map[log.event_timestamp] = ['min', 'max']
 
-    # TODO: needs to be changed to scope
-    col_func_map[log.event_activity] = lambda x: pd.Series.mode(x)[0]
+    # TODO: activity column needs to be changed to scope
+    # col_func_map[log.event_activity] = lambda x: pd.Series.mode(x)[0]
 
     for col in log.events.columns:
-        if col not in col_func_map:
-            col_func_map[col] = dtype_to_func_defaults(col, type(log.events[col][0]))
+        if col not in col_func_map_mod:
+            col_func_map_mod[col] = dtype_to_func_defaults(col, type(log.events[col][0]))
 
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         keep_n_levels, n=sc_lvl)
-
+    print (col_func_map_mod)
     agg_events = log.events.groupby([kwargs['scope_column'],
-                                    pd.Grouper(key=log.event_timestamp,
-                                    freq='20h')], as_index=False).agg(col_func_map)
+                                    pd.Grouper(key=log.event_timestamp, #TODO pd.gouper time needs to be user input
+                                    freq='20h')], as_index=False).agg(col_func_map_mod)
 
     new_columns = []
     for x in agg_events.columns:
@@ -194,11 +223,12 @@ def execute_aggregation(log, **kwargs):
 
 
 class Method(Enum):
-    SUM = GroupBy.sum
-    MIN = GroupBy.min
-    MAX = GroupBy.max
-    AVG = GroupBy.mean
+    SUM = Series.sum
+    MIN = Series.min
+    MAX = Series.max
+    AVG = Series.mean
+    MEDIAN = Series.median
     MODE = lambda x: pd.Series.mode(x)[0]
     TRUNCATE = truncate
-    COUNT = GroupBy.count
+    COUNT = Series.count
     CONCAT = lambda x: pd.Series.str.cat(x)[0] 

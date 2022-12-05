@@ -68,12 +68,13 @@ def get_name_from_filepath(path: str, filetype='jsonocel') -> str:
 def get_column_functions_by_dtype(dtype: type) -> List[str]:
     if dtype == type(''):
         return ['MODE', 'CONCAT', 'MAX', 'MIN', 'DISCARD']
+    #TODO: Nan values can by identified as number even if the rest of the column is string
     elif dtype == type(0) or dtype == type(1.0):
-        return ['SUM','MAX', 'MIN', 'COUNT', 'AVG', 'MODE']
+        return ['SUM','MAX', 'MIN', 'COUNT', 'AVG', 'MEDIAN', 'MODE', 'DISCARD']
     return ["good job"]
 
 
-def get_column_functions(log: OCEL_ext, **kwargs) -> dict:
+def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
     col_functions = {}
     if kwargs['is_event_transformation']:
         df = log.events
@@ -93,10 +94,11 @@ def get_column_functions(log: OCEL_ext, **kwargs) -> dict:
 
         for scope in log.object_scope_columns:
             if scope not in col_functions:
-                col_functions[scope] = ['TRUNCATE', 'DISCARD']
+                col_functions[scope] = ['TRUNCATE', 'GROUP BY' 'DISCARD']
 
     for column in df.columns:
         if column not in col_functions:
+            print(df[column].dtypes())
             col_functions[column] = get_column_functions_by_dtype(
                 type(df.iloc[0][column]))
     return col_functions

@@ -11,6 +11,7 @@
 
 <mat-form-field appearance="fill" >
     <mat-label>Select scope column</mat-label>
+    <!-- TODO when scope selected, in aggregation tab the method must be changed to group by and disable input -->
     <mat-select [(ngModel)]="selectedScope" (selectionChange)="getScopeLevels($event.value)" >
         <ng-container *ngIf="applyingData">
             <ng-container *ngFor="let log of applyingData">
