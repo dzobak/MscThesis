@@ -76,7 +76,6 @@ def relabel_function(df: pd.DataFrame, **kwargs):
                           for x, y in zip(new_column, modified_col)]
         else:
             new_column = modified_col
-        print(new_column)
     df[column] = new_column
     return df
 

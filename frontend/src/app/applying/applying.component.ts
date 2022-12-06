@@ -30,6 +30,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   DetailsSubs!: Subscription;
   regex: string = "";
   relabel: string = "";
+  groupingKey: string = "";
 
   tabgroup_disabled: Boolean = true;
 
@@ -48,6 +49,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   columnSelect: string[][] = [];
   columnSelectCandidates!: any;
   selectedMethods!: any;
+
+
 
   ngOnInit() {
     this.NamesSubs = this.aplService
@@ -199,7 +202,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     // TODO missing select object type
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
-      .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel,
+      .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel, this.groupingKey,
         this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items")
       .subscribe(res => {
         this.table = JSON.parse(res);

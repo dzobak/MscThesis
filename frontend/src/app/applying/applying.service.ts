@@ -92,7 +92,7 @@ export class ApplyingService {
   }
 
 
-  getAggregation(eventlogname: string, newLogName:string, scope: string, level: number, isEventTransformation: boolean,
+  getAggregation(eventlogname: string, newLogName:string, scope: string, level: number, groupingKey: string, isEventTransformation: boolean,
     isObjectTransformation: boolean, columnFunctionMap:object, object_type: string): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -105,6 +105,7 @@ export class ApplyingService {
         newlogname: newLogName,
         scope_column: scope,
         scope_level: level,
+        grouping_key: groupingKey,
         is_event_transformation: isEventTransformation,
         is_object_transformation: isObjectTransformation,
         col_func_map: columnFunctionMap,

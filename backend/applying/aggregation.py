@@ -117,8 +117,9 @@ def aggregate_events(log, **kwargs):
 
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         keep_n_levels, n=kwargs['scope_level']+1)
-    group_by_keys = [kwargs['scope_column'], pd.Grouper(key=log.event_timestamp,  # TODO pd.gouper time needs to be user input
-                                                        freq='20h')]
+    group_by_keys = [kwargs['scope_column']]
+    if len(kwargs['grouping_key']):
+        group_by_keys.append(pd.Grouper(key=log.event_timestamp, freq=kwargs['grouping_key']))
     agg_events = log.events.groupby(
         group_by_keys, as_index=False).agg(col_func_map_mod)
 

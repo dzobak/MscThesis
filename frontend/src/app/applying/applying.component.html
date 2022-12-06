@@ -83,9 +83,16 @@
             <mat-slider [min]="0" [max]="3" [step]="1" discrete color="primary" showTickMarks>
                 <input matSliderThumb [(ngModel)]="selectedScopeLevel">
             </mat-slider>
+            <form *ngIf="selectedOEoption == 'event'">
+                <mat-form-field [style.width.px]=130 appearance="fill">
+                    <mat-label>Grouping key</mat-label>
+                    <input matInput placeholder="Ex. 20h" [(ngModel)]="groupingKey" name="groupingKey">
+                </mat-form-field>
+            </form>
             <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
             <!-- <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle"> -->
         </div>
+
 
         <!-- <button mat-raised-button color="primary" (click)="getEventDetails()">Apply</button> -->
 
