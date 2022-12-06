@@ -14,6 +14,8 @@ from glob import glob
 
 
 class Applying(Resource):
+    parameters={'param:event:activity': 'scope:ocel:activity'}
+
     def get(self, task):
         if task in ['default', 'names']:
             folder = get_file_folder()
@@ -24,7 +26,7 @@ class Applying(Resource):
                 event_logs = []
                 for name in event_log_names:
                     event_log = OCEL_ext(ocel_import.apply(
-                        get_filepath_from_name(name)))
+                        get_filepath_from_name(name), parameters=self.parameters))
                     events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes\
                         .get_dataframes_from_ocel(event_log)
 
@@ -44,19 +46,17 @@ class Applying(Resource):
         elif 'eventLog' in task:
             name = task.split('eventLog', maxsplit=1)[1]
             event_log = OCEL_ext(ocel_import.apply(
-                get_filepath_from_name(name)))
+                get_filepath_from_name(name), parameters=self.parameters))
             return event_log.events.head(10).to_json(orient='records')
         elif 'objects' in task:
             name = task.split('objects', maxsplit=1)[1]
             event_log = OCEL_ext(ocel_import.apply(
-                get_filepath_from_name(name)))
+                get_filepath_from_name(name), parameters=self.parameters))
             return event_log.objects.head(10).to_json(orient='records')
         elif 'logdata' in task:
             name = task.split('logdata', maxsplit=1)[1]
-            print('***************')
-            print(name)
             event_log = OCEL_ext(ocel_import.apply(
-                get_filepath_from_name(name)))
+                get_filepath_from_name(name), parameters=self.parameters))
             events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes\
                 .get_dataframes_from_ocel(event_log)
 
@@ -78,10 +78,12 @@ class Applying(Resource):
             }
 
     def post(self, task):
+        print("parameters in default.py:")
+        print(self.parameters)
         if task == 'regex':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(get_filepath_from_name(
-                data['eventlogname'])))
+                data['eventlogname']), parameters=self.parameters))
             filtered_log = execute_selection(log, **data)
             # sel = Selection()
             # filtered_log = sel.selection_function(
@@ -95,14 +97,14 @@ class Applying(Resource):
         elif task == 'scopelevel':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(
-                get_filepath_from_name(data['eventlog'])))
+                get_filepath_from_name(data['eventlog']), parameters=self.parameters))
             df = log.events if data["is_event_transformation"] else log.objects
             max_scope_depth = get_max_scope_depth(df[data["scope_column"]])
             return json.dumps({'levels': list(range(max_scope_depth))})
         elif task == 'aggregation':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(
-                get_filepath_from_name(data['eventlogname'])))
+                get_filepath_from_name(data['eventlogname']), parameters=self.parameters))
             aggregated_log = execute_aggregation(log, **data)
             ocel_export.apply(aggregated_log, get_filepath_from_name(
                 data['newlogname']))
@@ -113,13 +115,13 @@ class Applying(Resource):
         elif task == 'aggregation_functions':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(
-                get_filepath_from_name(data['eventlogname'])))
+                get_filepath_from_name(data['eventlogname']), parameters=self.parameters))
 
             return json.dumps(get_column_function_options(log, **data))
         elif task == 'relabel':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(
-                get_filepath_from_name(data['eventlogname'])))
+                get_filepath_from_name(data['eventlogname']), parameters=self.parameters))
             relabeled_log = execute_relabelling(log, **data)
             ocel_export.apply(relabeled_log, get_filepath_from_name(
                 data['newlogname']))

@@ -94,11 +94,11 @@ def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
 
         for scope in log.object_scope_columns:
             if scope not in col_functions:
-                col_functions[scope] = ['TRUNCATE', 'GROUP BY' 'DISCARD']
+                col_functions[scope] = ['TRUNCATE', 'GROUP BY', 'DISCARD']
 
     for column in df.columns:
         if column not in col_functions:
-            print(df[column].dtypes())
+            print(df[column].dtypes)
             col_functions[column] = get_column_functions_by_dtype(
-                type(df.iloc[0][column]))
+                type(df.iloc[df[column].first_valid_index()][column]))
     return col_functions

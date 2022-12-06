@@ -49,7 +49,7 @@ def truncate(series):
     scope_df = pd.DataFrame(tuple_series.to_list())
     scope_equality_lvl = get_scope_equality_level(scope_df)
 
-    truncated_scope = keep_n_levels(first_scope, n=scope_equality_lvl)
+    truncated_scope = keep_n_levels(first_scope, n=scope_equality_lvl+1)
 
     return truncated_scope
 
@@ -111,20 +111,19 @@ def aggregate_events(log, **kwargs):
     #     col_func_map[key] = get_aggregation_functions(value)
     col_func_map_mod = {k: get_aggregation_functions(v) for k,v in col_func_map.items() if get_aggregation_functions(v) is not None}
 
-    sc_lvl = kwargs['scope_level']
 
     col_func_map_mod[log.event_id_column] = [col_func_map_mod[log.event_id_column], setify]
     # col_func_map[log.event_timestamp] = ['min', 'max']
 
-    # TODO: activity column needs to be changed to scope
-    # col_func_map[log.event_activity] = lambda x: pd.Series.mode(x)[0]
+    print(log.events.columns)
+    print(log.event_activity)
 
-    for col in log.events.columns:
-        if col not in col_func_map_mod:
-            col_func_map_mod[col] = dtype_to_func_defaults(col, type(log.events[col][0]))
+    # for col in log.events.columns:
+    #     if col not in col_func_map_mod:
+    #         col_func_map_mod[col] = dtype_to_func_defaults(col, type(log.events[col][0]))
 
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
-        keep_n_levels, n=sc_lvl)
+        keep_n_levels, n=kwargs['scope_level']+1)
     print (col_func_map_mod)
     agg_events = log.events.groupby([kwargs['scope_column'],
                                     pd.Grouper(key=log.event_timestamp, #TODO pd.gouper time needs to be user input
@@ -142,6 +141,7 @@ def aggregate_events(log, **kwargs):
     agg_events.sort_values(
         log.event_id_column, inplace=True, ignore_index=True)
 
+    print('**************')
     # change relations eid column
     value_mapping = agg_events.apply(
         get_values_mapping, axis=1, old_ids_column='old_ids', new_id_column=log.event_id_column)
@@ -176,14 +176,13 @@ def aggregate_objects(log, **kwargs):
     agg_objs = log.objects[log.objects[log.object_type_column]
                            == kwargs['object_type']]
 
-    show_scope_examples(agg_objs, kwargs['scope_column'])
     sc_lvl = kwargs['scope_level']
     print(sc_lvl)
 
     not_agg_objs = log.objects[log.objects[log.object_type_column]
                                != kwargs['object_type']]
     agg_objs[kwargs['scope_column']] = agg_objs[kwargs['scope_column']].apply(
-        keep_n_levels, n=sc_lvl)
+        keep_n_levels, n=sc_lvl+1)
     print("************************")
     print(agg_objs)
 

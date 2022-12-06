@@ -76,7 +76,8 @@ export class LogDetailsComponent implements OnInit {
     for (let i in this.eventlognames) {
       for (let j in this.log_details) {
         if (this.log_details[j].name == this.eventlognames[i] && !Object.keys(this.log_details[j].details).length) {
-          this.DetailSubs = this.logDetService
+          let DetailSubs = new Subscription()
+          DetailSubs = this.logDetService
             .getDetails(this.eventlognames[i])
             .subscribe(res => {
               this.log_details[j].details = JSON.parse(res)

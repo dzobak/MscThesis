@@ -20,7 +20,7 @@ class OCEL_ext(OCEL):
             dups = set(parameters.keys() & ocel.parameters.keys())
             parameters = {k: L[0][k] if k in dups else
                           params[k] for params in L for k in params}
-
+        print(parameters)
         super().__init__(ocel.events, ocel.objects,
                          ocel.relations, ocel.globals, parameters)
         self.event_scope_columns = parameters[Parameters.EVENT_SCOPES] if Parameters.EVENT_SCOPES in parameters\
