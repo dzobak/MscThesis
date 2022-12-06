@@ -72,6 +72,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   loadNewEventLog(value: any) {
+    console.log(this.applyingData)
     if (this.applyingData.length) {
       for (let log_head of this.applyingData) if (log_head.value == value) {
         this.eventColumns = log_head["e_columns"]
@@ -86,7 +87,6 @@ export class ApplyingComponent implements OnInit, OnDestroy {
             this.table = this.eventLog;
             this.columnsToDisplay = this.eventColumns;
           }
-          console.log(this.table)
         }
         );
       this.ObjectsSubs = this.aplService
@@ -118,8 +118,11 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     this.ApplyingSubs = this.aplService
       .getLogData(logname)
       .subscribe(res => {
-        if (this.applyingData[this.applyingData.length - 1].value.search("@tmp") >= 0) {
-          this.applyingData.pop()
+        for (let i=0; i < this.applyingData.length; i++) {
+          if (this.applyingData[i].value.search("@tmp") >= 0) {
+            console.log(this.applyingData[i])
+            this.applyingData.splice(i,1)
+          }
         }
         this.applyingData.push(JSON.parse(res))
         this.selectedLog = logname
@@ -154,11 +157,11 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   getColumnFunctionMapping() {
-    var col_func_mapping: {[key: string]: string} = {};
+    var col_func_mapping: { [key: string]: string } = {};
     for (let i = 0; i < this.columnsToDisplay.length; i++) {
       col_func_mapping[this.columnsToDisplay[i]] = this.selectedMethods[String(i)];
     }
-    console.log( typeof col_func_mapping)
+    // console.log( typeof col_func_mapping)
     return col_func_mapping
   }
 
@@ -172,12 +175,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         for (let column of this.columnsToDisplay) {
           this.columnSelect.push(this.columnSelectCandidates[column]);
         }
-        console.log(this.columnSelect)
         this.selectedMethods = {};
         for (let i = 0; i < this.columnSelect.length; i++) {
           this.selectedMethods[String(i)] = this.columnSelect[i][0];
         }
-        console.log(this.selectedMethods)
       }
       );
   }
@@ -195,9 +196,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   getAggregation() {
-    // missing select object type
+    // TODO missing select object type
     var newfilename = this.getTempFileName()
-    console.log(this.selectedScopeLevel )
     this.ApplyingSubs = this.aplService
       .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel,
         this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items")
@@ -227,7 +227,6 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       .getDetails(this.selectedLog)
       .subscribe(res => {
         this.log_details = JSON.parse(res)
-        console.log(this.log_details)
       }
       );
   }

@@ -99,8 +99,6 @@ export class ApplyingService {
         'Content-Type': 'application/json'
       })
     };
-    console.log('colfuncmap:')
-    console.log(columnFunctionMap)
     return this.http.post<string>('http://127.0.0.1:5002/applying/aggregation',
       JSON.stringify({
         eventlogname: eventlogname,

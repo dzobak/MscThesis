@@ -2,6 +2,7 @@ from typing import List
 import pandas as pd
 import os
 from OCEL_extended import OCEL_ext
+import numpy as np
 
 
 def get_scope_tuple(scope: str, sep='/') -> tuple:
@@ -69,8 +70,9 @@ def get_column_functions_by_dtype(dtype: type) -> List[str]:
     if dtype == type(''):
         return ['MODE', 'CONCAT', 'MAX', 'MIN', 'DISCARD']
     #TODO: Nan values can by identified as number even if the rest of the column is string
-    elif dtype == type(0) or dtype == type(1.0):
+    elif dtype == type(0) or dtype == type(1.0) or np.issubdtype(dtype, np.number):
         return ['SUM','MAX', 'MIN', 'COUNT', 'AVG', 'MEDIAN', 'MODE', 'DISCARD']
+    print(dtype)
     return ["good job"]
 
 

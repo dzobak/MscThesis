@@ -99,7 +99,6 @@ def setify(series):
 
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
-    print(col_func_map)
     log.events[log.event_id_column] =\
         log.events[log.event_id_column].astype(float)
     log.relations[log.event_id_column] =\
@@ -110,13 +109,7 @@ def aggregate_events(log, **kwargs):
     # for key,value in col_func_map.items():
     #     col_func_map[key] = get_aggregation_functions(value)
     col_func_map_mod = {k: get_aggregation_functions(v) for k,v in col_func_map.items() if get_aggregation_functions(v) is not None}
-
-
     col_func_map_mod[log.event_id_column] = [col_func_map_mod[log.event_id_column], setify]
-    # col_func_map[log.event_timestamp] = ['min', 'max']
-
-    print(log.events.columns)
-    print(log.event_activity)
 
     # for col in log.events.columns:
     #     if col not in col_func_map_mod:
@@ -124,7 +117,6 @@ def aggregate_events(log, **kwargs):
 
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         keep_n_levels, n=kwargs['scope_level']+1)
-    print (col_func_map_mod)
     agg_events = log.events.groupby([kwargs['scope_column'],
                                     pd.Grouper(key=log.event_timestamp, #TODO pd.gouper time needs to be user input
                                     freq='20h')], as_index=False).agg(col_func_map_mod)
@@ -132,7 +124,8 @@ def aggregate_events(log, **kwargs):
     new_columns = []
     for x in agg_events.columns:
         if x == (log.event_timestamp, 'min'):
-            new_columns.append(log.event_timestamp + ':start')
+            #TODO update OCEL ext to allow for multiple timestamps
+            new_columns.append('start:' + log.event_timestamp )
         elif x == (log.event_id_column, 'setify'):
             new_columns.append('old_ids')
         else:
@@ -141,7 +134,7 @@ def aggregate_events(log, **kwargs):
     agg_events.sort_values(
         log.event_id_column, inplace=True, ignore_index=True)
 
-    print('**************')
+ 
     # change relations eid column
     value_mapping = agg_events.apply(
         get_values_mapping, axis=1, old_ids_column='old_ids', new_id_column=log.event_id_column)

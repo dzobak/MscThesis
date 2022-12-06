@@ -15,7 +15,7 @@ class EventLogs(Resource):
         elif task == 'details':
             data = request.get_json()
             print(data['eventlog'])
-            if data['eventlog'] == 'toy_log3':
+            if 'toy_log3' in data['eventlog'] :
                 print('here')
                 log = OCEL_ext(ocel_import.apply(
                     get_filepath_from_name(data['eventlog']),parameters={'param:event:activity': 'scope:ocel:activity'}))
