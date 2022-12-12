@@ -18,3 +18,13 @@
     text-align: center;
     align-content: center;
 }
+
+.grid{
+    display: grid;
+    grid-template-columns: 20% 80%;
+    /* place-items: center; */
+}
+
+.tab-group{
+    padding: 2%;
+}
