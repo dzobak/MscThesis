@@ -27,18 +27,18 @@ class Applying(Resource):
                 for name in event_log_names:
                     event_log = OCEL_ext(ocel_import.apply(
                         get_filepath_from_name(name), parameters=self.parameters))
-                    events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes\
-                        .get_dataframes_from_ocel(event_log)
+                    # events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes\
+                    #     .get_dataframes_from_ocel(event_log)
 
                     # TODO:make a list for scope columns
                     event_logs.append({
                         'value': name,
                         # need to change that to actual scope columns
                         'e_scopes': event_log.event_scope_columns,
-                        'e_columns': [col for col in events.columns],
+                        'e_columns': [col for col in event_log.events.columns],
                         # need to change that to actual scope columns
-                        'o_scopes': [scope for scope in objects.columns if 'scope' in scope],
-                        'o_columns': [col for col in objects.columns]
+                        'o_scopes': event_log.object_scope_columns,
+                        'o_columns': [col for col in event_log.objects.columns]
                     })
                 return event_logs
             elif task == 'names':

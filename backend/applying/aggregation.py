@@ -120,6 +120,8 @@ def aggregate_events(log, **kwargs):
     group_by_keys = [kwargs['scope_column']]
     if len(kwargs['grouping_key']):
         group_by_keys.append(pd.Grouper(key=log.event_timestamp, freq=kwargs['grouping_key']))
+
+    #TODO when values of col_func_map group by then add to
     agg_events = log.events.groupby(
         group_by_keys, as_index=False).agg(col_func_map_mod)
 
@@ -156,7 +158,6 @@ def aggregate_events(log, **kwargs):
 
 
 def aggregate_objects(log, **kwargs):
-    # TODO col function mappoing needs to be changed to kwarggs
     col_func_map = kwargs['col_func_map']
     # special_columns = {
     #     'id_column': 'ocel:oid',

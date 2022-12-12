@@ -199,7 +199,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   getAggregation() {
-    // TODO missing select object type
+    // TODO select object type
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
       .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel, this.groupingKey,

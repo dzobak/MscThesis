@@ -68,9 +68,10 @@ def relabel_function(df: pd.DataFrame, **kwargs):
         elif kwargs['Variant'] == Variant.REMOVE_RIGHT:
             modified_col = df[kwargs['scope_column']].apply(
                 remove_n_levels, n=kwargs['n'], left_side=False)
-        elif kwargs['Variant'] == Variant.KEEP_INDEX:
-            modified_col = df[kwargs['scope_column']].apply(
-                get_scope_by_index, indexes=kwargs['sc_indexes'])
+        #TODO remove index does not work yet
+        # elif kwargs['Variant'] == Variant.REMOVE_INDEX:
+        #     modified_col = df[kwargs['scope_column']].apply(
+        #         remove_scope_by_index, indexes=kwargs['sc_indexes'])
         if new_column.any():
             new_column = [str(x) + '/' + str(y)
                           for x, y in zip(new_column, modified_col)]
