@@ -3,7 +3,7 @@ import re
 from utils import *
 from enum import Enum
 from pandas.core.series import Series
-
+import json
 
 def get_old_to_new_id_mapping(row: pd.Series, old_ids_column: str, new_id_column: str) -> dict:
     return {old_id: row[new_id_column] for old_id in row[old_ids_column]}
@@ -101,17 +101,17 @@ def setify(series):
 
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
-    log.events[log.event_id_column] =\
-        log.events[log.event_id_column].astype(float)
-    log.relations[log.event_id_column] =\
-        log.relations[log.event_id_column].astype(float)
+    # log.events[log.event_id_column] =\
+    #     log.events[log.event_id_column].astype(float)
+    # log.relations[log.event_id_column] =\
+    #     log.relations[log.event_id_column].astype(float)
     # TODO where col func is groupby need to add as key, where col func is discard need to remove from col_func
     # show_scope_examples(log.events, kwargs['scope_column'])
 
     # for key,value in col_func_map.items():
     #     col_func_map[key] = get_aggregation_functions(value)
 
-    old_events = log.events.copy()
+    # log.events.to_json(os.path.join('.', 'event_log_files', 'lastevents.jsonocel'))
 
     col_func_map_mod = {k: get_aggregation_functions(
         v) for k, v in col_func_map.items() if get_aggregation_functions(v) is not None}
@@ -217,7 +217,6 @@ def aggregate_objects(log, **kwargs):
     # log.objects = agg_objs
     # TODO need to further look into nan values
     log.objects.replace({np.nan: None}, inplace=True)
-    print(log.objects)
 
     log.relations.drop_duplicates(inplace=True)
     log.relations.reset_index(drop=True, inplace=True)
@@ -226,7 +225,6 @@ def aggregate_objects(log, **kwargs):
 
 
 def execute_aggregation(log, **kwargs):
-    print(kwargs)
     if kwargs['is_event_transformation']:
         agg_log, new_to_old_id_mapping = aggregate_events(log, **kwargs)
     elif kwargs['is_object_transformation']:

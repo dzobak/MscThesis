@@ -4,6 +4,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { isEmpty, Subscription } from 'rxjs';
 import { LogDetailsService } from '../log-details/log-details.service';
 import { ApplyingService, EventLogHeading } from './applying.service'
+import { AggregationMapping } from '../eventtable/eventtable.component';
 
 @Component({
   selector: 'app-applying',
@@ -42,7 +43,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   applyingDataNeeded = false;
   currentEventLogNametmp!: string
-  aggregationMapping!: object;
+  aggregationMapping!: AggregationMapping;
 
   constructor(private aplService: ApplyingService, private logDetService: LogDetailsService) { }
 
@@ -207,7 +208,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items")
       .subscribe(res => {
         this.aggregationMapping = JSON.parse(res);
-        console.log(this.aggregationMapping)
+        this.aggregationMapping.isEventTransformation = this.selectedOEoption == "event";
+        this.aggregationMapping.isObjectTransformation = this.selectedOEoption == "object";
         this.getLogData(newfilename)
       }
       );

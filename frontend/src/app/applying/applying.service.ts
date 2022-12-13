@@ -16,7 +16,7 @@ export interface EventLogHeading {
 })
 export class ApplyingService {
   constructor(private http: HttpClient) { }
-  getEventLogNames(): Observable<string[]>{
+  getEventLogNames(): Observable<string[]> {
     return this.http.get<string[]>('http://127.0.0.1:5002/applying/names');
   }
 
@@ -52,7 +52,7 @@ export class ApplyingService {
     );
   }
 
-  getSelection(regex: string, eventlogname: string, newLogName:string, scope_column: string, 
+  getSelection(regex: string, eventlogname: string, newLogName: string, scope_column: string,
     isEventTransformation: boolean, isObjectTransformation: boolean, object_type = ""): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -92,8 +92,8 @@ export class ApplyingService {
   }
 
 
-  getAggregation(eventlogname: string, newLogName:string, scope: string, level: number, groupingKey: string, isEventTransformation: boolean,
-    isObjectTransformation: boolean, columnFunctionMap:object, object_type: string): Observable<string> {
+  getAggregation(eventlogname: string, newLogName: string, scope: string, level: number, groupingKey: string, isEventTransformation: boolean,
+    isObjectTransformation: boolean, columnFunctionMap: object, object_type: string): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ export class ApplyingService {
   }
 
 
-  getRelabelling(eventlogname: string, newLogName:string,relabelCommand: string , isEventTransformation: boolean,
+  getRelabelling(eventlogname: string, newLogName: string, relabelCommand: string, isEventTransformation: boolean,
     isObjectTransformation: boolean, object_type?: string): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -131,6 +131,24 @@ export class ApplyingService {
         is_event_transformation: isEventTransformation,
         is_object_transformation: isObjectTransformation,
         object_type: object_type,
+      }),
+      httpOptions
+    );
+  }
+
+  getOldRows(eventlogname: string, rows_index: object, isEventTransformation: boolean,
+    isObjectTransformation: boolean): Observable<string> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post<string>('http://127.0.0.1:5002/applying/oldrows',
+      JSON.stringify({
+        eventlogname: eventlogname,
+        rows_index: rows_index,
+        is_event_transformation: isEventTransformation,
+        is_object_transformation: isObjectTransformation,
       }),
       httpOptions
     );

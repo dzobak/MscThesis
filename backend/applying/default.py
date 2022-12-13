@@ -108,8 +108,7 @@ class Applying(Resource):
             #     return aggregated_log.events.head(10).to_json(orient='records')
             # elif data['is_object_transformation']:
             #     return aggregated_log.objects.head(10).to_json(orient='records')
-            print(new_to_old_id_mapping)
-            return json.dumps(new_to_old_id_mapping)
+            return json.dumps({'eventlogname': data['eventlogname'],'mapping': new_to_old_id_mapping})
         elif task == 'aggregation_functions':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(
@@ -127,6 +126,17 @@ class Applying(Resource):
                 return relabeled_log.events.head(10).to_json(orient='records')
             elif data['is_object_transformation']:
                 return relabeled_log.objects.head(10).to_json(orient='records')
+        elif task == 'oldrows':
+            data = request.get_json()
+            log = OCEL_ext(ocel_import.apply(
+                get_filepath_from_name(data['eventlogname']), parameters=self.parameters))
+            data['rows_index'] = [str(id) for id in data['rows_index']]
+            print(data['rows_index'][0])
+            print(log.events[log.event_id_column])
+            if data['is_event_transformation']:
+                return log.events[log.events[log.event_id_column].isin(data['rows_index'])].to_json(orient='records')
+            elif data['is_object_transformation']:
+                return log.objects.loc[[data['rows_index']]].to_json(orient='records')
         else:
             return {
                 'good': 'niddce',

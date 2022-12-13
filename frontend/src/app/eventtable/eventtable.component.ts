@@ -1,6 +1,14 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { PatternValidator } from '@angular/forms';
+import { ApplyingService } from '../applying/applying.service';
+import { Subscription } from 'rxjs';
+
+export interface AggregationMapping {
+  eventlogname: string,
+  mapping: any,
+  isEventTransformation: boolean,
+  isObjectTransformation: boolean,
+}
 
 @Component({
   selector: 'app-eventtable',
@@ -11,32 +19,41 @@ import { PatternValidator } from '@angular/forms';
 export class EventtableComponent {
   @Output()
   notify: EventEmitter<object> = new EventEmitter<object>();
-
+  OldEventsSubs!: Subscription;
   columnsToDisplay!: string[];
   columnSelect!: string[][];
   displayedColumns: string[] = ["ocel:eid", "ocel:timestamp"]
   eventLog!: [];
   selectedMethods!: any;
-  aggregationMapping!: any;
+  aggregationMapping!: AggregationMapping;
   isOpen = false;
+  oldRows: any[] = [];
   // animal: string | undefined;
 
-  constructor(public dialog: Dialog) { }
+  constructor(public dialog: Dialog, private aplService: ApplyingService) { }
 
   methodChanged(event: any) {
     this.notify.emit(this.selectedMethods)
   }
   showRowInformation(row: any) {
     if (this.aggregationMapping) {
-      const dialogRef = this.dialog.open<string>(CdkDialogOverviewExampleDialog, {
-        width: '250px',
-        data: { name: row["ocel:eid"], aggregationMapping: this.aggregationMapping[row["ocel:eid"]] },
-      });
 
-      dialogRef.closed.subscribe(result => {
-        console.log('The dialog was closed');
-        // this.animal = result;
-      });
+      this.OldEventsSubs = this.aplService
+        .getOldRows(this.aggregationMapping.eventlogname, this.aggregationMapping['mapping'][row["ocel:eid"]],
+          this.aggregationMapping.isEventTransformation, this.aggregationMapping.isObjectTransformation)
+        .subscribe(res => {
+          console.log(res)
+          this.oldRows = JSON.parse(res);
+          const dialogRef = this.dialog.open<string>(CdkDialogOverviewExampleDialog, {
+            minWidth: '250px',
+            data: { name: row["ocel:eid"], oldRows: this.oldRows, columnsToDisplay: Object.keys(this.oldRows[0])},
+          });
+          dialogRef.closed.subscribe(result => {
+            console.log('The dialog was closed');
+            // this.animal = result;
+          });
+        }
+        );
     }
   }
 
@@ -54,8 +71,9 @@ export class EventtableComponent {
 
 }
 export interface DialogData {
-  aggregationMapping: object;
+  oldRows: any[];
   name: string;
+  columnsToDisplay: string[];
 }
 
 @Component({

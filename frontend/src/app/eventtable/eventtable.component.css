@@ -58,3 +58,11 @@ th {
   border-radius: 8px;
   padding: 8px 16px;
 }
+
+.dialog{
+  cursor: move;
+  margin: 0px 0px 0px 0px !important;
+  padding: 10px 24px;
+  background: rgb(54, 75, 168);
+  color: #fff;
+}
