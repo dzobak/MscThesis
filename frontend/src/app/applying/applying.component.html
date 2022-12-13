@@ -97,7 +97,7 @@
             <!-- <button mat-raised-button color="primary" (click)="getEventDetails()">Apply</button> -->
 
             <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" [columnSelect]="columnSelect"
-                [selectedMethods]="selectedMethods" (notify)="selectedMethodsChanged($event)">
+                [selectedMethods]="selectedMethods" [aggregationMapping]="aggregationMapping" (notify)="selectedMethodsChanged($event)">
             </app-eventtable>
             <div class="pad-top">
                 <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>

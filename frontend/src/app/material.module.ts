@@ -14,6 +14,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio'
 import { MatSliderModule } from '@angular/material/slider';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 // import {MatLegacySliderModule} from '@angular/material/legacy-slider';
 
 
@@ -35,6 +36,7 @@ import { MatSliderModule } from '@angular/material/slider';
         MatSliderModule,
         // MatLegacySliderModule,
         MatRadioModule,
+        DragDropModule,
     ]
 })
 export class MatModules { }

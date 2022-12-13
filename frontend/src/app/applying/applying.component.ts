@@ -42,6 +42,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   applyingDataNeeded = false;
   currentEventLogNametmp!: string
+  aggregationMapping!: object;
 
   constructor(private aplService: ApplyingService, private logDetService: LogDetailsService) { }
 
@@ -75,7 +76,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   loadNewEventLog(value: any) {
-    console.log(this.applyingData)
+    // console.log(this.applyingData)
     if (this.applyingData.length) {
       for (let log_head of this.applyingData) if (log_head.value == value) {
         this.eventColumns = log_head["e_columns"]
@@ -123,7 +124,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         for (let i=0; i < this.applyingData.length; i++) {
           if (this.applyingData[i].value.search("@tmp") >= 0) {
-            console.log(this.applyingData[i])
+            // console.log(this.applyingData[i])
             this.applyingData.splice(i,1)
           }
         }
@@ -205,8 +206,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel, this.groupingKey,
         this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items")
       .subscribe(res => {
-        this.table = JSON.parse(res);
-
+        this.aggregationMapping = JSON.parse(res);
+        console.log(this.aggregationMapping)
         this.getLogData(newfilename)
       }
       );

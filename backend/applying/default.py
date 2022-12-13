@@ -101,13 +101,15 @@ class Applying(Resource):
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(data['eventlogname']), parameters=self.parameters))
-            aggregated_log = execute_aggregation(log, **data)
+            aggregated_log, new_to_old_id_mapping = execute_aggregation(log, **data)
             ocel_export.apply(aggregated_log, get_filepath_from_name(
                 data['newlogname']))
-            if data['is_event_transformation']:
-                return aggregated_log.events.head(10).to_json(orient='records')
-            elif data['is_object_transformation']:
-                return aggregated_log.objects.head(10).to_json(orient='records')
+            # if data['is_event_transformation']:
+            #     return aggregated_log.events.head(10).to_json(orient='records')
+            # elif data['is_object_transformation']:
+            #     return aggregated_log.objects.head(10).to_json(orient='records')
+            print(new_to_old_id_mapping)
+            return json.dumps(new_to_old_id_mapping)
         elif task == 'aggregation_functions':
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(

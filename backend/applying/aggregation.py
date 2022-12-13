@@ -5,8 +5,12 @@ from enum import Enum
 from pandas.core.series import Series
 
 
-def get_values_mapping(row: pd.Series, old_ids_column: str, new_id_column: str) -> dict:
+def get_old_to_new_id_mapping(row: pd.Series, old_ids_column: str, new_id_column: str) -> dict:
     return {old_id: row[new_id_column] for old_id in row[old_ids_column]}
+
+
+def get_new_to_old_id_mapping(row: pd.Series, old_ids_column: str, new_id_column: str) -> dict:
+    return {row[new_id_column]: list(row[old_ids_column])}
 
 
 def map_ids(df: pd.DataFrame, column: str, values_mapping: dict) -> pd.DataFrame:
@@ -106,6 +110,9 @@ def aggregate_events(log, **kwargs):
 
     # for key,value in col_func_map.items():
     #     col_func_map[key] = get_aggregation_functions(value)
+
+    old_events = log.events.copy()
+
     col_func_map_mod = {k: get_aggregation_functions(
         v) for k, v in col_func_map.items() if get_aggregation_functions(v) is not None}
     col_func_map_mod[log.event_id_column] = [
@@ -119,9 +126,10 @@ def aggregate_events(log, **kwargs):
         keep_n_levels, n=kwargs['scope_level']+1)
     group_by_keys = [kwargs['scope_column']]
     if len(kwargs['grouping_key']):
-        group_by_keys.append(pd.Grouper(key=log.event_timestamp, freq=kwargs['grouping_key']))
+        group_by_keys.append(pd.Grouper(
+            key=log.event_timestamp, freq=kwargs['grouping_key']))
 
-    #TODO when values of col_func_map group by then add to
+    # TODO when values of col_func_map group by then add to
     agg_events = log.events.groupby(
         group_by_keys, as_index=False).agg(col_func_map_mod)
 
@@ -139,11 +147,16 @@ def aggregate_events(log, **kwargs):
         log.event_id_column, inplace=True, ignore_index=True)
 
     # change relations eid column
-    value_mapping = agg_events.apply(
-        get_values_mapping, axis=1, old_ids_column='old_ids', new_id_column=log.event_id_column)
-    value_mapping = value_mapping.aggregate(concat_dicts)
+    old_to_new_id_mapping = agg_events.apply(
+        get_old_to_new_id_mapping, axis=1, old_ids_column='old_ids', new_id_column=log.event_id_column)
+    old_to_new_id_mapping = old_to_new_id_mapping.aggregate(concat_dicts)
+
+    new_to_old_id_mapping = agg_events.apply(
+        get_new_to_old_id_mapping, axis=1, old_ids_column='old_ids', new_id_column=log.event_id_column)
+    new_to_old_id_mapping = new_to_old_id_mapping.aggregate(concat_dicts)
+
     log.relations = map_ids(
-        log.relations, log.event_id_column, value_mapping)
+        log.relations, log.event_id_column, old_to_new_id_mapping)
 
     log.events = agg_events.drop(columns='old_ids')
 
@@ -154,7 +167,9 @@ def aggregate_events(log, **kwargs):
         log.events.set_index(log.event_id_column)[log.event_timestamp])
     log.relations.drop_duplicates(inplace=True)
     log.relations.reset_index(drop=True, inplace=True)
-    return log
+
+
+    return log, new_to_old_id_mapping
 
 
 def aggregate_objects(log, **kwargs):
@@ -183,24 +198,24 @@ def aggregate_objects(log, **kwargs):
         keep_n_levels, n=kwargs['scope_level']+1)
 
     agg_objs = agg_objs.groupby(
-        [kwargs['scope_column'],log.object_type_column,], as_index=False).agg(col_func_map_mod)
-    print(agg_objs)
+        [kwargs['scope_column'], log.object_type_column, ], as_index=False).agg(col_func_map_mod)
+
     # change oid in relations table
-    value_mapping = agg_objs.apply(get_values_mapping, axis=1, old_ids_column=(
+    old_to_new_id_mapping = agg_objs.apply(get_old_to_new_id_mapping, axis=1, old_ids_column=(
         log.object_id_column, 'setify'), new_id_column=(log.object_id_column, 'min'))
-    value_mapping = value_mapping.aggregate(concat_dicts)
+    old_to_new_id_mapping = old_to_new_id_mapping.aggregate(concat_dicts)
     log.relations = map_ids(
-        log.relations, log.object_id_column, value_mapping)
+        log.relations, log.object_id_column, old_to_new_id_mapping)
 
     agg_objs = agg_objs.drop(columns=(log.object_id_column, 'setify'))
     agg_objs = agg_objs.droplevel(1, axis=1)
-    
+
     agg_objs.sort_values(
         log.object_id_column, inplace=True, ignore_index=True)
 
     log.objects = pd.concat([agg_objs, not_agg_objs])
     # log.objects = agg_objs
-    #TODO need to further look into nan values
+    # TODO need to further look into nan values
     log.objects.replace({np.nan: None}, inplace=True)
     print(log.objects)
 
@@ -213,13 +228,13 @@ def aggregate_objects(log, **kwargs):
 def execute_aggregation(log, **kwargs):
     print(kwargs)
     if kwargs['is_event_transformation']:
-        agg_log = aggregate_events(log, **kwargs)
+        agg_log, new_to_old_id_mapping = aggregate_events(log, **kwargs)
     elif kwargs['is_object_transformation']:
         agg_log = aggregate_objects(log, **kwargs)
     else:
         raise Exception("Objects or Events need to be selected")
 
-    return agg_log
+    return agg_log, new_to_old_id_mapping
 
 
 class Method(Enum):
@@ -228,7 +243,7 @@ class Method(Enum):
     MAX = Series.max
     AVG = Series.mean
     MEDIAN = Series.median
-    MODE = lambda x: pd.Series.mode(x)
+    def MODE(x): return pd.Series.mode(x)
     TRUNCATE = truncate
     COUNT = Series.count
-    CONCAT = lambda x: pd.Series.str.cat(x)
+    def CONCAT(x): return pd.Series.str.cat(x)

@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
-import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { PatternValidator } from '@angular/forms';
 
 @Component({
   selector: 'app-eventtable',
   templateUrl: './eventtable.component.html',
   styleUrls: ['./eventtable.component.css'],
-  inputs: ['columnsToDisplay', 'eventLog', 'columnSelect', 'selectedMethods']
+  inputs: ['columnsToDisplay', 'eventLog', 'columnSelect', 'selectedMethods', 'aggregationMapping']
 })
 export class EventtableComponent {
   @Output()
@@ -15,30 +16,31 @@ export class EventtableComponent {
   columnSelect!: string[][];
   displayedColumns: string[] = ["ocel:eid", "ocel:timestamp"]
   eventLog!: [];
-  selectedMethods!: any
+  selectedMethods!: any;
+  aggregationMapping!: any;
   isOpen = false;
+  // animal: string | undefined;
 
   constructor(public dialog: Dialog) { }
-  // ngOnInit(): void {
-  //   this.selectedMethods = {};
-  //   for (let i = 0; i < this.columnSelect.length; i++) {
-  //     this.selectedMethods[String(i)] = this.columnSelect[i][0];
-  //   }
-  //   console.log(this.selectedMethods)
-  // }
 
-  methodChanged(event:any){
+  methodChanged(event: any) {
     this.notify.emit(this.selectedMethods)
   }
   showRowInformation(row: any) {
-    console.log(row)
-    // this.dialog.open(CdkDialogDataExampleDialog, {
-    //   minWidth: '300px',
-    //   data: {
-    //     animal: 'panda',
-    //   },
-    // });
+    if (this.aggregationMapping) {
+      const dialogRef = this.dialog.open<string>(CdkDialogOverviewExampleDialog, {
+        width: '250px',
+        data: { name: row["ocel:eid"], aggregationMapping: this.aggregationMapping[row["ocel:eid"]] },
+      });
+
+      dialogRef.closed.subscribe(result => {
+        console.log('The dialog was closed');
+        // this.animal = result;
+      });
+    }
   }
+
+
 
   StringToInt(i: string) {
     return parseInt(i)
@@ -52,7 +54,8 @@ export class EventtableComponent {
 
 }
 export interface DialogData {
-  animal: 'panda' | 'unicorn' | 'lion';
+  aggregationMapping: object;
+  name: string;
 }
 
 @Component({
@@ -60,7 +63,7 @@ export interface DialogData {
   templateUrl: './cdk-dialog-data-example-dialog.html',
   styleUrls: ['./eventtable.component.css'],
 })
-export class CdkDialogDataExampleDialog {
-  constructor(@Inject(DIALOG_DATA) public data: DialogData) { }
+export class CdkDialogOverviewExampleDialog {
+  constructor(public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public data: DialogData) { }
 }
 
