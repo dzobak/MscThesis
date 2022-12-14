@@ -1,10 +1,12 @@
 import { ThisReceiver } from '@angular/compiler';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 // import { TestBed } from '@angular/core/testing';
 import { isEmpty, Subscription } from 'rxjs';
 import { LogDetailsService } from '../log-details/log-details.service';
 import { ApplyingService, EventLogHeading } from './applying.service'
 import { AggregationMapping } from '../eventtable/eventtable.component';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-applying',
@@ -45,7 +47,9 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   currentEventLogNametmp!: string
   aggregationMapping!: AggregationMapping;
 
-  constructor(private aplService: ApplyingService, private logDetService: LogDetailsService) { }
+  constructor(private aplService: ApplyingService,
+    private logDetService: LogDetailsService,
+    public dialog: MatDialog) { }
 
   columnsToDisplay: string[] = []
   columnSelect: string[][] = [];
@@ -123,10 +127,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     this.ApplyingSubs = this.aplService
       .getLogData(logname)
       .subscribe(res => {
-        for (let i=0; i < this.applyingData.length; i++) {
+        for (let i = 0; i < this.applyingData.length; i++) {
           if (this.applyingData[i].value.search("@tmp") >= 0) {
             // console.log(this.applyingData[i])
-            this.applyingData.splice(i,1)
+            this.applyingData.splice(i, 1)
           }
         }
         this.applyingData.push(JSON.parse(res))
@@ -243,6 +247,45 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     } else {
       return this.selectedLog + "@tmp"
     }
+  }
+
+  saveLog() {
+    var new_name = 'new_name'
+    const dialogRef = this.dialog.open(SaveDialog, {
+      data: { new_name: this.selectedLog.replace('@', '') },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      new_name = result;
+      this.ApplyingSubs = this.aplService
+        .saveLog(this.selectedLog, new_name)
+        .subscribe(res => {
+          this.getLogData(new_name)
+        }
+        );
+    });
+
+
+  }
+}
+
+export interface DialogData {
+  new_name: string;
+}
+
+@Component({
+  selector: 'save-dialog',
+  templateUrl: './saveDialog.html',
+})
+export class SaveDialog {
+  constructor(
+    public dialogRef: MatDialogRef<SaveDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  ) { }
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 }
 

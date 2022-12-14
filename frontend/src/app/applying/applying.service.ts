@@ -153,4 +153,19 @@ export class ApplyingService {
       httpOptions
     );
   }
+
+  saveLog(oldName: string, newName: string): Observable<string> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post<string>('http://127.0.0.1:5002/applying/save',
+      JSON.stringify({
+        old_name: oldName,
+        new_name: newName
+      }),
+      httpOptions
+    );
+  }
 }

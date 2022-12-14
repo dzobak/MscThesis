@@ -12,10 +12,11 @@ import { MatModules } from './material.module';
 import { FormsModule } from '@angular/forms';
 
 import { ImportComponent } from './import/import.component';
-import { ApplyingComponent } from './applying/applying.component';
+import { ApplyingComponent , SaveDialog} from './applying/applying.component';
 import { LogDetailsComponent } from './log-details/log-details.component';
 import { EventtableComponent } from './eventtable/eventtable.component';
 import { CdkDialogOverviewExampleDialog } from './eventtable/eventtable.component';
+
 
 import { OverlayModule } from '@angular/cdk/overlay';
 
@@ -27,7 +28,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     ApplyingComponent,
     LogDetailsComponent,
     EventtableComponent,
-    CdkDialogOverviewExampleDialog
+    CdkDialogOverviewExampleDialog,
+    SaveDialog,
   ],
   imports: [
     BrowserModule,

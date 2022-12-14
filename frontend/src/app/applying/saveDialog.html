@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Specify the name for the event log:</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>New name</mat-label>
+    <input matInput [(ngModel)]="data.new_name">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data.new_name" cdkFocusInitial>Ok</button>
+</div>

@@ -104,3 +104,6 @@ def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
             col_functions[column] = get_column_functions_by_dtype(
                 type(df.iloc[df[column].first_valid_index()][column]))
     return col_functions
+
+def rename_file(old_name:str, new_name:str)->None:
+    os.rename(get_filepath_from_name(old_name), get_filepath_from_name(new_name))

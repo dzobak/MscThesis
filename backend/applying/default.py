@@ -9,7 +9,7 @@ from flask import request
 from applying.selection import execute_selection
 from applying.aggregation import execute_aggregation
 from applying.relabelling import execute_relabelling
-from utils import get_max_scope_depth, get_filepath_from_name, get_name_from_filepath, get_file_folder, get_column_function_options
+from utils import get_max_scope_depth, get_filepath_from_name, get_name_from_filepath, get_file_folder, get_column_function_options, rename_file
 from glob import glob
 
 
@@ -25,6 +25,7 @@ class Applying(Resource):
             if task == 'default':
                 event_logs = []
                 for name in event_log_names:
+                    #TODO error here if ocel file contains no data 
                     event_log = OCEL_ext(ocel_import.apply(
                         get_filepath_from_name(name), parameters=self.parameters))
                     # events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes\
@@ -137,6 +138,11 @@ class Applying(Resource):
                 return log.events[log.events[log.event_id_column].isin(data['rows_index'])].to_json(orient='records')
             elif data['is_object_transformation']:
                 return log.objects.loc[[data['rows_index']]].to_json(orient='records')
+
+            
+        elif task == 'save':
+            data = request.get_json()
+            rename_file(data['old_name'], data['new_name'])
         else:
             return {
                 'good': 'niddce',
