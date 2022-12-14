@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio'
 import { MatSliderModule } from '@angular/material/slider';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatTooltipModule} from '@angular/material/tooltip'
 // import {MatLegacySliderModule} from '@angular/material/legacy-slider';
 
 
@@ -37,6 +38,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
         // MatLegacySliderModule,
         MatRadioModule,
         DragDropModule,
+        MatTooltipModule,
     ]
 })
 export class MatModules { }

@@ -44,7 +44,8 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-list>
-                <mat-list-item *ngFor="let detail of log_details| keyvalue" lines="3">
+                <mat-list-item mat-list-item *ngFor="let detail of log_details| keyvalue" matTooltip="{{detail.value}}"
+                    [matTooltipShowDelay]="1000" [matTooltipHideDelay]="500">
                     <span matListItemTitle>{{detail.key}}</span>
                     <span>{{detail.value}}</span>
                 </mat-list-item>
@@ -97,7 +98,8 @@
             <!-- <button mat-raised-button color="primary" (click)="getEventDetails()">Apply</button> -->
 
             <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" [columnSelect]="columnSelect"
-                [selectedMethods]="selectedMethods" [aggregationMapping]="aggregationMapping" (notify)="selectedMethodsChanged($event)">
+                [selectedMethods]="selectedMethods" [aggregationMapping]="aggregationMapping"
+                (notify)="selectedMethodsChanged($event)">
             </app-eventtable>
             <div class="pad-top">
                 <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>

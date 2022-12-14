@@ -268,6 +268,34 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
 
   }
+
+  public currentUsers = [
+    {
+      data: {
+        status: 'active',
+        displayName: 'Ricky Bobby',
+      },
+    },
+    {
+      data: {
+        status: 'active',
+        displayName: 'Ricky Bobby',
+      },
+    },
+    {
+      data: {
+        status: 'active',
+        displayName: 'Ricky Bobby',
+      },
+    },
+    {
+      data: {
+        status: 'active',
+        displayName: 'Ricky Bobby',
+      },
+    },
+  ];
+
 }
 
 export interface DialogData {

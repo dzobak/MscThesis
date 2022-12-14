@@ -19,6 +19,7 @@ import { CdkDialogOverviewExampleDialog } from './eventtable/eventtable.componen
 
 
 import { OverlayModule } from '@angular/cdk/overlay';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 
 @NgModule({
@@ -40,6 +41,9 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatModules,
     OverlayModule,
   ],
+  entryComponents:[ApplyingComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+platformBrowserDynamic().bootstrapModule(AppModule)
