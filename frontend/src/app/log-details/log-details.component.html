@@ -26,6 +26,9 @@
         <mat-panel-description>
           Click for {{log.panelOpenState ? 'less' : 'more'}} details
         </mat-panel-description>
+        <button mat-icon-button color="warn" class="delete-button" (click)="deleteFile(log.name)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </mat-expansion-panel-header>
       <mat-list >
         <mat-list-item *ngFor="let detail of log.details | keyvalue" class="mat-list-item">

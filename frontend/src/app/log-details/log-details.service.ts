@@ -32,4 +32,8 @@ export class LogDetailsService {
       return this.http.post<string>("http://127.0.0.1:5002/eventlogs/import", formData);
   }
   
+  deleteFile(name:string): Observable<object>{
+    console.log(name)
+    return this.http.get<object>("http://127.0.0.1:5002/eventlogs/"+name);
+  }
 }

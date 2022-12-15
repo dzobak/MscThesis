@@ -9,7 +9,7 @@ from flask import request
 from applying.selection import execute_selection
 from applying.aggregation import execute_aggregation
 from applying.relabelling import execute_relabelling
-from utils import get_max_scope_depth, get_filepath_from_name, get_name_from_filepath, get_file_folder, get_column_function_options, rename_file
+from utils import *
 from glob import glob
 
 
@@ -70,6 +70,9 @@ class Applying(Resource):
             }
   
             return json.dumps(logdata)
+        elif 'delete' in task:
+            name = task.split('delete', maxsplit=1)[1]
+            delete_file(name)
         else:
             return {
                 'good': 'niddce',

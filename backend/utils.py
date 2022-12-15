@@ -107,3 +107,6 @@ def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
 
 def rename_file(old_name:str, new_name:str)->None:
     os.rename(get_filepath_from_name(old_name), get_filepath_from_name(new_name))
+
+def delete_file(name:str)->None:
+    os.remove(get_filepath_from_name(name))

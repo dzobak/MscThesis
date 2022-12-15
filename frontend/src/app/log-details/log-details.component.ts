@@ -81,7 +81,7 @@ export class LogDetailsComponent implements OnInit {
             .getDetails(this.eventlognames[i])
             .subscribe(res => {
               this.log_details[j].details = JSON.parse(res)
-              console.log(this.log_details[j].details)
+              // console.log(this.log_details[j].details)
             }
 
             );
@@ -101,7 +101,21 @@ export class LogDetailsComponent implements OnInit {
           console.log(res)
         }
         );
+    }
   }
+
+  deleteFile(name: string) {
+    this.DetailSubs = this.logDetService
+      .deleteFile(name)
+      .subscribe(res => {
+        var index = this.eventlognames.indexOf(name);
+        if (index !== -1) {
+          this.eventlognames.splice(index, 1);
+        }
+        var filtered = this.log_details.filter(function (log) { return log.name != name; });
+        this.log_details = filtered
+      }
+      );
   }
 }
 
