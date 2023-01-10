@@ -6,7 +6,8 @@
 
    <!-- {{fileName || "No file uploaded yet."}} -->
 
-    <button mat-mini-fab color="success" (click)="fileUpload.click()">
+    <button mat-mini-fab color="success" (click)="fileUpload.click()" matTooltip="Upload log" matTooltipShowDelay="2000"
+    [matTooltipHideDelay]="hideDelay.value">
       <mat-icon>cloud_upload</mat-icon>
     </button>
 </div>
@@ -21,13 +22,20 @@
       (closed)="log.panelOpenState = false" collapsedHeight="50px" expandedHeight="50px">
       <mat-expansion-panel-header>
         <mat-panel-title>
+
+          <!-- <input matInput type="text" [(ngModel)]="log.name"> -->
           {{log.name}}
         </mat-panel-title>
         <mat-panel-description>
           Click for {{log.panelOpenState ? 'less' : 'more'}} details
         </mat-panel-description>
-        <button mat-icon-button color="warn" class="delete-button" (click)="deleteFile(log.name)">
-          <mat-icon>delete</mat-icon>
+        <button mat-icon-button color="primary" (click)="downloadUrl(log.name)" matTooltip="Download log" [matTooltipShowDelay]="showDelay.value"
+        [matTooltipHideDelay]="hideDelay.value">
+          <mat-icon>cloud_download</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" class="delete-button" (click)="deleteFile(log.name)" matTooltip="Delete log from application" [matTooltipShowDelay]="showDelay.value"
+        [matTooltipHideDelay]="hideDelay.value">
+          <mat-icon>delete_forever</mat-icon>
         </button>
       </mat-expansion-panel-header>
       <mat-list >
@@ -42,3 +50,5 @@
     </mat-expansion-panel>
   </mat-accordion>
 </div>
+
+<!-- <a mat-button href="http://127.0.0.1:5002/eventlogs/toy_log3m" download>Download PDF</a> -->

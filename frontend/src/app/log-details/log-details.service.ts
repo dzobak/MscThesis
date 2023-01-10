@@ -34,6 +34,6 @@ export class LogDetailsService {
   
   deleteFile(name:string): Observable<object>{
     console.log(name)
-    return this.http.get<object>("http://127.0.0.1:5002/eventlogs/"+name);
+    return this.http.delete<object>("http://127.0.0.1:5002/eventlogs/"+name);
   }
 }
