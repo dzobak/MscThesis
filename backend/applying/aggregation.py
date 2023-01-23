@@ -5,6 +5,7 @@ from enum import Enum
 from pandas.core.series import Series
 import json
 
+
 def get_old_to_new_id_mapping(row: pd.Series, old_ids_column: str, new_id_column: str) -> dict:
     return {old_id: row[new_id_column] for old_id in row[old_ids_column]}
 
@@ -27,13 +28,20 @@ def map_ids(df: pd.DataFrame, column: str, values_mapping: dict) -> pd.DataFrame
 
 
 def is_unique(s: pd.Series) -> bool:
+    """
+    Input: pandas Series
+
+    Output: True if all values of the Series are the same, False otherwise
+    """
     a = s.to_numpy()
     return (a[0] == a).all()
 
 
 def get_scope_equality_level(scope_df):
+
     # holds the value until which scope level the scope should be truncated
     scope_equality_lvl = -1
+
     for i in range(len(scope_df.columns)):
         if not is_unique(scope_df[i]):
             scope_equality_lvl = i-1
@@ -59,16 +67,21 @@ def truncate(series):
 # For Aggregation
 
 
-def dtype_to_func_defaults(col, dtype):
-    if re.search(r'scope', col, re.IGNORECASE):
-        return truncate
-    elif dtype == type(''):
-        return lambda x: pd.Series.mode(x)[0]
-    elif dtype == type(3) or dtype == type(3.0):
-        return 'sum'
+# def dtype_to_func_defaults(col, dtype):
+#     if re.search(r'scope', col, re.IGNORECASE):
+#         return truncate
+#     elif dtype == type(''):
+#         return lambda x: pd.Series.mode(x)[0]
+#     elif dtype == type(3) or dtype == type(3.0):
+#         return 'sum'
 
 
 def get_aggregation_functions(keyword: str):
+    """
+    Input: Keyword referring to a function
+
+    Output: Function that was specified by keyword
+    """
     # TODO group by and discard need to be dealt with differently (I think discard is handled)
     if keyword == 'SUM':
         return Method.SUM
@@ -101,29 +114,17 @@ def setify(series):
 
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
-    # log.events[log.event_id_column] =\
-    #     log.events[log.event_id_column].astype(float)
-    # log.relations[log.event_id_column] =\
-    #     log.relations[log.event_id_column].astype(float)
     # TODO where col func is groupby need to add as key, where col func is discard need to remove from col_func
-    # show_scope_examples(log.events, kwargs['scope_column'])
-
-    # for key,value in col_func_map.items():
-    #     col_func_map[key] = get_aggregation_functions(value)
-
-    # log.events.to_json(os.path.join('.', 'event_log_files', 'lastevents.jsonocel'))
 
     col_func_map_mod = {k: get_aggregation_functions(
         v) for k, v in col_func_map.items() if get_aggregation_functions(v) is not None}
     col_func_map_mod[log.event_id_column] = [
         col_func_map_mod[log.event_id_column], setify]
 
-    # for col in log.events.columns:
-    #     if col not in col_func_map_mod:
-    #         col_func_map_mod[col] = dtype_to_func_defaults(col, type(log.events[col][0]))
-
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         keep_n_levels, n=kwargs['scope_level']+1)
+
+    #need to redo the group by keys to allow more options
     group_by_keys = [kwargs['scope_column']]
     if len(kwargs['grouping_key']):
         group_by_keys.append(pd.Grouper(
@@ -168,21 +169,11 @@ def aggregate_events(log, **kwargs):
     log.relations.drop_duplicates(inplace=True)
     log.relations.reset_index(drop=True, inplace=True)
 
-
     return log, new_to_old_id_mapping
 
 
 def aggregate_objects(log, **kwargs):
     col_func_map = kwargs['col_func_map']
-    # special_columns = {
-    #     'id_column': 'ocel:oid',
-    # }
-    # col_func_map[log.object_id_column] = ['min', setify]
-
-    # for col in log.objects.columns:
-    #     if col not in special_columns.values():
-    #         col_func_map[col] = dtype_to_func_defaults(
-    #             col, type(log.objects[col][0]))
 
     col_func_map_mod = {k: get_aggregation_functions(
         v) for k, v in col_func_map.items() if get_aggregation_functions(v) is not None}
@@ -234,8 +225,8 @@ def execute_aggregation(log, **kwargs):
 
     return agg_log, new_to_old_id_mapping
 
-
 class Method(Enum):
+    """Aggregation methods that are available for different data types"""
     SUM = Series.sum
     MIN = Series.min
     MAX = Series.max
