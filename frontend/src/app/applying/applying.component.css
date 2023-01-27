@@ -28,3 +28,7 @@
 .tab-group{
     margin: 2%;
 }
+
+.table{
+    overflow-x: auto;
+}

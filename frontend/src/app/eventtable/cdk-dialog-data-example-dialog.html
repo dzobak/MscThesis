@@ -1,16 +1,6 @@
+
+<mat-dialog-content>
 <p class="dialog" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>New id: {{data.name}}</p>
-<!-- <div>
-
-  <th *ngFor="let column of data.columnsToDisplay">
-    {{column}}
-  </th>
-  <tr *ngFor="let event of data.oldRows">
-    <ng-container *ngFor="let column of data.columnsToDisplay">
-      <td>{{event[column]}}</td>
-    </ng-container>
-  </tr>
-</div> -->
-
 <table mat-table [dataSource]="data.oldRows" class="mat-elevation-z8">
   <ng-container [matColumnDef]="column" *ngFor="let column of data.columnsToDisplay">
     <th mat-header-cell *matHeaderCellDef> {{column}}</th>
@@ -19,3 +9,4 @@
   <tr mat-header-row class="mat-header-row" *matHeaderRowDef="data.columnsToDisplay"></tr>
   <tr mat-row *matRowDef="let row; columns: data.columnsToDisplay;" ></tr>
 </table>
+</mat-dialog-content>

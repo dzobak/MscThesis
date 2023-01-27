@@ -252,7 +252,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   saveLog() {
     var new_name = 'new_name'
     const dialogRef = this.dialog.open(SaveDialog, {
-      data: { new_name: this.selectedLog.replace('@', '') },
+      data: { new_name: this.selectedLog.replace('@', '')},
     });
 
     dialogRef.afterClosed().subscribe(result => {

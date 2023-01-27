@@ -54,6 +54,9 @@ def get_scope_equality_level(scope_df):
 
 
 def truncate(series):
+    """Input: Series with scopes as values
+    Output: Series with scopes as values. All scopes are shortened until they match or are empty. That means all scopes have the same value.
+    """
     # After truncating, all scopes will be the same, so a representative is picked
     first_scope = series.iloc[0]
     tuple_series = series.apply(get_scope_tuple)
@@ -65,16 +68,6 @@ def truncate(series):
     return truncated_scope
 
 # For Aggregation
-
-
-# def dtype_to_func_defaults(col, dtype):
-#     if re.search(r'scope', col, re.IGNORECASE):
-#         return truncate
-#     elif dtype == type(''):
-#         return lambda x: pd.Series.mode(x)[0]
-#     elif dtype == type(3) or dtype == type(3.0):
-#         return 'sum'
-
 
 def get_aggregation_functions(keyword: str):
     """
@@ -112,6 +105,8 @@ def setify(series):
     return new_set
 
 
+
+
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
     # TODO where col func is groupby need to add as key, where col func is discard need to remove from col_func
@@ -127,6 +122,7 @@ def aggregate_events(log, **kwargs):
     #need to redo the group by keys to allow more options
     group_by_keys = [kwargs['scope_column']]
     if len(kwargs['grouping_key']):
+
         group_by_keys.append(pd.Grouper(
             key=log.event_timestamp, freq=kwargs['grouping_key']))
 

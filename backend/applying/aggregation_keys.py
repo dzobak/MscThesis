@@ -3,6 +3,9 @@ from pandas.api.indexers import BaseIndexer
 import numpy as np
 
 
+def parse_grouping_instruction(grouping_instruction):
+    pass
+
 def get_aggregation_key_by_timestamp(df, **kwargs):
     # partition by other attributes
     # I can do whatever here, don't think of window functions as a simple iterator
