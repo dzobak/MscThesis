@@ -1,5 +1,6 @@
-.pad-top{
+.pad-y{
     padding-top:25px;
+    margin-bottom: 20px;
 }
 .mat-success {
     background-color: green;
@@ -22,9 +23,8 @@
 .grid{
     display: grid;
     grid-template-columns: 20% 80%;
-    /* place-items: center; */
 }
 
 .tab-group{
-    padding: 2%;
+    margin: 2%;
 }

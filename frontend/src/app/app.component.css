@@ -13,6 +13,8 @@ div {
  .mat-sidenav-container{
   /* background-color: lightskyblue; */
   min-height: 93vh !important;
+  overflow: hidden;
+  
 }
 
 a{
@@ -37,4 +39,5 @@ button{
   .mat-sidenav-content{
       font-size: 110%;
       text-align: center;
+      
   }

@@ -52,7 +52,7 @@
             </mat-list>
         </mat-expansion-panel>
     </div>
-    <mat-tab-group class="tab-group">
+    <mat-tab-group class="tab-group" dynamicHeight>
         <mat-tab label="Selection Function" [disabled]="tabgroup_disabled">
             <div *ngIf="!tabgroup_disabled">
                 <form>
@@ -126,6 +126,6 @@
     </mat-tab-group>
 </div>
 
-<div class="pad-top">
+<div class="pad-y">
     <button mat-raised-button color="success" (click)="saveLog()">Save</button>
 </div>
