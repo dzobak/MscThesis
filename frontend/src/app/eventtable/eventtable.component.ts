@@ -17,8 +17,7 @@ export interface AggregationMapping {
   inputs: ['columnsToDisplay', 'eventLog', 'columnSelect', 'selectedMethods', 'aggregationMapping']
 })
 export class EventtableComponent {
-  @Output()
-  notify: EventEmitter<object> = new EventEmitter<object>();
+  @Output() notify: EventEmitter<object> = new EventEmitter<object>();
   OldEventsSubs!: Subscription;
   columnsToDisplay!: string[];
   columnSelect!: string[][];
@@ -28,13 +27,13 @@ export class EventtableComponent {
   aggregationMapping!: AggregationMapping;
   isOpen = false;
   oldRows: any[] = [];
-  // animal: string | undefined;
 
   constructor(public dialog: Dialog, private aplService: ApplyingService) { }
 
   methodChanged(event: any) {
     this.notify.emit(this.selectedMethods)
   }
+
   showRowInformation(row: any) {
     if (this.aggregationMapping) {
 
@@ -46,7 +45,7 @@ export class EventtableComponent {
           this.oldRows = JSON.parse(res);
           const dialogRef = this.dialog.open<string>(CdkDialogOverviewExampleDialog, {
             minWidth: '250px',
-            data: { name: row["ocel:eid"], oldRows: this.oldRows, columnsToDisplay: Object.keys(this.oldRows[0])},
+            data: { name: row["ocel:eid"], oldRows: this.oldRows, columnsToDisplay: Object.keys(this.oldRows[0]) },
           });
           dialogRef.closed.subscribe(result => {
             console.log('The dialog was closed');
@@ -56,8 +55,6 @@ export class EventtableComponent {
         );
     }
   }
-
-
 
   StringToInt(i: string) {
     return parseInt(i)
@@ -70,6 +67,7 @@ export class EventtableComponent {
   }
 
 }
+
 export interface DialogData {
   oldRows: any[];
   name: string;
