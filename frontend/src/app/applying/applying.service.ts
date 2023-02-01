@@ -91,7 +91,7 @@ export class ApplyingService {
     );
   }
 
-
+  // TODO: check if everything is filled out
   getAggregation(eventlogname: string, newLogName: string, scope: string, level: number, groupingKey: string, isEventTransformation: boolean,
     isObjectTransformation: boolean, columnFunctionMap: object, object_type: string): Observable<string> {
     const httpOptions = {

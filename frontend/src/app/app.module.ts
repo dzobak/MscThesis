@@ -20,6 +20,7 @@ import { CdkDialogOverviewExampleDialog } from './eventtable/eventtable.componen
 
 import { OverlayModule } from '@angular/cdk/overlay';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AggregationInputComponent } from './aggregation-input/aggregation-input.component';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
     EventtableComponent,
     CdkDialogOverviewExampleDialog,
     SaveDialog,
+    AggregationInputComponent,
   ],
   imports: [
     BrowserModule,

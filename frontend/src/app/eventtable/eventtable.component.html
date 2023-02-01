@@ -1,20 +1,3 @@
-<!-- 
-<div id="table">
-    <table>
-        <th *ngFor="let column of columnsToDisplay">
-            {{column}}
-        </th>
-        <tr *ngFor="let event of eventLog"> 
-            <ng-container *ngFor="let column of columnsToDisplay">
-            <td>{{event[column]}}</td>
-            </ng-container>
-        </tr>
-    
-    </table>
-</div> -->
-<!-- <ng-container *ngFor="let column of columnsToDisplay">
-    <p>{{column}}</p>
-  </ng-container> -->
 <section>
     <table mat-table [dataSource]="eventLog" class="mat-elevation-z8">
         <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">

@@ -1,4 +1,4 @@
-import { ThisReceiver } from '@angular/compiler';
+// import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 // import { TestBed } from '@angular/core/testing';
 import { isEmpty, Subscription } from 'rxjs';
@@ -6,6 +6,7 @@ import { LogDetailsService } from '../log-details/log-details.service';
 import { ApplyingService, EventLogHeading } from './applying.service'
 import { AggregationMapping } from '../eventtable/eventtable.component';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { numeric_input } from '../aggregation-input/aggregation-input.component';
 
 
 @Component({
@@ -40,7 +41,6 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   selectedLog!: string;
   selectedScope!: string;
   selectedScopeLevel = 0;
-
   selectedOEoption = "event";
 
   applyingDataNeeded = false;
@@ -56,7 +56,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   columnSelectCandidates!: any;
   selectedMethods!: any;
 
-
+  rules!: { [Key: string]: numeric_input }
 
   ngOnInit() {
     this.NamesSubs = this.aplService
@@ -118,6 +118,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   getLogData(logname: string) {
+
     this.NamesSubs = this.aplService
       .getEventLogNames()
       .subscribe(res => {
@@ -140,7 +141,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       )
   }
 
-  switchEventObject(event: any) {
+  switchEventObject(event: any): void {
     if (this.selectedOEoption == "event") {
       this.table = this.eventLog;
       this.columnsToDisplay = this.eventColumns;
@@ -219,6 +220,43 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       );
   }
 
+  updateAggInput(input: numeric_input, ruleId: string) {
+    this.rules[ruleId] = input;
+    console.log(this.rules)
+  }
+
+  addRule() {
+    if (this.rules) {
+      const keys = Object.keys(this.rules).map(i => Number(i));
+      const new_key = Math.max.apply(null,keys);
+      console.log(new_key)
+      this.rules[new_key + 1] = {
+        attribute: '',
+        bool: true,
+        operator: '',
+        compared: '',
+        value: ''
+      }
+    } else {
+      this.rules = {
+        0:
+        {
+          attribute: '',
+          bool: true,
+          operator: '',
+          compared: '',
+          value: ''
+        }
+      };
+
+    }
+  }
+
+  deleteRule(id:string){
+    console.log(id)
+    delete this.rules[id]
+  }
+
   getRelabelling() {
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
@@ -252,7 +290,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   saveLog() {
     var new_name = 'new_name'
     const dialogRef = this.dialog.open(SaveDialog, {
-      data: { new_name: this.selectedLog.replace('@', '')},
+      data: { new_name: this.selectedLog.replace('@', '') },
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -265,37 +303,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         }
         );
     });
-
-
   }
-
-  public currentUsers = [
-    {
-      data: {
-        status: 'active',
-        displayName: 'Ricky Bobby',
-      },
-    },
-    {
-      data: {
-        status: 'active',
-        displayName: 'Ricky Bobby',
-      },
-    },
-    {
-      data: {
-        status: 'active',
-        displayName: 'Ricky Bobby',
-      },
-    },
-    {
-      data: {
-        status: 'active',
-        displayName: 'Ricky Bobby',
-      },
-    },
-  ];
-
 }
 
 export interface DialogData {

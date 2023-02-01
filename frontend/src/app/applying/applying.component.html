@@ -35,6 +35,7 @@
     <mat-radio-button checked value="event">events</mat-radio-button>
     <mat-radio-button value="object">objects</mat-radio-button>
 </mat-radio-group>
+
 <div class="grid">
     <div>
         <mat-expansion-panel hideToggle [disabled]="tabgroup_disabled" (opened)="getEventDetails()">
@@ -52,6 +53,7 @@
             </mat-list>
         </mat-expansion-panel>
     </div>
+
     <mat-tab-group class="tab-group" dynamicHeight>
         <mat-tab label="Selection Function" [disabled]="tabgroup_disabled">
             <div *ngIf="!tabgroup_disabled">
@@ -73,40 +75,40 @@
                 </div>
             </div>
         </mat-tab>
+
         <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
 
-
             <div class="pad-top">
-                <!-- TODO: The 'vertical' property no longer exists -->
-                <!-- TODO: The 'invert' property no longer exists -->
-                <!-- TODO: The 'tickInterval' property no longer exists -->
                 <mat-label>Select scope level </mat-label>
                 <mat-slider [min]="0" [max]="3" [step]="1" discrete color="primary" showTickMarks>
                     <input matSliderThumb [(ngModel)]="selectedScopeLevel">
                 </mat-slider>
-                <form *ngIf="selectedOEoption == 'event'">
-                    <mat-form-field [style.width.px]=130 appearance="fill">
-                        <mat-label>Grouping key</mat-label>
-                        <input matInput placeholder="Ex. 20h" [(ngModel)]="groupingKey" name="groupingKey">
-                    </mat-form-field>
-                </form>
-                <!-- <mat-slider [(ngModel)]="selectedScopeLevel" vertical invert min="0" max="3" step="1" tickInterval="1"  align="middle" color="primary"></mat-slider> -->
-                <!-- <img src="../assets/images/scope_image_example.jpg" alt="scope_image" height="250px" align="middle"> -->
+
+                <ng-container *ngIf="selectedOEoption == 'event'">
+                    <ng-container *ngFor="let rule of rules | keyvalue">
+                        <app-aggregation-input [columnsToDisplay]="columnsToDisplay" [rule]="rule.value"
+                            (inputChange)="updateAggInput($event,rule.key)" (ruleDeleted)="deleteRule(rule.key)">
+                        </app-aggregation-input>
+                    </ng-container>
+                    <!-- <div *ngFor="let item of rules | keyvalue">
+                        Key: <b>{{item.key}}</b> and Value: <b>{{item.value}}</b>
+                    </div> -->
+                    <button mat-icon-button (click)="addRule()">
+                        <mat-icon color="success">add-box</mat-icon>
+                    </button>
+                </ng-container>
             </div>
 
-
-            <!-- <button mat-raised-button color="primary" (click)="getEventDetails()">Apply</button> -->
-
-            <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table" [columnSelect]="columnSelect"
-                [selectedMethods]="selectedMethods" [aggregationMapping]="aggregationMapping"
-                (notify)="selectedMethodsChanged($event)">
+            <app-eventtable class="table" [columnsToDisplay]="columnsToDisplay" [eventLog]="table"
+                [columnSelect]="columnSelect" [selectedMethods]="selectedMethods"
+                [aggregationMapping]="aggregationMapping" (notify)="selectedMethodsChanged($event)">
             </app-eventtable>
             <div class="pad-top">
                 <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>
             </div>
         </mat-tab>
-        <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled">
 
+        <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled">
 
             <form>
                 <mat-form-field [style.width.px]=550 appearance="fill">
@@ -122,7 +124,6 @@
                 <button mat-raised-button color="primary" (click)="getRelabelling()">Apply</button>
             </div>
         </mat-tab>
-
     </mat-tab-group>
 </div>
 
