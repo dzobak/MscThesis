@@ -15,9 +15,9 @@ def get_max_scope_depth(series: pd.Series):
     return max([len(x) for x in tuple_series])
 
 
-def concat_dicts(series) -> dict:
+def concat_dicts(iterable) -> dict:
     new_dict = {}
-    for dict in series:
+    for dict in iterable:
         new_dict.update(dict)
     return new_dict
 

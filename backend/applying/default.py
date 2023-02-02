@@ -102,6 +102,7 @@ class Applying(Resource):
             max_scope_depth = get_max_scope_depth(df[data["scope_column"]])
             return json.dumps({'levels': list(range(max_scope_depth))})
         elif task == 'aggregation':
+            # TODO Aggregation fails if done a second time on the log
             data = request.get_json()
             log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(data['eventlogname']), parameters=self.parameters))
@@ -135,8 +136,8 @@ class Applying(Resource):
             log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(data['eventlogname']), parameters=self.parameters))
             data['rows_index'] = [str(id) for id in data['rows_index']]
-            print(data['rows_index'][0])
-            print(log.events[log.event_id_column])
+            # print(data['rows_index'][0])
+            # print(log.events[log.event_id_column])
             if data['is_event_transformation']:
                 return log.events[log.events[log.event_id_column].isin(data['rows_index'])].to_json(orient='records')
             elif data['is_object_transformation']:

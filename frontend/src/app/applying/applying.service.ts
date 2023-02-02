@@ -93,7 +93,7 @@ export class ApplyingService {
 
   // TODO: check if everything is filled out
   getAggregation(eventlogname: string, newLogName: string, scope: string, level: number, groupingKey: string, isEventTransformation: boolean,
-    isObjectTransformation: boolean, columnFunctionMap: object, object_type: string): Observable<string> {
+    isObjectTransformation: boolean, columnFunctionMap: object, object_type: string, rules:{}): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -109,7 +109,8 @@ export class ApplyingService {
         is_event_transformation: isEventTransformation,
         is_object_transformation: isObjectTransformation,
         col_func_map: columnFunctionMap,
-        object_type: object_type
+        object_type: object_type,
+        rules: rules
       }),
       httpOptions
     );

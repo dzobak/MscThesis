@@ -17,7 +17,7 @@ export class AggregationInputComponent {
 
   operators = [
     '\u{2264}', //less or equal
-    '\u{2264}', //greater or equal
+    '\u{2265}', //greater or equal
     '=',
     '<',
     '>',
@@ -25,7 +25,7 @@ export class AggregationInputComponent {
 
   rule: numeric_input = {
     attribute: '',
-    bool: true,
+    bool: "",
     operator: '',
     compared: '',
     value: ''
@@ -47,7 +47,7 @@ export class AggregationInputComponent {
 
 export interface numeric_input {
   attribute: string,
-  bool: boolean,
+  bool: string,
   operator: string,
   compared: string,
   value: string

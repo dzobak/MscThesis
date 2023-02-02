@@ -1,9 +1,8 @@
 import pandas as pd
-import re
+from applying.aggregation_keys import get_aggregation_key_by_rules
 from utils import *
 from enum import Enum
 from pandas.core.series import Series
-import json
 
 
 def get_old_to_new_id_mapping(row: pd.Series, old_ids_column: str, new_id_column: str) -> dict:
@@ -23,8 +22,6 @@ def map_ids(df: pd.DataFrame, column: str, values_mapping: dict) -> pd.DataFrame
             new_row[loc] = values_mapping[row[loc]]
             new_df.loc[len(new_df.index)] = new_row
     return new_df
-
-# For aggregation, checks if all the values provided in the series are the same
 
 
 def is_unique(s: pd.Series) -> bool:
@@ -50,14 +47,15 @@ def get_scope_equality_level(scope_df):
             scope_equality_lvl = i
     return scope_equality_lvl
 
-# Lowest common Ancestor
-
 
 def truncate(series):
     """Input: Series with scopes as values
     Output: Series with scopes as values. All scopes are shortened until they match or are empty. That means all scopes have the same value.
+
+    Truncating follows the idea of finding the common lowest ancestor.
     """
     # After truncating, all scopes will be the same, so a representative is picked
+    print(series)
     first_scope = series.iloc[0]
     tuple_series = series.apply(get_scope_tuple)
     scope_df = pd.DataFrame(tuple_series.to_list())
@@ -68,6 +66,7 @@ def truncate(series):
     return truncated_scope
 
 # For Aggregation
+
 
 def get_aggregation_functions(keyword: str):
     """
@@ -105,8 +104,6 @@ def setify(series):
     return new_set
 
 
-
-
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
     # TODO where col func is groupby need to add as key, where col func is discard need to remove from col_func
@@ -119,12 +116,17 @@ def aggregate_events(log, **kwargs):
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         keep_n_levels, n=kwargs['scope_level']+1)
 
-    #need to redo the group by keys to allow more options
+    # need to redo the group by keys to allow more options
     group_by_keys = [kwargs['scope_column']]
-    if len(kwargs['grouping_key']):
 
-        group_by_keys.append(pd.Grouper(
-            key=log.event_timestamp, freq=kwargs['grouping_key']))
+    if len(kwargs['rules']):
+        kwargs['id_column'] = log.event_id_column
+        group_by_keys = []
+        for name, group in log.events.groupby(kwargs['scope_column'], as_index=False):
+            group_by_keys.append(get_aggregation_key_by_rules(group, **kwargs))
+
+        group_by_keys = concat_dicts(pd.Series(group_by_keys))
+    print(group_by_keys)
 
     # TODO when values of col_func_map group by then add to
     agg_events = log.events.groupby(
@@ -221,8 +223,9 @@ def execute_aggregation(log, **kwargs):
 
     return agg_log, new_to_old_id_mapping
 
+
 class Method(Enum):
-    """Aggregation methods that are available for different data types"""
+    """Enum containing aggregation methods that are available for different data types"""
     SUM = Series.sum
     MIN = Series.min
     MAX = Series.max

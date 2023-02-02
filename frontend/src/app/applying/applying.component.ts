@@ -210,7 +210,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
       .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel, this.groupingKey,
-        this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items")
+        this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items", this.rules)
       .subscribe(res => {
         this.aggregationMapping = JSON.parse(res);
         this.aggregationMapping.isEventTransformation = this.selectedOEoption == "event";
@@ -226,13 +226,13 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   addRule() {
-    if (this.rules) {
+    if (this.rules && Object.keys(this.rules).length) {
       const keys = Object.keys(this.rules).map(i => Number(i));
       const new_key = Math.max.apply(null,keys);
       console.log(new_key)
       this.rules[new_key + 1] = {
         attribute: '',
-        bool: true,
+        bool: "",
         operator: '',
         compared: '',
         value: ''
@@ -242,7 +242,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         0:
         {
           attribute: '',
-          bool: true,
+          bool: "",
           operator: '',
           compared: '',
           value: ''

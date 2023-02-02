@@ -11,10 +11,10 @@
     <mat-form-field appearance="fill">
         <mat-label>is/is not</mat-label>
         <mat-select [(value)]="rule.bool">
-            <mat-option [value]="true">
+            <mat-option value="">
                 is
             </mat-option>
-            <mat-option [value]="false">
+            <mat-option value="not">
                 is not
             </mat-option>
         </mat-select>
