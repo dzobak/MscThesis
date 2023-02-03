@@ -7,7 +7,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
   inputs: ['columnsToDisplay', 'rule']
 })
 export class AggregationInputComponent {
-  @Output() inputChange: EventEmitter<numeric_input> = new EventEmitter<numeric_input>();
+  @Output() inputChange: EventEmitter<aggregation_rule> = new EventEmitter<aggregation_rule>();
   @Output() ruleDeleted: EventEmitter<string> = new EventEmitter<string>();
 
 
@@ -23,20 +23,20 @@ export class AggregationInputComponent {
     '>',
   ]
 
-  rule: numeric_input = {
+  rule: aggregation_rule | numeric_rule = {
     attribute: '',
     bool: "",
     operator: '',
-    compared: '',
+    // compared: '',
     value: ''
   };
+
+
 
   constructor() { }
 
   changedInput() {
-    console.log(this.rule)
     this.inputChange.emit(this.rule)
-    console.log(this.rule)
   }
 
   deleteRule() {
@@ -45,7 +45,18 @@ export class AggregationInputComponent {
 }
 
 
-export interface numeric_input {
+export interface aggregation_rule {
+  attribute: string,
+  level?: number,
+  bool: string,
+  operator: string,
+  compared?: string,
+  n?: number,
+  value: string,
+  unified?: string
+}
+
+export interface numeric_rule extends aggregation_rule{
   attribute: string,
   bool: string,
   operator: string,

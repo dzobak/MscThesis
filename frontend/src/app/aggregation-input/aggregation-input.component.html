@@ -8,47 +8,48 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
-        <mat-label>is/is not</mat-label>
-        <mat-select [(value)]="rule.bool">
-            <mat-option value="">
-                is
-            </mat-option>
-            <mat-option value="not">
-                is not
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+    <ng-container *ngIf="rule.attribute">
+        <mat-form-field appearance="fill">
+            <mat-label>is/is not</mat-label>
+            <mat-select [(value)]="rule.bool">
+                <mat-option value="">
+                    is
+                </mat-option>
+                <mat-option value="not">
+                    is not
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
 
-    <mat-form-field appearance="fill">
-        <mat-label>Operator</mat-label>
-        <mat-select [(value)]="rule.operator">
-            <mat-option *ngFor="let operator of operators" [value]="operator">
-                {{operator}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Operator</mat-label>
+            <mat-select [(value)]="rule.operator">
+                <mat-option *ngFor="let operator of operators" [value]="operator">
+                    {{operator}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
 
-    <mat-form-field appearance="fill">
-        <mat-label>Compared to</mat-label>
-        <mat-select (selectionChange)="changedInput()" [(value)]="rule.compared">
-            <mat-option value="last">
-               last
-            </mat-option>
-            <mat-option value="first">
-                first
-             </mat-option>
-        </mat-select>
-    </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Compared to</mat-label>
+            <mat-select (selectionChange)="changedInput()" [(value)]="rule.compared">
+                <mat-option value="last">
+                    last
+                </mat-option>
+                <mat-option value="first">
+                    first
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>Value</mat-label>
-        <input matInput type="text" [(ngModel)]="rule.value" name="input_value" (change)="changedInput()">
-    </mat-form-field>
+        <mat-form-field>
+            <mat-label>Value</mat-label>
+            <input matInput type="text" [(ngModel)]="rule.value" name="input_value" (change)="changedInput()">
+        </mat-form-field>
 
-    <button mat-icon-button color="warn"  matTooltip="Remove rule" (click)="deleteRule()">
-          <mat-icon>remove</mat-icon>
+    </ng-container>
+
+    <button mat-icon-button color="warn" matTooltip="Remove rule" (click)="deleteRule()">
+        <mat-icon>remove</mat-icon>
     </button>
-<form>
-
-    
+</form>

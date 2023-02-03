@@ -6,7 +6,7 @@ import { LogDetailsService } from '../log-details/log-details.service';
 import { ApplyingService, EventLogHeading } from './applying.service'
 import { AggregationMapping } from '../eventtable/eventtable.component';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { numeric_input } from '../aggregation-input/aggregation-input.component';
+import { aggregation_rule } from '../aggregation-input/aggregation-input.component';
 
 
 @Component({
@@ -56,7 +56,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   columnSelectCandidates!: any;
   selectedMethods!: any;
 
-  rules!: { [Key: string]: numeric_input }
+  rules!: { [Key: string]: aggregation_rule }
 
   ngOnInit() {
     this.NamesSubs = this.aplService
@@ -220,7 +220,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       );
   }
 
-  updateAggInput(input: numeric_input, ruleId: string) {
+  updateAggInput(input: aggregation_rule, ruleId: string) {
     this.rules[ruleId] = input;
     console.log(this.rules)
   }
@@ -234,7 +234,6 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         attribute: '',
         bool: "",
         operator: '',
-        compared: '',
         value: ''
       }
     } else {
@@ -244,7 +243,6 @@ export class ApplyingComponent implements OnInit, OnDestroy {
           attribute: '',
           bool: "",
           operator: '',
-          compared: '',
           value: ''
         }
       };
