@@ -30,7 +30,7 @@ class OCEL_ext(OCEL):
             else self.get_default_object_scope_columns()
 
     def get_readable_timestamp(self):
-        self[self.event_timestamp] = pd.to_datetime(self.events[self.event_timestamp]).apply(lambda x: x.date())
+        self.events[self.event_timestamp] = self.events[self.event_timestamp].dt.strftime('%Y-%m-%dT%H:%M:%S')
         return self
 
     def get_dict_summary(self) -> dict:

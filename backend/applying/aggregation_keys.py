@@ -22,8 +22,8 @@ def parse_rules(rules):
         command += "pd.to_timedelta(df['" + rule['attribute'] + "'].iloc[i]-df['" + rule['attribute'] + \
             "'].iloc[" + translate_kwd(rule['compared'])+"]) " + rule['bool'] + " " + \
             translate_kwd(rule['operator']) + \
-            " pd.to_timedelta('" + rule['value'] + "') and "
-    command = command[:-4]
+            " pd.to_timedelta('" + rule['value'] + "') or "
+    command = command[:-3]
     return command
 
 

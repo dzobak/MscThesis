@@ -139,7 +139,7 @@ class Applying(Resource):
             # print(data['rows_index'][0])
             # print(log.events[log.event_id_column])
             if data['is_event_transformation']:
-                return log.events[log.events[log.event_id_column].isin(data['rows_index'])].to_json(orient='records')
+                return log.get_readable_timestamp().events[log.events[log.event_id_column].isin(data['rows_index'])].to_json(orient='records')
             elif data['is_object_transformation']:
                 return log.objects.loc[[data['rows_index']]].to_json(orient='records')
 
