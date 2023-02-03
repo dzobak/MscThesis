@@ -48,7 +48,7 @@ class Applying(Resource):
             name = task.split('eventLog', maxsplit=1)[1]
             event_log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(name), parameters=self.parameters))
-            return event_log.events.head(10).to_json(orient='records')
+            return event_log.get_readable_timestamp().events.head(20).to_json(orient='records')
         elif 'objects' in task:
             name = task.split('objects', maxsplit=1)[1]
             event_log = OCEL_ext(ocel_import.apply(

@@ -110,3 +110,4 @@ def rename_file(old_name:str, new_name:str)->None:
 
 def delete_file(name:str)->None:
     os.remove(get_filepath_from_name(name))
+

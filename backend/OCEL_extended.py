@@ -4,6 +4,7 @@ from pm4py.objects.ocel.obj import OCEL
 from enum import Enum
 from pm4py.objects.ocel import constants
 from typing import List
+import pandas as pd
 
 
 class Parameters(Enum):
@@ -27,6 +28,10 @@ class OCEL_ext(OCEL):
             else self.get_default_event_scope_columns()
         self.object_scope_columns = parameters[Parameters.OBJECT_SCOPES] if Parameters.OBJECT_SCOPES in parameters\
             else self.get_default_object_scope_columns()
+
+    def get_readable_timestamp(self):
+        self[self.event_timestamp] = pd.to_datetime(self.events[self.event_timestamp]).apply(lambda x: x.date())
+        return self
 
     def get_dict_summary(self) -> dict:
         '''
