@@ -73,6 +73,11 @@ class Applying(Resource):
         elif 'delete' in task:
             name = task.split('delete', maxsplit=1)[1]
             delete_file(name)
+        elif 'columntypes' in task:
+            name = task.split('columntypes', maxsplit=1)[1]
+            log = OCEL_ext(ocel_import.apply(get_filepath_from_name(
+                name), parameters=self.parameters))
+            return json.dumps(get_column_dtypes(log))
         else:
             return {
                 'good': 'niddce',

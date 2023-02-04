@@ -86,7 +86,7 @@
 
                 <ng-container *ngIf="selectedOEoption == 'event'">
                     <ng-container *ngFor="let rule of rules | keyvalue">
-                        <app-aggregation-input [columnsToDisplay]="columnsToDisplay" [rule]="rule.value"
+                        <app-aggregation-input [columnsToDisplay]="columnsToDisplay" [rule]="rule.value" [columnTypes]="columnTypes"
                             (inputChange)="updateAggInput($event,rule.key)" (ruleDeleted)="deleteRule(rule.key)">
                         </app-aggregation-input>
                     </ng-container>

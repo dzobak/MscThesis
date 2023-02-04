@@ -41,6 +41,7 @@ def keep_n_levels(scope_str: str, n: int, left_side=True) -> str:
         truncated_scope = '/'.join(scope_tuple[-n:])
     return truncated_scope
 
+
 def remove_n_levels(scope_str: str, n: int, left_side=True) -> str:
     scope_tuple = get_scope_tuple(scope_str)
     n = min(len(scope_tuple), n)
@@ -69,9 +70,9 @@ def get_name_from_filepath(path: str, filetype='jsonocel') -> str:
 def get_column_functions_by_dtype(dtype: type) -> List[str]:
     if dtype == type(''):
         return ['MODE', 'CONCAT', 'MAX', 'MIN', 'DISCARD']
-    #TODO: Nan values can by identified as number even if the rest of the column is string
+    # TODO: Nan values can by identified as number even if the rest of the column is string
     elif dtype == type(0) or dtype == type(1.0) or np.issubdtype(dtype, np.number):
-        return ['SUM','MAX', 'MIN', 'COUNT', 'AVG', 'MEDIAN', 'MODE', 'DISCARD']
+        return ['SUM', 'MAX', 'MIN', 'COUNT', 'AVG', 'MEDIAN', 'MODE', 'DISCARD']
     print(dtype)
     return ["good job"]
 
@@ -105,11 +106,26 @@ def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
                 type(df.iloc[df[column].first_valid_index()][column]))
     return col_functions
 
-def rename_file(old_name:str, new_name:str)->None:
-    os.rename(get_filepath_from_name(old_name), get_filepath_from_name(new_name))
 
-def delete_file(name:str)->None:
+def get_column_dtypes(log: OCEL_ext) -> dict:
+    column_dtypes = {}
+    for df in [log.events, log.objects]:
+        for column in df.columns:
+            dtype = type(df.iloc[df[column].first_valid_index()][column])
+            if column in log.event_scope_columns or column in log.object_scope_columns:
+                column_dtypes[column] = 'scope'
+            elif dtype == type(''):
+                column_dtypes[column] = 'categorical'
+            elif dtype == type(0) or dtype == type(1.0) or np.issubdtype(dtype, np.number)\
+                    or pd.api.types.is_datetime64_any_dtype(df[column]):
+                column_dtypes[column] = 'numeric'
+    return column_dtypes
+
+
+def rename_file(old_name: str, new_name: str) -> None:
+    os.rename(get_filepath_from_name(old_name),
+              get_filepath_from_name(new_name))
+
+
+def delete_file(name: str) -> None:
     os.remove(get_filepath_from_name(name))
-
-
- 

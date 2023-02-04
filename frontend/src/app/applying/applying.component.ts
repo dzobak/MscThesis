@@ -55,6 +55,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   columnSelect: string[][] = [];
   columnSelectCandidates!: any;
   selectedMethods!: any;
+  columnTypes!: object;
 
   rules!: { [Key: string]: aggregation_rule }
 
@@ -131,7 +132,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         for (let i = 0; i < this.applyingData.length; i++) {
           if (this.applyingData[i].value.search("@tmp") >= 0) {
             // console.log(this.applyingData[i])
-            this.applyingData.splice(i, 1)
+            this.applyingData.splice(i, 1) //deletes applying data for tmp value
           }
         }
         this.applyingData.push(JSON.parse(res))
@@ -222,13 +223,12 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   updateAggInput(input: aggregation_rule, ruleId: string) {
     this.rules[ruleId] = input;
-    console.log(this.rules)
   }
 
   addRule() {
     if (this.rules && Object.keys(this.rules).length) {
       const keys = Object.keys(this.rules).map(i => Number(i));
-      const new_key = Math.max.apply(null,keys);
+      const new_key = Math.max.apply(null, keys);
       console.log(new_key)
       this.rules[new_key + 1] = {
         attribute: '',
@@ -237,6 +237,12 @@ export class ApplyingComponent implements OnInit, OnDestroy {
         value: ''
       }
     } else {
+      this.DetailsSubs = this.aplService
+        .getColumnDatatypes(this.selectedLog)
+        .subscribe(res => {
+          this.columnTypes = JSON.parse(res);
+        }
+        );
       this.rules = {
         0:
         {
@@ -250,7 +256,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteRule(id:string){
+  deleteRule(id: string) {
     console.log(id)
     delete this.rules[id]
   }

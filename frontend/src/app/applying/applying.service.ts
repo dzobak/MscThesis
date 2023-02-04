@@ -36,6 +36,10 @@ export class ApplyingService {
     return this.http.get<string>('http://127.0.0.1:5002/applying/logdata' + logname);
   }
 
+  getColumnDatatypes(logname: string): Observable<string> {
+    return this.http.get<string>('http://127.0.0.1:5002/applying/columntypes' + logname);
+  }
+
   getColumnFuctions(eventlogname: string, isEventTransformation: boolean, isObjectTransformation: boolean): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -169,4 +173,6 @@ export class ApplyingService {
       httpOptions
     );
   }
+
+
 }
