@@ -21,7 +21,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngIf="rule.type == 'numeric'" class="select-element">
+    <mat-form-field appearance="fill" *ngIf="rule.type == 'numeric' || rule.type == 'timestamp'" class="select-element">
         <mat-label>Operator</mat-label>
         <mat-select [(value)]="rule.operator" (selectionChange)="changedInput()">
             <mat-option *ngFor="let operator of num_operators" [value]="operator">
@@ -34,7 +34,7 @@
         <mat-label>Operator</mat-label>
         <mat-select [(value)]="rule.operator" (selectionChange)="changedInput()">
             <mat-option *ngFor="let operator of cat_operators" [value]="operator">
-                {{operator}}
+              {{operator}}
             </mat-option>
         </mat-select>
     </mat-form-field>
@@ -72,7 +72,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field *ngIf="rule.type == 'numeric'" class="select-element">
+    <mat-form-field *ngIf="rule.type == 'numeric' || rule.type == 'timestamp'" class="select-element">
         <mat-label>Value</mat-label>
         <input matInput type="text" [(ngModel)]="rule.value" name="input_value" (change)="changedInput()">
     </mat-form-field>

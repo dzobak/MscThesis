@@ -26,7 +26,8 @@ export class AggregationInputComponent {
   ]
 
   cat_operators =[
-    
+    '\u{2286}',
+    '\u{2287}',
     '='
   ]
 

@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 from pandas.api.indexers import BaseIndexer
 import numpy as np
@@ -8,22 +9,41 @@ def translate_kwd(kwd: str) -> str:
         return "i-1"
     elif kwd == 'first':
         return "j"
-    elif kwd == '\u2264':
+    #the lists or items need to be converted to sets, for subset operators    
+    elif kwd in ['\u2264','\u2286']:
         return "<="
-    elif kwd == '\u2265':
+    elif kwd in ['\u2265','\u2287']:
         return ">="
+    else: return kwd
 
 
-def parse_rules(rules):
+def check_categorical_rule(cluster:pd.Series,current_value:str, **kwargs)->bool:
+    """
+    Input: cluster, current value, and kwargs including keys: bool, operator, compared, unified and optionaly: level and n
+    Output: True, if rule is fullfilled, False if not
+    """   
+    pass
+
+def parse_rules(rules)->str:
     command = ""
     for rule in rules.values():
         # only supports timestamps for now
         # time = pd.to_timedelta(rule['value'])
-        command += "pd.to_timedelta(df['" + rule['attribute'] + "'].iloc[i]-df['" + rule['attribute'] + \
-            "'].iloc[" + translate_kwd(rule['compared'])+"]) " + rule['bool'] + " " + \
-            translate_kwd(rule['operator']) + \
-            " pd.to_timedelta('" + rule['value'] + "') or "
-    command = command[:-3]
+        if rule['type'] == 'timestamp':
+            command += "pd.to_timedelta(df['" + rule['attribute'] + "'].iloc[i]-df['" + rule['attribute'] + \
+                "'].iloc[" + translate_kwd(rule['compared'])+"]) " + rule['bool'] + " " + \
+                translate_kwd(rule['operator']) + \
+                " pd.to_timedelta('" + rule['value'] + "') or "
+        elif rule['type'] == 'numerical':
+            command += "df['" + rule['attribute'] + "'].iloc[i]-df['" + rule['attribute'] + \
+                "'].iloc[" + translate_kwd(rule['compared'])+"] " + rule['bool'] + " " + \
+                translate_kwd(rule['operator']) + " " + rule['value'] + " or "
+        elif rule['type'] == 'categorical':
+            command += "check_categorical_rule(df[rule['attribute'].iloc[j:i],df[rule['attribute'].iloc[i], **rule]) or "
+            pass
+    if len(command) > 3:
+        command = command[:-3]
+    else: command = "False"
     return command
 
 
@@ -33,7 +53,7 @@ def get_aggregation_key_by_rules(df, **kwargs):
     statement = parse_rules(kwargs['rules'])
     num_values = len(df.index)
     keys = {}
-    j = 0
+    j = 0 #position of first element of cluster
     for i in range(0, num_values):
         if i > 0:
             if eval(statement):

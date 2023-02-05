@@ -116,9 +116,10 @@ def get_column_dtypes(log: OCEL_ext) -> dict:
                 column_dtypes[column] = 'scope'
             elif dtype == type(''):
                 column_dtypes[column] = 'categorical'
-            elif dtype == type(0) or dtype == type(1.0) or np.issubdtype(dtype, np.number)\
-                    or pd.api.types.is_datetime64_any_dtype(df[column]):
+            elif dtype == type(0) or dtype == type(1.0) or np.issubdtype(dtype, np.number):
                 column_dtypes[column] = 'numeric'
+            elif pd.api.types.is_datetime64_any_dtype(df[column]):
+                column_dtypes[column] = 'timestamp'
     return column_dtypes
 
 
