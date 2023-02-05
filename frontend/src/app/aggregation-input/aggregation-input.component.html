@@ -1,5 +1,5 @@
 <form>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" object.style.width="auto">
         <mat-label>Attribute</mat-label>
         <mat-select [(value)]="rule.attribute" (selectionChange)="changedAttribute()">
             <mat-option *ngFor="let column of columnsToDisplay" [value]="column">
@@ -9,7 +9,7 @@
     </mat-form-field>
 
     <!-- <ng-container *ngIf="rule.type == 'numeric'"> -->
-    <mat-form-field appearance="fill" *ngIf="rule.type">
+    <mat-form-field appearance="fill" *ngIf="rule.type" class="select-element">
         <mat-label>is/is not</mat-label>
         <mat-select [(value)]="rule.bool" (selectionChange)="changedInput()">
             <mat-option value="">
@@ -21,7 +21,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngIf="rule.type == 'numeric'">
+    <mat-form-field appearance="fill" *ngIf="rule.type == 'numeric'" class="select-element">
         <mat-label>Operator</mat-label>
         <mat-select [(value)]="rule.operator" (selectionChange)="changedInput()">
             <mat-option *ngFor="let operator of num_operators" [value]="operator">
@@ -30,7 +30,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngIf="rule.type == 'categorical' || rule.type == 'scope'">
+    <mat-form-field appearance="fill" *ngIf="rule.type == 'categorical' || rule.type == 'scope'" class="select-element">
         <mat-label>Operator</mat-label>
         <mat-select [(value)]="rule.operator" (selectionChange)="changedInput()">
             <mat-option *ngFor="let operator of cat_operators" [value]="operator">
@@ -39,7 +39,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngIf="rule.type">
+    <mat-form-field appearance="fill" *ngIf="rule.type" class="select-element">
         <mat-label>Compared to</mat-label>
         <mat-select [(value)]="rule.compared" (selectionChange)="changedInput()">
             <mat-option value="all" *ngIf="rule.type == 'categorical'|| rule.type == 'scope'">
@@ -55,12 +55,12 @@
     </mat-form-field>
 
     <mat-form-field
-        *ngIf="(rule.type == 'categorical' || rule.type == 'scope') && (rule.compared == 'last' || rule.compared =='first')">
+        *ngIf="(rule.type == 'categorical' || rule.type == 'scope') && (rule.compared == 'last' || rule.compared =='first')" class="n">
         <mat-label>n</mat-label>
         <input matInput type="text" [(ngModel)]="rule.value" name="input_value" (change)="changedInput()">
     </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngIf="rule.type == 'categorical' || rule.type == 'scope'">
+    <mat-form-field appearance="fill" *ngIf="rule.type == 'categorical' || rule.type == 'scope'" class="select-element">
         <mat-label>Comparison type</mat-label>
         <mat-select [(value)]="rule.unified" (selectionChange)="changedInput()">
             <mat-option value="unified">
@@ -72,7 +72,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field *ngIf="rule.type == 'numeric'">
+    <mat-form-field *ngIf="rule.type == 'numeric'" class="select-element">
         <mat-label>Value</mat-label>
         <input matInput type="text" [(ngModel)]="rule.value" name="input_value" (change)="changedInput()">
     </mat-form-field>
