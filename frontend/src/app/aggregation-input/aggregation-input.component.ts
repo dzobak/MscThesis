@@ -68,7 +68,6 @@ export interface aggregation_rule {
   bool: string,
   operator: string,
   compared?: string,
-  n?: number,
   value: string,
   unified?: string,
   type?: string

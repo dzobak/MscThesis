@@ -52,6 +52,21 @@ def remove_n_levels(scope_str: str, n: int, left_side=True) -> str:
     return truncated_scope
 
 
+def setify(series: pd.Series) -> set:
+    new_set = set()
+    for value in series:
+        new_set.add(value)
+    return new_set
+
+
+def setify_values(series: pd.Series) -> set:
+    new_set = set()
+    for value in series:
+        for subvalue in set(value):
+            new_set.add(subvalue)
+    return new_set
+
+
 def get_file_folder() -> str:
     return os.path.join('event_log_files', '')
 
@@ -121,6 +136,10 @@ def get_column_dtypes(log: OCEL_ext) -> dict:
             elif pd.api.types.is_datetime64_any_dtype(df[column]):
                 column_dtypes[column] = 'timestamp'
     return column_dtypes
+
+def same(x):
+    """returns the input back"""
+    return x
 
 
 def rename_file(old_name: str, new_name: str) -> None:

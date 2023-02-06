@@ -1,62 +1,88 @@
+import operator
 from typing import List
 import pandas as pd
 from pandas.api.indexers import BaseIndexer
 import numpy as np
+from utils import setify_values, same
 
 
-def translate_kwd(kwd: str) -> str:
-    if kwd == 'last':
-        return "i-1"
-    elif kwd == 'first':
-        return "j"
-    #the lists or items need to be converted to sets, for subset operators    
-    elif kwd in ['\u2264','\u2286']:
-        return "<="
-    elif kwd in ['\u2265','\u2287']:
-        return ">="
-    else: return kwd
+def get_operator_fnc(kwd: str):
+
+    # the lists or items need to be converted to sets, for subset operators
+    if kwd in ['\u2264', '\u2286']:
+        return operator.le
+    elif kwd in ['\u2265', '\u2287']:
+        return operator.ge
+    elif kwd == '=':
+        return operator.eq
+    elif kwd == '<':
+        return operator.lt
+    elif kwd == '>':
+        return operator.gt
+    else:
+        return kwd
 
 
-def check_categorical_rule(cluster:pd.Series,current_value:str, **kwargs)->bool:
+def check_categorical_rule(cluster: pd.Series, current_value: str | List[str], **rule) -> bool:
     """
-    Input: cluster, current value, and kwargs including keys: bool, operator, compared, unified and optionaly: level and n
     Output: True, if rule is fullfilled, False if not
-    """   
-    pass
+    """
+    if rule['compared'] == 'first':
+        cluster = cluster.iloc[:min(int(rule['value']), len(cluster.index))]
+    elif rule['compared'] == 'last':
+        cluster = cluster.iloc[-min(int(rule['value']), len(cluster.index)):]
 
-def parse_rules(rules)->str:
-    command = ""
+    op = get_operator_fnc(rule['operator'])
+    negation = operator.not_ if rule['bool'] == 'not' else same
+
+    # TODO make work with scopes
+    if rule['unified'] == 'unified':
+        if type(cluster.iloc[0]) != str:
+            print(negation(op(set(current_value),set(cluster))))
+            return negation(op(set(current_value),set(cluster)))
+        else:
+            return negation(op(set(current_value),setify_values(cluster)))
+    else:
+        result = True
+        for value in cluster:
+            if result:
+                result = negation(op(set(current_value),set(cluster)))
+        return result
+
+
+def evaluate_rules(rules: List[dict], df: pd.DataFrame, current_idx: int, first_idx: int) -> bool:
+    results = []
     for rule in rules.values():
-        # only supports timestamps for now
-        # time = pd.to_timedelta(rule['value'])
-        if rule['type'] == 'timestamp':
-            command += "pd.to_timedelta(df['" + rule['attribute'] + "'].iloc[i]-df['" + rule['attribute'] + \
-                "'].iloc[" + translate_kwd(rule['compared'])+"]) " + rule['bool'] + " " + \
-                translate_kwd(rule['operator']) + \
-                " pd.to_timedelta('" + rule['value'] + "') or "
-        elif rule['type'] == 'numerical':
-            command += "df['" + rule['attribute'] + "'].iloc[i]-df['" + rule['attribute'] + \
-                "'].iloc[" + translate_kwd(rule['compared'])+"] " + rule['bool'] + " " + \
-                translate_kwd(rule['operator']) + " " + rule['value'] + " or "
-        elif rule['type'] == 'categorical':
-            command += "check_categorical_rule(df[rule['attribute'].iloc[j:i],df[rule['attribute'].iloc[i], **rule]) or "
-            pass
-    if len(command) > 3:
-        command = command[:-3]
-    else: command = "False"
-    return command
+        op = get_operator_fnc(rule['operator'])
+        negation = operator.not_ if rule['bool'] == 'not' else same
+        if rule['type'] == 'timestamp' or rule['type'] == 'numerical':
+            if rule['compared'] == 'first':
+                compared = first_idx
+            elif rule['comapared'] == 'last':
+                compared = current_idx-1
+            if rule['type'] == 'timestamp':
+                results.append(negation(op(pd.to_timedelta(
+                    df[rule['attribute']].iloc[current_idx] - df[rule['attribute']].iloc[compared]), pd.to_timedelta(rule['value']))))
+            elif rule['type'] == 'numerical':
+                results.append(negation(
+                    op(df[rule['attribute']].iloc[current_idx]-df[rule['attribute']].iloc[compared], rule['value'])))
+        elif rule['type'] == 'categorical' or rule['type']=='scope':
+            results.append(check_categorical_rule(df[rule['attribute']].iloc[first_idx:current_idx],
+                                                  df[rule['attribute']].iloc[current_idx],**rule))
+
+    return any(results)
 
 
 def get_aggregation_key_by_rules(df, **kwargs):
     # partition by other attributes
     # I can do whatever here, don't think of window functions as a simple iterator
-    statement = parse_rules(kwargs['rules'])
+    # statement = evaluate_rules(kwargs['rules'])
     num_values = len(df.index)
     keys = {}
-    j = 0 #position of first element of cluster
+    j = 0  # position of first element of cluster
     for i in range(0, num_values):
         if i > 0:
-            if eval(statement):
+            if evaluate_rules(kwargs['rules'], df, i, j):
                 j = i
         keys[df.index[i]] = df[kwargs['id_column']].iloc[j]
     return keys

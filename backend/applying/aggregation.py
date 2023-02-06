@@ -97,13 +97,6 @@ def get_aggregation_functions(keyword: str):
         return Method.COUNT
 
 
-def setify(series):
-    new_set = set()
-    for value in series:
-        new_set.add(value)
-    return new_set
-
-
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
     # TODO where col func is groupby need to add as key, where col func is discard need to remove from col_func
