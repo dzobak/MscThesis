@@ -55,7 +55,6 @@ def truncate(series):
     Truncating follows the idea of finding the common lowest ancestor.
     """
     # After truncating, all scopes will be the same, so a representative is picked
-    print(series)
     first_scope = series.iloc[0]
     tuple_series = series.apply(get_scope_tuple)
     scope_df = pd.DataFrame(tuple_series.to_list())
@@ -119,7 +118,7 @@ def aggregate_events(log, **kwargs):
             group_by_keys.append(get_aggregation_key_by_rules(group, **kwargs))
 
         group_by_keys = concat_dicts(pd.Series(group_by_keys))
-    print(group_by_keys)
+    # print(group_by_keys)
 
     # TODO when values of col_func_map group by then add to
     agg_events = log.events.groupby(

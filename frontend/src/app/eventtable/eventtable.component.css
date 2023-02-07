@@ -12,13 +12,13 @@ td {
   border: 1px solid#ddd;
 }
 
-.mat-header-row {
-  background: rgb(40, 72, 152);
-}
+/* .mat-header-row {
+  background: rgb(0, 84, 159);
+} */
 
 th {
   border: 1px solid rgb(68, 67, 67);
-  color: rgb(233, 240, 232);
+  color: rgb(255, 253, 246);
 }
 
 #table div {
@@ -26,7 +26,7 @@ th {
 }
 
 .mat-header-row {
-  background-color: rgb(54, 75, 168);
+  background-color: rgb(0, 84, 159);
   height: 30px
 }
 .mat-select-content{
@@ -45,7 +45,7 @@ th {
 }
 
 .mat-mdc-row:hover .mat-mdc-cell {
-  background-color: rgba(212, 226, 210, 0.263);
+  background-color: rgba(0, 85, 159, 0.085);
 }
 
 .mat-mdc-row {
@@ -63,6 +63,6 @@ th {
   cursor: move;
   margin: 0px 0px 0px 0px !important;
   padding: 10px 24px;
-  background: rgb(54, 75, 168);
+  background:  rgb(0, 84, 159);
   color: #fff;
 }

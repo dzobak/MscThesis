@@ -37,16 +37,18 @@ def check_categorical_rule(cluster: pd.Series, current_value: str | List[str], *
 
     # TODO make work with scopes
     if rule['unified'] == 'unified':
-        if type(cluster.iloc[0]) != str:
-            print(negation(op(set(current_value),set(cluster))))
-            return negation(op(set(current_value),set(cluster)))
+        if type(cluster.iloc[0]) == str:
+            return negation(op(set([current_value]),set(cluster)))
         else:
             return negation(op(set(current_value),setify_values(cluster)))
     else:
         result = True
         for value in cluster:
             if result:
-                result = negation(op(set(current_value),set(cluster)))
+                result = negation(op(set(current_value),set(value)))
+            else:
+                break
+        print(result)
         return result
 
 
@@ -58,7 +60,7 @@ def evaluate_rules(rules: List[dict], df: pd.DataFrame, current_idx: int, first_
         if rule['type'] == 'timestamp' or rule['type'] == 'numerical':
             if rule['compared'] == 'first':
                 compared = first_idx
-            elif rule['comapared'] == 'last':
+            elif rule['compared'] == 'last':
                 compared = current_idx-1
             if rule['type'] == 'timestamp':
                 results.append(negation(op(pd.to_timedelta(
@@ -82,7 +84,7 @@ def get_aggregation_key_by_rules(df, **kwargs):
     j = 0  # position of first element of cluster
     for i in range(0, num_values):
         if i > 0:
-            if evaluate_rules(kwargs['rules'], df, i, j):
+            if evaluate_rules(kwargs['rules'], df, i, j): #if any rule is true create new cluster
                 j = i
         keys[df.index[i]] = df[kwargs['id_column']].iloc[j]
     return keys
