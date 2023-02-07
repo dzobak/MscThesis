@@ -7,6 +7,7 @@ export interface EventLogHeading {
   value: string,
   e_scopes: string[],
   e_columns: string[],
+  e_ext_columns: string[],
   o_scopes: string[],
   o_columns: string[],
 }
@@ -30,6 +31,10 @@ export class ApplyingService {
 
   getObjects(logname: string): Observable<string> {
     return this.http.get<string>('http://127.0.0.1:5002/applying/objects' + logname);
+  }
+
+  getEventsExtended(logname: string): Observable<string> {
+    return this.http.get<string>('http://127.0.0.1:5002/applying/eventsExtended' + logname);
   }
 
   getLogData(logname: string): Observable<string> {

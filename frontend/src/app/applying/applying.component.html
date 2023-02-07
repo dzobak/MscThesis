@@ -34,6 +34,7 @@
     (change)="switchEventObject($event)">
     <mat-radio-button checked value="event">events</mat-radio-button>
     <mat-radio-button value="object">objects</mat-radio-button>
+    <mat-radio-button value="event_object">events with object</mat-radio-button>
 </mat-radio-group>
 
 <div class="grid">
@@ -78,10 +79,10 @@
 
         <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
 
-            <div class="pad-top">
+            <div class="pad-y">
                 <mat-label>Select scope level </mat-label>
                 <mat-slider [min]="0" [max]="3" [step]="1" discrete color="primary" showTickMarks>
-                    <input matSliderThumb [(ngModel)]="selectedScopeLevel">
+                    <input matSliderThumb [(ngModel)]="selectedScopeLevel" class="thumb">
                 </mat-slider>
 
                 <ng-container *ngIf="selectedOEoption == 'event'">

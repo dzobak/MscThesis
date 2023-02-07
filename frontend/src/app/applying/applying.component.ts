@@ -21,15 +21,19 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   table: [] = [];
   eventLog: [] = [];
   eventColumns!: string[];
+  eventsExtended: [] = [];
+  e_ext_columns!: string[];
   objects: [] = [];
   objectColumns!: string[];
   eventScopeLevels!: number[];
   log_details!: object;
 
+
   ApplyingSubs!: Subscription;
   NamesSubs!: Subscription;
   EventLogSubs!: Subscription;
   ObjectsSubs!: Subscription;
+  EventsExtended!: Subscription;
   ColumnSubs!: Subscription;
   DetailsSubs!: Subscription;
   regex: string = "";
@@ -87,6 +91,8 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       for (let log_head of this.applyingData) if (log_head.value == value) {
         this.eventColumns = log_head["e_columns"]
         this.objectColumns = log_head["o_columns"]
+        this.e_ext_columns = log_head["e_ext_columns"]
+        console.log(log_head)
       };
       this.table = [];
       this.EventLogSubs = this.aplService
@@ -106,6 +112,16 @@ export class ApplyingComponent implements OnInit, OnDestroy {
           if (this.selectedOEoption == "object") {
             this.table = this.objects;
             this.columnsToDisplay = this.objectColumns;
+          }
+        }
+        );
+        this.EventsExtended = this.aplService
+        .getEventsExtended(value)
+        .subscribe(res => {
+          this.eventsExtended = JSON.parse(res);
+          if (this.selectedOEoption == "event_object") {
+            this.table = this.eventsExtended;
+            this.columnsToDisplay = this.e_ext_columns;
           }
         }
         );
@@ -149,6 +165,9 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     } else if (this.selectedOEoption == "object") {
       this.table = this.objects;
       this.columnsToDisplay = this.objectColumns;
+    } else if (this.selectedOEoption == "event_object"){
+      this.table = this.eventsExtended;
+      this.columnsToDisplay = this.e_ext_columns;
     }
     this.getColumnAggregationFunctions()
     // this.getScopeLevels()
@@ -179,7 +198,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   getColumnAggregationFunctions() {
 
     this.ColumnSubs = this.aplService
-      .getColumnFuctions(this.selectedLog, this.selectedOEoption == "event", this.selectedOEoption == "object")
+      .getColumnFuctions(this.selectedLog, this.selectedOEoption.includes("event"), this.selectedOEoption == "object")
       .subscribe(res => {
         this.columnSelectCandidates = JSON.parse(res);
         this.columnSelect = []

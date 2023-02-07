@@ -71,3 +71,10 @@ class OCEL_ext(OCEL):
     def __deepcopy__(self, memo):
         return OCEL_ext(self.events.copy(), self.objects.copy(), self.relations.copy(), deepcopy(self.globals),
                         deepcopy(self.parameters))
+
+    def get_object_type_column_names(self, ot_prefix=constants.DEFAULT_OBJECT_TYPE_PREFIX_EXTENDED):
+        object_types = self.relations[self.object_type_column].unique()
+        col_names = []
+        for ot in object_types:
+            col_names.append(ot_prefix + ot)
+        return col_names

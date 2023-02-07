@@ -14,6 +14,7 @@ from glob import glob
 
 
 class Applying(Resource):
+    #TODO: this is kind of hardcoded
     parameters={'param:event:activity': 'scope:ocel:activity'}
 
     def get(self, task):
@@ -23,25 +24,27 @@ class Applying(Resource):
             event_log_names = [get_name_from_filepath(filepath)
                                for filepath in filepaths]
             if task == 'default':
-                event_logs = []
+                logs = []
                 for name in event_log_names:
                     #TODO error here if ocel file contains no data 
-                    event_log = OCEL_ext(ocel_import.apply(
+                    log = OCEL_ext(ocel_import.apply(
                         get_filepath_from_name(name), parameters=self.parameters))
                     # events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes\
-                    #     .get_dataframes_from_ocel(event_log)
+                    #     .get_dataframes_from_ocel(log)
 
                     # TODO:make a list for scope columns
-                    event_logs.append({
+                    e_columns = [col for col in log.events.columns]
+                    logs.append({
                         'value': name,
                         # need to change that to actual scope columns
-                        'e_scopes': event_log.event_scope_columns,
-                        'e_columns': [col for col in event_log.events.columns],
+                        'e_scopes': log.event_scope_columns,
+                        'e_columns': [col for col in log.events.columns],
+                        'e_ext_columns': [*e_columns, *log.get_object_type_column_names()],
                         # need to change that to actual scope columns
-                        'o_scopes': event_log.object_scope_columns,
-                        'o_columns': [col for col in event_log.objects.columns]
+                        'o_scopes': log.object_scope_columns,
+                        'o_columns': [col for col in log.objects.columns]
                     })
-                return event_logs
+                return logs
             elif task == 'names':
                 return event_log_names
         elif 'eventLog' in task:
@@ -53,22 +56,29 @@ class Applying(Resource):
             name = task.split('objects', maxsplit=1)[1]
             event_log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(name), parameters=self.parameters))
-            return event_log.objects.head(10).to_json(orient='records')
+            return event_log.objects.head(20).to_json(orient='records')
+        elif 'eventsExtended' in task:
+            name = task.split('eventsExtended', maxsplit=1)[1]
+            event_log = OCEL_ext(ocel_import.apply(
+                get_filepath_from_name(name), parameters=self.parameters))
+            return event_log.get_readable_timestamp().get_extended_table().head(20).to_json(orient='records')
         elif 'logdata' in task:
             name = task.split('logdata', maxsplit=1)[1]
             log = OCEL_ext(ocel_import.apply(
                 get_filepath_from_name(name), parameters=self.parameters))
 
+            e_columns = [col for col in log.events.columns]
             logdata = {
                 'value': name,
                 # need to change that to actual scope columns
                 'e_scopes': log.event_scope_columns,
-                'e_columns': [col for col in log.events.columns],
+                'e_columns': e_columns,
+                'e_ext_columns': [*e_columns, *log.get_object_type_column_names()],
                 # need to change that to actual scope columns
                 'o_scopes': log.object_scope_columns,
                 'o_columns': [col for col in log.objects.columns]
             }
-  
+            print(logdata)
             return json.dumps(logdata)
         elif 'delete' in task:
             name = task.split('delete', maxsplit=1)[1]

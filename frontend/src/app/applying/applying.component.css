@@ -1,5 +1,5 @@
 .pad-y{
-    padding-top:25px;
+    padding-top:30px;
     margin-bottom: 20px;
 }
 .mat-success {
@@ -10,10 +10,6 @@
 .mat-black{
     color:black;
 }
-
-/* .mat-mdc-slider {
-    height: 250px;
-  } */
 
 .center{
     text-align: center;
