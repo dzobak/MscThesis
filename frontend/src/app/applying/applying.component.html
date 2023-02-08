@@ -15,7 +15,7 @@
     <mat-select [(ngModel)]="selectedScope" (selectionChange)="getScopeLevels($event.value)">
         <ng-container *ngIf="applyingData">
             <ng-container *ngFor="let log of applyingData">
-                <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption=='event'">
+                <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption.includes('event')">
                     <mat-option *ngFor="let scope of log.e_scopes" [value]="scope">
                         {{scope}}
                     </mat-option>
@@ -54,41 +54,41 @@
             </mat-list>
         </mat-expansion-panel>
     </div>
-
-    <mat-tab-group class="tab-group" dynamicHeight>
-        <mat-tab label="Selection Function" [disabled]="tabgroup_disabled">
-            <div *ngIf="!tabgroup_disabled">
-                <form>
-                    <mat-form-field [style.width.px]=283 appearance="fill">
-                        <mat-label>Regular Expression for scope</mat-label>
-                        <input matInput placeholder="Ex. level0/*/level3" [(ngModel)]="regex" name="regex">
-                    </mat-form-field>
-                </form>
-
-                <ng-container *ngIf="table">
-
-                    <app-eventtable class="table" [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
-                    </app-eventtable>
-                </ng-container>
-                <div class="pad-top">
-                    <button mat-raised-button color="primary" (click)="sendRegex(regex)">Apply</button>
-
+    <div>
+        <mat-tab-group class="tab-group" dynamicHeight [selectedIndex]="selectedTab.value"
+            (selectedIndexChange)="selectedTab.setValue($event)">
+            <mat-tab label="Selection Function" [disabled]="tabgroup_disabled">
+                <div *ngIf="!tabgroup_disabled">
+                    <form>
+                        <mat-form-field [style.width.px]=283 appearance="fill">
+                            <mat-label>Regular Expression for scope</mat-label>
+                            <input matInput placeholder="Ex. level0/*/level3" [(ngModel)]="regex" name="regex">
+                        </mat-form-field>
+                    </form>
+                    <ng-container *ngIf="table">
+                        <app-eventtable class="table" [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
+                        </app-eventtable>
+                    </ng-container>
+                    <!-- <div class="pad-top">
+                    <button mat-raised-button color="primary" (click)="sendRegex()">Apply</button>
+                </div> -->
                 </div>
-            </div>
-        </mat-tab>
+            </mat-tab>
 
-        <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
+            <mat-tab label="Aggregation" [disabled]="tabgroup_disabled">
 
-            <div class="pad-y">
-                <mat-label>Select scope level </mat-label>
-                <mat-slider [min]="0" [max]="3" [step]="1" discrete color="primary" showTickMarks>
-                    <input matSliderThumb [(ngModel)]="selectedScopeLevel" class="thumb">
-                </mat-slider>
+                <div class="pad-top-30">
+                    <mat-label *ngIf="scopeLevels">Select scope level: </mat-label>
+                    <mat-slider *ngIf="scopeLevels" [min]="0" [max]="scopeLevels[scopeLevels.length-1]" [step]="1"
+                        discrete color="primary" showTickMarks>
+                        <input matSliderThumb [(ngModel)]="selectedScopeLevel" class="thumb">
+                    </mat-slider>
 
-                <ng-container *ngIf="selectedOEoption == 'event'">
+                    <!-- <ng-container *ngIf="selectedOEoption == 'event'"> -->
                     <ng-container *ngFor="let rule of rules | keyvalue">
-                        <app-aggregation-input [columnsToDisplay]="columnsToDisplay" [rule]="rule.value" [columnTypes]="columnTypes"
-                            (inputChange)="updateAggInput($event,rule.key)" (ruleDeleted)="deleteRule(rule.key)">
+                        <app-aggregation-input [columnsToDisplay]="columnsToDisplay" [rule]="rule.value"
+                            [columnTypes]="columnTypes" (inputChange)="updateAggInput($event,rule.key)"
+                            (ruleDeleted)="deleteRule(rule.key)">
                         </app-aggregation-input>
                     </ng-container>
                     <!-- <div *ngFor="let item of rules | keyvalue">
@@ -97,37 +97,38 @@
                     <button mat-icon-button (click)="addRule()">
                         <mat-icon color="success">add-box</mat-icon>
                     </button>
-                </ng-container>
-            </div>
+                    <!-- </ng-container> -->
+                </div>
 
-            <app-eventtable class="table" [columnsToDisplay]="columnsToDisplay" [eventLog]="table"
-                [columnSelect]="columnSelect" [selectedMethods]="selectedMethods"
-                [aggregationMapping]="aggregationMapping" (notify)="selectedMethodsChanged($event)">
-            </app-eventtable>
-            <div class="pad-top">
+                <app-eventtable class="table" [columnsToDisplay]="columnsToDisplay" [eventLog]="table"
+                    [columnSelect]="columnSelect" [selectedMethods]="selectedMethods"
+                    [aggregationMapping]="aggregationMapping" (notify)="selectedMethodsChanged($event)">
+                </app-eventtable>
+                <!-- <div class="pad-top">
                 <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>
-            </div>
-        </mat-tab>
+            </div> -->
+            </mat-tab>
 
-        <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled">
+            <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled">
 
-            <form>
-                <mat-form-field [style.width.px]=550 appearance="fill">
-                    <mat-label>Relabelling </mat-label>
-                    <input matInput placeholder="Ex. SCOPE <scope1> KEEP LEFT <2> " [(ngModel)]="relabel"
-                        name="relabel">
-                </mat-form-field>
-            </form>
+                <form>
+                    <mat-form-field [style.width.px]=550 appearance="fill">
+                        <mat-label>Relabelling </mat-label>
+                        <input matInput placeholder="Ex. SCOPE <scope1> KEEP LEFT <2> " [(ngModel)]="relabel"
+                            name="relabel">
+                    </mat-form-field>
+                </form>
 
-            <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
-            </app-eventtable>
-            <div class="pad-top">
+                <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
+                </app-eventtable>
+                <!-- <div class="pad-top">
                 <button mat-raised-button color="primary" (click)="getRelabelling()">Apply</button>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
-</div>
-
-<div class="pad-y">
-    <button mat-raised-button color="success" (click)="saveLog()">Save</button>
+            </div> -->
+            </mat-tab>
+        </mat-tab-group>
+        <div class="pad-y">
+            <button mat-raised-button color="success" (click)="saveLog()">Save</button>
+            <button *ngIf="scopeLevels" mat-raised-button color="primary" (click)="apply()">Apply</button>
+        </div>
+    </div>
 </div>

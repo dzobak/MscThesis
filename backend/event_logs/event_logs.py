@@ -22,6 +22,7 @@ class EventLogs(Resource):
         elif task == 'details':
             data = request.get_json()
             print(data['eventlog'])
+            #TODO this just works with my log
             if 'toy_log3' in data['eventlog'] :
                 print('here')
                 log = OCEL_ext(ocel_import.apply(

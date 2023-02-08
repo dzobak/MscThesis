@@ -104,6 +104,10 @@ def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
         for scope in log.event_scope_columns:
             if scope not in col_functions:
                 col_functions[scope] = ['TRUNCATE', 'MODE', 'COUNT', 'DISCARD']
+        
+        object_type_columns = log.get_object_type_column_names()
+        for col in object_type_columns:
+            col_functions[col] = ['UNION']
 
     elif kwargs['is_object_transformation']:
         df = log.objects

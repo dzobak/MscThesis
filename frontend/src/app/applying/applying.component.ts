@@ -7,6 +7,7 @@ import { ApplyingService, EventLogHeading } from './applying.service'
 import { AggregationMapping } from '../eventtable/eventtable.component';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { aggregation_rule } from '../aggregation-input/aggregation-input.component';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   e_ext_columns!: string[];
   objects: [] = [];
   objectColumns!: string[];
-  eventScopeLevels!: number[];
+  scopeLevels!: number[];
   log_details!: object;
 
 
@@ -62,6 +63,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   columnTypes!: object;
 
   rules!: { [Key: string]: aggregation_rule }
+  selectedTab = new FormControl(0);
 
   ngOnInit() {
     this.NamesSubs = this.aplService
@@ -115,7 +117,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
           }
         }
         );
-        this.EventsExtended = this.aplService
+      this.EventsExtended = this.aplService
         .getEventsExtended(value)
         .subscribe(res => {
           this.eventsExtended = JSON.parse(res);
@@ -165,7 +167,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     } else if (this.selectedOEoption == "object") {
       this.table = this.objects;
       this.columnsToDisplay = this.objectColumns;
-    } else if (this.selectedOEoption == "event_object"){
+    } else if (this.selectedOEoption == "event_object") {
       this.table = this.eventsExtended;
       this.columnsToDisplay = this.e_ext_columns;
     }
@@ -178,10 +180,12 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 
   getScopeLevels(value: any) {
+    console.log(this.selectedTab.value)
     this.EventLogSubs = this.aplService
-      .getScopeLevels(this.selectedLog, value, this.selectedOEoption == "event", this.selectedOEoption == "object")
+      .getScopeLevels(this.selectedLog, value, this.selectedOEoption.includes("event"), this.selectedOEoption == "object")
       .subscribe(res => {
-        this.eventScopeLevels = JSON.parse(res).levels;
+        console.log(res)
+        this.scopeLevels = JSON.parse(res).levels;
       }
       );
   }
@@ -213,11 +217,11 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       );
   }
 
-  sendRegex(value: string) {
+  sendRegex() {
     var newfilename = this.getTempFileName()
     this.EventLogSubs = this.aplService
-      .getSelection(value, this.selectedLog, newfilename, this.selectedScope,
-        this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
+      .getSelection(this.regex, this.selectedLog, newfilename, this.selectedScope,
+        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
         this.getLogData(newfilename)
@@ -230,10 +234,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
       .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel, this.groupingKey,
-        this.selectedOEoption == "event", this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items", this.rules)
+        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items", this.rules)
       .subscribe(res => {
         this.aggregationMapping = JSON.parse(res);
-        this.aggregationMapping.isEventTransformation = this.selectedOEoption == "event";
+        this.aggregationMapping.isEventTransformation = this.selectedOEoption.includes("event");
         this.aggregationMapping.isObjectTransformation = this.selectedOEoption == "object";
         this.getLogData(newfilename)
       }
@@ -284,13 +288,24 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
       .getRelabelling(this.selectedLog, newfilename, this.relabel,
-        this.selectedOEoption == "event", this.selectedOEoption == "object", "items")
+        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", "items")
       .subscribe(res => {
         this.table = JSON.parse(res);
         this.getLogData(newfilename)
 
       }
       );
+  }
+
+  apply() {
+    if (this.selectedTab.value == 0) {
+      this.sendRegex()
+    } else if (
+      this.selectedTab.value == 1) {
+      this.getAggregation()
+    } else if (this.selectedTab.value == 2) {
+      this.getRelabelling()
+    }
   }
 
   getEventDetails() {

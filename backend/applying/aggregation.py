@@ -94,6 +94,8 @@ def get_aggregation_functions(keyword: str):
         return Method.CONCAT
     elif keyword == 'COUNT':
         return Method.COUNT
+    # elif keyword == 'UNION':
+    #     return Method.UNION
 
 
 def aggregate_events(log, **kwargs):
@@ -202,14 +204,17 @@ def aggregate_objects(log, **kwargs):
     log.relations.drop_duplicates(inplace=True)
     log.relations.reset_index(drop=True, inplace=True)
 
-    return log
+    #TODO: this schould get actual values
+    new_to_old_id_mapping = {}
+
+    return log, new_to_old_id_mapping
 
 
 def execute_aggregation(log, **kwargs):
     if kwargs['is_event_transformation']:
         agg_log, new_to_old_id_mapping = aggregate_events(log, **kwargs)
     elif kwargs['is_object_transformation']:
-        agg_log = aggregate_objects(log, **kwargs)
+        agg_log, new_to_old_id_mapping = aggregate_objects(log, **kwargs)
     else:
         raise Exception("Objects or Events need to be selected")
 
@@ -227,3 +232,4 @@ class Method(Enum):
     TRUNCATE = truncate
     COUNT = Series.count
     def CONCAT(x): return pd.Series.str.cat(x)
+    # def UNION(x): return setify_values(x)

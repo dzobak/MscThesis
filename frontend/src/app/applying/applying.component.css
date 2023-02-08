@@ -1,7 +1,12 @@
-.pad-y{
+.pad-top-30{
     padding-top:30px;
-    margin-bottom: 20px;
 }
+
+.pad-y{
+    padding-top: 15px;
+    margin-bottom: 30px;
+}
+
 .mat-success {
     background-color: green;
     color: #fff;

@@ -41,7 +41,7 @@ export class EventtableComponent {
         .getOldRows(this.aggregationMapping.eventlogname, this.aggregationMapping['mapping'][row["ocel:eid"]],
           this.aggregationMapping.isEventTransformation, this.aggregationMapping.isObjectTransformation)
         .subscribe(res => {
-          console.log(res)
+          // console.log(res)
           this.oldRows = JSON.parse(res);
           const dialogRef = this.dialog.open<string>(CdkDialogOverviewExampleDialog, {
             minWidth: '250px',
