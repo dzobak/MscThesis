@@ -13,20 +13,6 @@ class Variant(Enum):
     REMOVE_INDEX = 'ri'
 
 
-def get_scope_by_index(scope: str, indexes: list[int], sep='/'):
-    split = tuple(scope.rsplit(sep))
-    indexes.sort()
-    sel_levels = []
-    for i in indexes:
-        if i < len(split)-1 and i >= 0:
-            sel_levels.append(split[i])
-        elif i >= len(split)-1:
-            sel_levels.append(split[i])
-            break
-    # sel_levels = [min(i,len(split)-1)for i in indexes]
-    return sep.join(sel_levels)
-
-
 def remove_scope_by_index(scope: str, indexes: list[int], sep='/'):
     split = tuple(scope.rsplit(sep))
     sel_levels = []
@@ -36,6 +22,7 @@ def remove_scope_by_index(scope: str, indexes: list[int], sep='/'):
     return sep.join(sel_levels)
 
 # def separate_column_name_and_rel_command()
+
 
 def relabel_function(df: pd.DataFrame, **kwargs):
     rel_command = kwargs['relabel_command']
@@ -68,7 +55,7 @@ def relabel_function(df: pd.DataFrame, **kwargs):
         elif kwargs['Variant'] == Variant.REMOVE_RIGHT:
             modified_col = df[kwargs['scope_column']].apply(
                 remove_n_levels, n=kwargs['n'], left_side=False)
-        #TODO remove index does not work yet
+        # TODO remove index does not work yet
         # elif kwargs['Variant'] == Variant.REMOVE_INDEX:
         #     modified_col = df[kwargs['scope_column']].apply(
         #         remove_scope_by_index, indexes=kwargs['sc_indexes'])
@@ -82,7 +69,6 @@ def relabel_function(df: pd.DataFrame, **kwargs):
 
 
 def parse_command(rel_command: str):
-    
 
     single_scope_commands = rel_command.split('CONCAT')
     commands = []

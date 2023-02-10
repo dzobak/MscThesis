@@ -8,6 +8,12 @@
         </mat-select>
     </mat-form-field>
 
+    <mat-form-field
+        *ngIf="rule.type == 'scope'" class="n">
+        <mat-label>level</mat-label>
+        <input matInput type="text" [(ngModel)]="rule.level" name="input_level" (change)="changedInput()">
+    </mat-form-field>
+
     <!-- <ng-container *ngIf="rule.type == 'numeric'"> -->
     <mat-form-field appearance="fill" *ngIf="rule.type" class="select-element">
         <mat-label>is/is not</mat-label>

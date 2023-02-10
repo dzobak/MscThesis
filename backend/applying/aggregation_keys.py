@@ -1,10 +1,9 @@
-import math
 import operator
 from typing import List
 import pandas as pd
 from pandas.api.indexers import BaseIndexer
 import numpy as np
-from utils import setify_values, same
+from utils import setify_values, same, get_scope_by_index
 
 
 def get_operator_fnc(kwd: str):
@@ -42,12 +41,6 @@ def check_categorical_rule(cluster: pd.Series, current_value: str | List[str], *
         if type(cluster.iloc[0]) == str:
             return negation(op(set([current_value]), set(cluster)))
         else:
-            print(type(cluster))
-            print(cluster)
-            print(setify_values(cluster))
-            print(type(current_value))
-            print(set(current_value))
-            print('----------------------------')
             return negation(op(set(current_value), setify_values(cluster)))
     else:
         result = True
@@ -80,8 +73,8 @@ def evaluate_rules(rules: List[dict], df: pd.DataFrame, current_idx: int, first_
             results.append(check_categorical_rule(df[rule['attribute']].iloc[first_idx:current_idx],
                                                   df[rule['attribute']].iloc[current_idx], **rule))
         elif rule['type'] == 'scope':
-            results.append(check_categorical_rule(df[rule['attribute']].iloc[first_idx:current_idx],
-                                                  df[rule['attribute']].iloc[current_idx], **rule))
+            results.append(check_categorical_rule(df[rule['attribute']].apply(get_scope_by_index, indexes=[int(rule['level'])]).iloc[first_idx:current_idx],
+                                                  df[rule['attribute']].apply(get_scope_by_index, indexes=[int(rule['level'])]).iloc[current_idx], **rule))
 
     return any(results)
 
