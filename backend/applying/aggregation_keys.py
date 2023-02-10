@@ -1,3 +1,4 @@
+import math
 import operator
 from typing import List
 import pandas as pd
@@ -34,18 +35,25 @@ def check_categorical_rule(cluster: pd.Series, current_value: str | List[str], *
 
     op = get_operator_fnc(rule['operator'])
     negation = operator.not_ if rule['bool'] == 'not' else same
-
+    if current_value != current_value:  # check if nan
+        current_value = ''
     # TODO make work with scopes
     if rule['unified'] == 'unified':
         if type(cluster.iloc[0]) == str:
-            return negation(op(set([current_value]),set(cluster)))
+            return negation(op(set([current_value]), set(cluster)))
         else:
-            return negation(op(set(current_value),setify_values(cluster)))
+            print(type(cluster))
+            print(cluster)
+            print(setify_values(cluster))
+            print(type(current_value))
+            print(set(current_value))
+            print('----------------------------')
+            return negation(op(set(current_value), setify_values(cluster)))
     else:
         result = True
         for value in cluster:
             if result:
-                result = negation(op(set(current_value),set(value)))
+                result = negation(op(set(current_value), set(value)))
             else:
                 break
         print(result)
@@ -68,9 +76,12 @@ def evaluate_rules(rules: List[dict], df: pd.DataFrame, current_idx: int, first_
             elif rule['type'] == 'numerical':
                 results.append(negation(
                     op(df[rule['attribute']].iloc[current_idx]-df[rule['attribute']].iloc[compared], rule['value'])))
-        elif rule['type'] == 'categorical' or rule['type']=='scope':
+        elif rule['type'] == 'categorical' or rule['type'] == 'object':
             results.append(check_categorical_rule(df[rule['attribute']].iloc[first_idx:current_idx],
-                                                  df[rule['attribute']].iloc[current_idx],**rule))
+                                                  df[rule['attribute']].iloc[current_idx], **rule))
+        elif rule['type'] == 'scope':
+            results.append(check_categorical_rule(df[rule['attribute']].iloc[first_idx:current_idx],
+                                                  df[rule['attribute']].iloc[current_idx], **rule))
 
     return any(results)
 
@@ -84,7 +95,8 @@ def get_aggregation_key_by_rules(df, **kwargs):
     j = 0  # position of first element of cluster
     for i in range(0, num_values):
         if i > 0:
-            if evaluate_rules(kwargs['rules'], df, i, j): #if any rule is true create new cluster
+            # if any rule is true create new cluster
+            if evaluate_rules(kwargs['rules'], df, i, j):
                 j = i
         keys[df.index[i]] = df[kwargs['id_column']].iloc[j]
     return keys

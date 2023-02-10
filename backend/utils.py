@@ -62,8 +62,10 @@ def setify(series: pd.Series) -> set:
 def setify_values(series: pd.Series) -> set:
     new_set = set()
     for value in series:
-        for subvalue in set(value):
-            new_set.add(subvalue)
+        if value == value:
+            for subvalue in set(value):
+                if subvalue == subvalue:  # no nan values
+                    new_set.add(subvalue)
     return new_set
 
 
@@ -104,7 +106,7 @@ def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
         for scope in log.event_scope_columns:
             if scope not in col_functions:
                 col_functions[scope] = ['TRUNCATE', 'MODE', 'COUNT', 'DISCARD']
-        
+
         object_type_columns = log.get_object_type_column_names()
         for col in object_type_columns:
             col_functions[col] = ['UNION']
@@ -128,7 +130,9 @@ def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
 
 def get_column_dtypes(log: OCEL_ext) -> dict:
     column_dtypes = {}
-    for df in [log.events, log.objects]:
+    object_type_columns = log.get_object_type_column_names()
+    events = log.get_extended_table()
+    for df in [events, log.objects]:
         for column in df.columns:
             dtype = type(df.iloc[df[column].first_valid_index()][column])
             if column in log.event_scope_columns or column in log.object_scope_columns:
@@ -139,7 +143,10 @@ def get_column_dtypes(log: OCEL_ext) -> dict:
                 column_dtypes[column] = 'numeric'
             elif pd.api.types.is_datetime64_any_dtype(df[column]):
                 column_dtypes[column] = 'timestamp'
+            elif column in object_type_columns:
+                column_dtypes[column] = 'object'
     return column_dtypes
+
 
 def same(x):
     """returns the input back"""

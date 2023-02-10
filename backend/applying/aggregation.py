@@ -109,14 +109,14 @@ def aggregate_events(log, **kwargs):
 
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         keep_n_levels, n=kwargs['scope_level']+1)
-
+    
     # need to redo the group by keys to allow more options
     group_by_keys = [kwargs['scope_column']]
 
     if len(kwargs['rules']):
         kwargs['id_column'] = log.event_id_column
         group_by_keys = []
-        for name, group in log.events.groupby(kwargs['scope_column'], as_index=False):
+        for name, group in log.get_extended_table().groupby(kwargs['scope_column'], as_index=False):
             group_by_keys.append(get_aggregation_key_by_rules(group, **kwargs))
 
         group_by_keys = concat_dicts(pd.Series(group_by_keys))
