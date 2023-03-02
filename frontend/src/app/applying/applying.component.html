@@ -84,29 +84,23 @@
                         <input matSliderThumb [(ngModel)]="selectedScopeLevel" class="thumb">
                     </mat-slider>
 
-                    <!-- <ng-container *ngIf="selectedOEoption == 'event'"> -->
+                    <ng-container *ngIf="selectedScope">
                     <ng-container *ngFor="let rule of rules | keyvalue">
                         <app-aggregation-input [columnsToDisplay]="columnsToDisplay" [rule]="rule.value"
                             [columnTypes]="columnTypes" (inputChange)="updateAggInput($event,rule.key)"
                             (ruleDeleted)="deleteRule(rule.key)">
                         </app-aggregation-input>
                     </ng-container>
-                    <!-- <div *ngFor="let item of rules | keyvalue">
-                        Key: <b>{{item.key}}</b> and Value: <b>{{item.value}}</b>
-                    </div> -->
-                    <button mat-icon-button (click)="addRule()">
+                    <button mat-icon-button (click)="addRule()" matTooltip="Add aggregation rule" [matTooltipShowDelay]="1000">
                         <mat-icon color="success">add-box</mat-icon>
                     </button>
-                    <!-- </ng-container> -->
+                    </ng-container>
                 </div>
 
                 <app-eventtable class="table" [columnsToDisplay]="columnsToDisplay" [eventLog]="table"
                     [columnSelect]="columnSelect" [selectedMethods]="selectedMethods"
                     [aggregationMapping]="aggregationMapping" (notify)="selectedMethodsChanged($event)">
                 </app-eventtable>
-                <!-- <div class="pad-top">
-                <button mat-raised-button color="primary" (click)="getAggregation()">Apply</button>
-            </div> -->
             </mat-tab>
 
             <mat-tab label="Relabeling function" [disabled]="tabgroup_disabled">
@@ -121,14 +115,11 @@
 
                 <app-eventtable [columnsToDisplay]="columnsToDisplay" [eventLog]="table">
                 </app-eventtable>
-                <!-- <div class="pad-top">
-                <button mat-raised-button color="primary" (click)="getRelabelling()">Apply</button>
-            </div> -->
             </mat-tab>
         </mat-tab-group>
         <div class="pad-y">
             <button mat-raised-button color="success" (click)="saveLog()">Save</button>
-            <button *ngIf="scopeLevels" mat-raised-button color="primary" (click)="apply()">Apply</button>
+            <button [disabled]="!scopeLevels" mat-raised-button color="primary" (click)="apply()">Apply</button>
         </div>
     </div>
 </div>

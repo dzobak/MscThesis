@@ -1,8 +1,8 @@
 import operator
 from typing import List
 import pandas as pd
-from pandas.api.indexers import BaseIndexer
-import numpy as np
+# from pandas.api.indexers import BaseIndexer
+# import numpy as np
 from utils import setify_values, same, get_scope_by_index
 
 
@@ -34,8 +34,8 @@ def check_categorical_rule(cluster: pd.Series, current_value: str | List[str], *
 
     op = get_operator_fnc(rule['operator'])
     negation = operator.not_ if rule['bool'] == 'not' else same
-    if current_value != current_value:  # check if nan
-        current_value = ''
+    if current_value != current_value:
+        current_value = ''  # check if nan
     # TODO make work with scopes
     if rule['unified'] == 'unified':
         if type(cluster.iloc[0]) == str:
@@ -45,53 +45,64 @@ def check_categorical_rule(cluster: pd.Series, current_value: str | List[str], *
     else:
         result = True
         for value in cluster:
+            value = set(value) if value == value else set()
             if result:
-                result = negation(op(set(current_value), set(value)))
+                result = negation(op(set(current_value), value))
             else:
                 break
-        print(result)
         return result
 
 
-def evaluate_rules(rules: List[dict], df: pd.DataFrame, current_idx: int, first_idx: int) -> bool:
+def evaluate_rules(rules: List[dict], df: pd.DataFrame, current_idx: int, indexes: List[int]) -> bool:
     results = []
+    first_idx = indexes[0]
     for rule in rules.values():
         op = get_operator_fnc(rule['operator'])
         negation = operator.not_ if rule['bool'] == 'not' else same
         if rule['type'] == 'timestamp' or rule['type'] == 'numerical':
             if rule['compared'] == 'first':
-                compared = first_idx
+                compared = indexes[0]
             elif rule['compared'] == 'last':
-                compared = current_idx-1
+                compared = indexes[-1]
+
             if rule['type'] == 'timestamp':
                 results.append(negation(op(pd.to_timedelta(
-                    df[rule['attribute']].iloc[current_idx] - df[rule['attribute']].iloc[compared]), pd.to_timedelta(rule['value']))))
+                    df[rule['attribute']].iloc[current_idx] - df[rule['attribute']].loc[compared]), pd.to_timedelta(rule['value']))))
             elif rule['type'] == 'numerical':
                 results.append(negation(
-                    op(df[rule['attribute']].iloc[current_idx]-df[rule['attribute']].iloc[compared], rule['value'])))
+                    op(df[rule['attribute']].iloc[current_idx]-df[rule['attribute']].loc[compared], rule['value'])))
         elif rule['type'] == 'categorical' or rule['type'] == 'object':
-            results.append(check_categorical_rule(df[rule['attribute']].iloc[first_idx:current_idx],
+            results.append(check_categorical_rule(df[rule['attribute']].loc[indexes],
                                                   df[rule['attribute']].iloc[current_idx], **rule))
         elif rule['type'] == 'scope':
-            results.append(check_categorical_rule(df[rule['attribute']].apply(get_scope_by_index, indexes=[int(rule['level'])]).iloc[first_idx:current_idx],
+            results.append(check_categorical_rule(df[rule['attribute']].apply(get_scope_by_index, indexes=[int(rule['level'])]).loc[indexes],
                                                   df[rule['attribute']].apply(get_scope_by_index, indexes=[int(rule['level'])]).iloc[current_idx], **rule))
 
-    return any(results)
+    return all(results)
 
 
 def get_aggregation_key_by_rules(df, **kwargs):
-    # partition by other attributes
-    # I can do whatever here, don't think of window functions as a simple iterator
-    # statement = evaluate_rules(kwargs['rules'])
     num_values = len(df.index)
     keys = {}
-    j = 0  # position of first element of cluster
+    kwargs.setdefault('lastN', 10)
+
     for i in range(0, num_values):
+        last_clusters = []  # clusters where the last N elements were added to
+        for j in range(1, min(len(keys), kwargs['lastN'])+1):
+            last_clusters.append(list(keys.values())[len(keys)-j])
+        last_clusters = list(dict.fromkeys(last_clusters))
+        last_cluster_id = df[kwargs['id_column']].iloc[i]
         if i > 0:
-            # if any rule is true create new cluster
-            if evaluate_rules(kwargs['rules'], df, i, j):
-                j = i
-        keys[df.index[i]] = df[kwargs['id_column']].iloc[j]
+
+            for cluster_id in last_clusters:
+                indexes = [k for k, v in keys.items() if v == cluster_id]
+                # if all rules are true create new cluster
+                if evaluate_rules(kwargs['rules'], df, i, indexes):
+                    last_cluster_id = cluster_id
+                    break
+
+        keys[df.index[i]] = last_cluster_id
+
     return keys
 
 
