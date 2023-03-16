@@ -165,7 +165,7 @@ class Applying(Resource):
             log = OCEL_ext(ocel_import.apply(
                 get_log_filepath_from_name(data['eventlogname']), parameters=self.parameters))
             df = log.events if data['is_event_transformation'] else log.objects
-            path = get_scope_graph(df[data["scope_column"]])
+            path = get_scope_graph(df[data["scope_column"]], data['eventlogname'])
             return path
         else:
             return {

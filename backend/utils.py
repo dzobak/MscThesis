@@ -208,33 +208,21 @@ def get_nodes_and_edges(scopes: pd.Series):
     return edges
 
 
-def get_scope_graph(scopes: pd.Series):
+def get_scope_graph(scopes: pd.Series, eventlogname: str):
     print(scopes)
     edges = get_nodes_and_edges(scopes)
     G = nx.DiGraph()
 
-    # for node, level in nodes.items():
-    #     G.add_node(node, level=level)
-
     for idx, edge in edges.iterrows():
         G.add_edge(*edge['scope_pairs'], label=edge['weight'])
 
-    # pos = nx.multipartite_layout(G, subset_key="level", align='horizontal')
-    # pos = nx.nx_agraph.graphviz_layout(G, prog='dot')
     A = nx.nx_agraph.to_agraph(G)
-    # flipped_pos = {node: (x,-y) for (node, (x,y)) in pos.items()}
-    # plt.clf()
-    # nx.draw(G,pos,with_labels = True, node_shape="s",  node_color="none", bbox=dict(facecolor="skyblue", edgecolor='black', boxstyle='round,pad=0.2'))
-    # labels = nx.get_edge_attributes(G,'label')
 
-    # nx.draw_networkx_edge_labels(G,pos,edge_labels=labels)
-    # A = get_scope_graph(scopes)
-    # A.node_attr.update(color="red")
     print(A.string())
     n = A.get_node('n0')
     n.attr['style'] = 'invis'
-    # print dot file to standard output
     A.layout("dot")  # layout with dot
-    path = get_image_filepath_from_name(scopes.name)
+    name = eventlogname + '-' + scopes.name
+    path = get_image_filepath_from_name(name)
     A.draw(path)
-    return get_image_link_from_name(scopes.name)
+    return get_image_link_from_name(name)

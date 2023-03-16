@@ -91,6 +91,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   loadNewEventLog(value: any) {
     // console.log(this.applyingData)
+    this.scopeImagePath.clear()
     if (this.applyingData.length) {
       for (let log_head of this.applyingData) if (log_head.value == value) {
         this.eventColumns = log_head["e_columns"]
