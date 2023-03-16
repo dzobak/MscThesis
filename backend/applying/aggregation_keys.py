@@ -80,22 +80,23 @@ def evaluate_rules(rules: List[dict], df: pd.DataFrame, current_idx: int, indexe
 
     return all(results)
 
-def get_last_N_clusters(N:int, keys:dict):
-        last_clusters = []  # clusters where the last N elements were added to
-        
-        #get clusters where the last N events were assigned
-        # for j in range(1, min(len(keys), N)+1):
-        #     last_clusters.append(list(keys.values())[len(keys)-j])
-        
-        #get last N clusters
-        for j in range(1, len(keys)+1):
-            last_clusters.append(list(keys.values())[len(keys)-j])
-            last_clusters = list(dict.fromkeys(last_clusters))
-            if len(last_clusters) == N:
-                break
 
+def get_last_N_clusters(N: int, keys: dict):
+    last_clusters = []  # clusters where the last N elements were added to
+
+    # get clusters where the last N events were assigned
+    # for j in range(1, min(len(keys), N)+1):
+    #     last_clusters.append(list(keys.values())[len(keys)-j])
+
+    # get last N clusters
+    for j in range(1, len(keys)+1):
+        last_clusters.append(list(keys.values())[len(keys)-j])
         last_clusters = list(dict.fromkeys(last_clusters))
-        return last_clusters
+        if len(last_clusters) == N:
+            break
+
+    last_clusters = list(dict.fromkeys(last_clusters))
+    return last_clusters
 
 
 def get_aggregation_key_by_rules(df, **kwargs):
@@ -106,7 +107,7 @@ def get_aggregation_key_by_rules(df, **kwargs):
     for i in range(0, num_values):
         last_clusters = get_last_N_clusters(kwargs['lastN'], keys)
         last_cluster_id = df[kwargs['id_column']].iloc[i]
-  
+
         if i > 0:
 
             for cluster_id in last_clusters:

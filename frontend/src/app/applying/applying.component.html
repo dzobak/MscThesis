@@ -39,6 +39,7 @@
 
 <div class="grid">
     <div>
+        <mat-accordion class="example-headers-align" multi>
         <mat-expansion-panel hideToggle [disabled]="tabgroup_disabled" (opened)="getEventDetails()">
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -53,6 +54,34 @@
                 </mat-list-item>
             </mat-list>
         </mat-expansion-panel>
+        <ng-container *ngIf="applyingData">
+            <ng-container *ngFor="let log of applyingData">
+                <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption.includes('event')">
+                    <mat-expansion-panel hideToggle *ngFor="let scope of log.e_scopes" >
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{scope}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <button mat-raised-button color="success" (click)="getScopeImage(scope)">Get scope hierarchy graph</button>
+                        <img *ngIf="scopeImagePath.has(scope)" src={{scopeImagePath.get(scope)}}>
+                        <b>{{scopeImagePath.get(scope)}}</b>
+                    </mat-expansion-panel>
+                </ng-container>
+                <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption=='object'">
+                    <mat-expansion-panel hideToggle *ngFor="let scope of log.o_scopes">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{scope}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <button mat-raised-button color="success" (click)="getScopeImage(scope)">Get scope hierarchy graph</button>
+                        <img *ngIf="scopeImagePath.has(scope)" src={{scopeImagePath.get(scope)}}>
+                    </mat-expansion-panel>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+        </mat-accordion>
     </div>
     <div>
         <mat-tab-group class="tab-group" dynamicHeight [selectedIndex]="selectedTab.value"
@@ -85,15 +114,16 @@
                     </mat-slider>
 
                     <ng-container *ngIf="selectedScope">
-                    <ng-container *ngFor="let rule of rules | keyvalue">
-                        <app-aggregation-input [columnsToDisplay]="columnsToDisplay" [rule]="rule.value"
-                            [columnTypes]="columnTypes" (inputChange)="updateAggInput($event,rule.key)"
-                            (ruleDeleted)="deleteRule(rule.key)">
-                        </app-aggregation-input>
-                    </ng-container>
-                    <button mat-icon-button (click)="addRule()" matTooltip="Add aggregation rule" [matTooltipShowDelay]="1000">
-                        <mat-icon color="success">add-box</mat-icon>
-                    </button>
+                        <ng-container *ngFor="let rule of rules | keyvalue">
+                            <app-aggregation-input [columnsToDisplay]="columnsToDisplay" [rule]="rule.value"
+                                [columnTypes]="columnTypes" (inputChange)="updateAggInput($event,rule.key)"
+                                (ruleDeleted)="deleteRule(rule.key)">
+                            </app-aggregation-input>
+                        </ng-container>
+                        <button mat-icon-button (click)="addRule()" matTooltip="Add aggregation rule"
+                            [matTooltipShowDelay]="1000">
+                            <mat-icon color="success">add-box</mat-icon>
+                        </button>
                     </ng-container>
                 </div>
 

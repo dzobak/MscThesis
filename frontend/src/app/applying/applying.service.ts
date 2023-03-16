@@ -102,7 +102,7 @@ export class ApplyingService {
 
   // TODO: check if everything is filled out
   getAggregation(eventlogname: string, newLogName: string, scope: string, level: number, groupingKey: string, isEventTransformation: boolean,
-    isObjectTransformation: boolean, columnFunctionMap: object, object_type: string, rules={}): Observable<string> {
+    isObjectTransformation: boolean, columnFunctionMap: object, object_type: string, rules = {}): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -157,6 +157,24 @@ export class ApplyingService {
       JSON.stringify({
         eventlogname: eventlogname,
         rows_index: rows_index,
+        is_event_transformation: isEventTransformation,
+        is_object_transformation: isObjectTransformation,
+      }),
+      httpOptions
+    );
+  }
+
+  getScopeImage(eventlogname: string, scope_column: string, isEventTransformation: boolean,
+    isObjectTransformation: boolean,) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post<string>('http://127.0.0.1:5002/applying/scope_image',
+      JSON.stringify({
+        eventlogname: eventlogname,
+        scope_column: scope_column,
         is_event_transformation: isEventTransformation,
         is_object_transformation: isObjectTransformation,
       }),

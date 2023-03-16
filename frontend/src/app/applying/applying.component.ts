@@ -37,6 +37,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   EventsExtended!: Subscription;
   ColumnSubs!: Subscription;
   DetailsSubs!: Subscription;
+  ScopeImage !: Subscription;
   regex: string = "";
   relabel: string = "";
   groupingKey: string = "";
@@ -64,6 +65,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
   rules!: { [Key: string]: aggregation_rule }
   selectedTab = new FormControl(0);
+  scopeImagePath = new Map<string, string>();
 
   ngOnInit() {
     this.NamesSubs = this.aplService
@@ -325,6 +327,16 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     }
   }
 
+  getScopeImage(selectedScope: string){
+    this.ScopeImage = this.aplService
+      .getScopeImage(this.selectedLog, selectedScope, this.selectedOEoption.includes("event"), this.selectedOEoption == "object")
+      .subscribe(res => {
+        this.scopeImagePath.set(selectedScope,res)
+      }
+      );
+    
+  }
+
   saveLog() {
     var new_name = 'new_name'
     const dialogRef = this.dialog.open(SaveDialog, {
@@ -335,7 +347,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
       console.log('The dialog was closed');
       new_name = result;
       this.ApplyingSubs = this.aplService
-        .saveLog(this.selectedLog, new_name)
+        .saveLog(this.selectedLog, new_name, )
         .subscribe(res => {
           this.getLogData(new_name)
         }
@@ -346,6 +358,10 @@ export class ApplyingComponent implements OnInit, OnDestroy {
 
 export interface DialogData {
   new_name: string;
+}
+
+export interface scopeImages<T> {
+  [Key: string]: T;
 }
 
 @Component({

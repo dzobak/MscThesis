@@ -1,3 +1,4 @@
 .vscode/settings.json
 script/logs
 backend/event_log_files
+backend/images
