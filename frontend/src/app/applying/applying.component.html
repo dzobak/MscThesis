@@ -40,47 +40,51 @@
 <div class="grid">
     <div>
         <mat-accordion class="example-headers-align" multi>
-        <mat-expansion-panel hideToggle [disabled]="tabgroup_disabled" (opened)="getEventDetails()">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Log details
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-list>
-                <mat-list-item mat-list-item *ngFor="let detail of log_details| keyvalue" matTooltip="{{detail.value}}"
-                    [matTooltipShowDelay]="1000" [matTooltipHideDelay]="500">
-                    <span matListItemTitle>{{detail.key}}</span>
-                    <span>{{detail.value}}</span>
-                </mat-list-item>
-            </mat-list>
-        </mat-expansion-panel>
-        <ng-container *ngIf="applyingData">
-            <ng-container *ngFor="let log of applyingData">
-                <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption.includes('event')">
-                    <mat-expansion-panel hideToggle *ngFor="let scope of log.e_scopes" >
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{scope}}
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <button mat-raised-button color="success" (click)="getScopeImage(scope)">Get scope hierarchy graph</button>
-                        <img *ngIf="scopeImagePath.has(scope)" src={{scopeImagePath.get(scope)}}>
-                        <b>{{scopeImagePath.get(scope)}}</b>
-                    </mat-expansion-panel>
-                </ng-container>
-                <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption=='object'">
-                    <mat-expansion-panel hideToggle *ngFor="let scope of log.o_scopes">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{scope}}
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <button mat-raised-button color="success" (click)="getScopeImage(scope)">Get scope hierarchy graph</button>
-                        <img *ngIf="scopeImagePath.has(scope)" src={{scopeImagePath.get(scope)}}>
-                    </mat-expansion-panel>
+            <mat-expansion-panel hideToggle [disabled]="tabgroup_disabled" (opened)="getEventDetails()">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Log details
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-list>
+                    <mat-list-item mat-list-item *ngFor="let detail of log_details| keyvalue"
+                        matTooltip="{{detail.value}}" [matTooltipShowDelay]="1000" [matTooltipHideDelay]="500">
+                        <span matListItemTitle>{{detail.key}}</span>
+                        <span>{{detail.value}}</span>
+                    </mat-list-item>
+                </mat-list>
+            </mat-expansion-panel>
+            <ng-container *ngIf="applyingData">
+                <ng-container *ngFor="let log of applyingData">
+                    <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption.includes('event')">
+                        <mat-expansion-panel hideToggle *ngFor="let scope of log.e_scopes">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Details for: {{scope}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <button mat-raised-button color="success" (click)="getScopeImage(scope)">Get scope hierarchy
+                                graph</button>
+                            <br>
+                            <img class="img" *ngIf="scopeImagePath.has(scope)" src={{scopeImagePath.get(scope)}} (click)="openImage(scope)">
+                            <!-- <b>{{scopeImagePath.get(scope)}}</b> -->
+                        </mat-expansion-panel>
+                    </ng-container>
+                    <ng-container *ngIf="log.value == selectedLog && this.selectedOEoption=='object'">
+                        <mat-expansion-panel hideToggle *ngFor="let scope of log.o_scopes">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Details for {{scope}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <button mat-raised-button color="success" (click)="getScopeImage(scope)">Get scope hierarchy
+                                graph</button>
+                            <br>
+                            <img class="img" *ngIf="scopeImagePath.has(scope)" src={{scopeImagePath.get(scope)}} >
+                        </mat-expansion-panel>
+                    </ng-container>
                 </ng-container>
             </ng-container>
-        </ng-container>
         </mat-accordion>
     </div>
     <div>

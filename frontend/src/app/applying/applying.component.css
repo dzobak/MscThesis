@@ -1,8 +1,8 @@
-.pad-top-30{
-    padding-top:30px;
+.pad-top-30 {
+    padding-top: 30px;
 }
 
-.pad-y{
+.pad-y {
     padding-top: 15px;
     margin-bottom: 30px;
 }
@@ -12,24 +12,30 @@
     color: #fff;
 }
 
-.mat-black{
-    color:black;
+.mat-black {
+    color: black;
 }
 
-.center{
+.center {
     text-align: center;
     align-content: center;
 }
 
-.grid{
+.grid {
     display: grid;
-    grid-template-columns: 20% 80%;
+    grid-template-columns: 25% 75%;
 }
 
-.tab-group{
+.tab-group {
     margin: 2%;
 }
 
-.table{
+.table {
     overflow-x: auto;
+}
+
+.img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
 }

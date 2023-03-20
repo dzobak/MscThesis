@@ -338,6 +338,14 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     
   }
 
+  openImage(scopeName:string){
+    const imagePath = this.scopeImagePath.get(scopeName)
+    this.dialog.open(ScopeImageDialog, {
+      data: { imagePath : imagePath ,
+      scopeName : scopeName},
+    });
+  }
+
   saveLog() {
     var new_name = 'new_name'
     const dialogRef = this.dialog.open(SaveDialog, {
@@ -357,7 +365,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
   }
 }
 
-export interface DialogData {
+export interface SaveDialogData {
   new_name: string;
 }
 
@@ -372,11 +380,32 @@ export interface scopeImages<T> {
 export class SaveDialog {
   constructor(
     public dialogRef: MatDialogRef<SaveDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: SaveDialogData,
   ) { }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
+}
+
+export interface ScopeImageData {
+  imagePath: string;
+  scopeName: string;
+}
+
+@Component({
+  selector: 'scope-image-dialog',
+  templateUrl: './scopeImageDialog.html',
+})
+export class ScopeImageDialog {
+  constructor(
+    public dialogRef: MatDialogRef<ScopeImageDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: ScopeImageData,
+  ) { }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+ 
 }
 

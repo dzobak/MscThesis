@@ -217,7 +217,7 @@ def get_scope_graph(scopes: pd.Series, eventlogname: str):
         G.add_edge(*edge['scope_pairs'], label=edge['weight'])
 
     A = nx.nx_agraph.to_agraph(G)
-
+    A.node_attr["shape"] = "box"
     print(A.string())
     n = A.get_node('n0')
     n.attr['style'] = 'invis'
