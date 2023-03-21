@@ -23,10 +23,10 @@ class EventLogs(Resource):
             data = request.get_json()
             print(data['eventlog'])
             #TODO this just works with my log
-            if 'toy_log3' in data['eventlog'] :
+            if 'toy_log4' in data['eventlog'] :
                 print('here')
                 log = OCEL_ext(ocel_import.apply(
-                    get_log_filepath_from_name(data['eventlog']),parameters={'param:event:activity': 'scope:ocel:activity'}))
+                    get_log_filepath_from_name(data['eventlog']),parameters={'param:event:activity': 'ocel:scope:activity'}))
             else:
                 log = OCEL_ext(ocel_import.apply(
                     get_log_filepath_from_name(data['eventlog'])))

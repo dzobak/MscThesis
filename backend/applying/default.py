@@ -15,7 +15,7 @@ from glob import glob
 
 class Applying(Resource):
     # TODO: this is kind of hardcoded
-    parameters = {'param:event:activity': 'scope:ocel:activity'}
+    parameters = {'param:event:activity': 'ocel:scope:activity'}
 
     def get(self, task):
         if task in ['default', 'names']:
@@ -29,18 +29,13 @@ class Applying(Resource):
                     # TODO error here if ocel file contains no data
                     log = OCEL_ext(ocel_import.apply(
                         get_log_filepath_from_name(name), parameters=self.parameters))
-                    # events, objects = pm4py.objects.ocel.exporter.util.clean_dataframes\
-                    #     .get_dataframes_from_ocel(log)
 
-                    # TODO:make a list for scope columns
                     e_columns = [col for col in log.events.columns]
                     logs.append({
                         'value': name,
-                        # need to change that to actual scope columns
                         'e_scopes': log.event_scope_columns,
                         'e_columns': [col for col in log.events.columns],
                         'e_ext_columns': [*e_columns, *log.get_object_type_column_names()],
-                        # need to change that to actual scope columns
                         'o_scopes': log.object_scope_columns,
                         'o_columns': [col for col in log.objects.columns]
                     })
@@ -51,6 +46,7 @@ class Applying(Resource):
             name = task.split('eventLog', maxsplit=1)[1]
             event_log = OCEL_ext(ocel_import.apply(
                 get_log_filepath_from_name(name), parameters=self.parameters))
+            print(event_log.relations)
             return event_log.get_readable_timestamp().events.head(20).to_json(orient='records')
         elif 'objects' in task:
             name = task.split('objects', maxsplit=1)[1]
@@ -70,11 +66,9 @@ class Applying(Resource):
             e_columns = [col for col in log.events.columns]
             logdata = {
                 'value': name,
-                # need to change that to actual scope columns
                 'e_scopes': log.event_scope_columns,
                 'e_columns': e_columns,
                 'e_ext_columns': [*e_columns, *log.get_object_type_column_names()],
-                # need to change that to actual scope columns
                 'o_scopes': log.object_scope_columns,
                 'o_columns': [col for col in log.objects.columns]
             }
@@ -104,7 +98,7 @@ class Applying(Resource):
             # filtered_log = sel.selection_function(
             #     regex=data['regex'], df=log, scope_column=data['scope'])
             ocel_export.apply(filtered_log, get_log_filepath_from_name(
-                data['newlogname']))
+                data['newlogname']),parameters=self.parameters)
             if data['is_event_transformation']:
                 return filtered_log.events.head(10).to_json(orient='records')
             elif data['is_object_transformation']:
@@ -124,7 +118,7 @@ class Applying(Resource):
             aggregated_log, new_to_old_id_mapping = execute_aggregation(
                 log, **data)
             ocel_export.apply(aggregated_log, get_log_filepath_from_name(
-                data['newlogname']))
+                data['newlogname']), parameters=self.parameters)
             # if data['is_event_transformation']:
             #     return aggregated_log.events.head(10).to_json(orient='records')
             # elif data['is_object_transformation']:
@@ -142,7 +136,7 @@ class Applying(Resource):
                 get_log_filepath_from_name(data['eventlogname']), parameters=self.parameters))
             relabeled_log = execute_relabelling(log, **data)
             ocel_export.apply(relabeled_log, get_log_filepath_from_name(
-                data['newlogname']))
+                data['newlogname']), parameters=self.parameters)
             if data['is_event_transformation']:
                 return relabeled_log.events.head(10).to_json(orient='records')
             elif data['is_object_transformation']:
