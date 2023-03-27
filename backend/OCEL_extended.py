@@ -1,15 +1,14 @@
-import pm4py
 from copy import copy, deepcopy
 from pm4py.objects.ocel.obj import OCEL
 from enum import Enum
 from pm4py.objects.ocel import constants
 from typing import List
-import pandas as pd
 
 
 class Parameters(Enum):
-    EVENT_SCOPES = 'event_scopes'
-    OBJECT_SCOPES = 'object_scopes'
+    EVENT_SCOPES = 'param:event:scopes'
+    OBJECT_SCOPES = 'param:object:scopes'
+    START_TIMESTAMP = 'param:event:start:timestamp'
 
 
 class OCEL_ext(OCEL):
@@ -28,6 +27,8 @@ class OCEL_ext(OCEL):
             else self.get_default_event_scope_columns()
         self.object_scope_columns = parameters[Parameters.OBJECT_SCOPES] if Parameters.OBJECT_SCOPES in parameters\
             else self.get_default_object_scope_columns()
+        self.event_start_timestamp= parameters[Parameters.START_TIMESTAMP] if Parameters.START_TIMESTAMP in parameters\
+            else None
 
     def get_readable_timestamp(self):
         self.events[self.event_timestamp] = self.events[self.event_timestamp].dt.strftime('%Y-%m-%dT%H:%M:%S')

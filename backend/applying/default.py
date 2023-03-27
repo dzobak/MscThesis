@@ -16,6 +16,7 @@ from glob import glob
 class Applying(Resource):
     # TODO: this is kind of hardcoded
     parameters = {'param:event:activity': 'ocel:scope:activity'}
+    # parameters = {}
 
     def get(self, task):
         if task in ['default', 'names']:
@@ -46,7 +47,6 @@ class Applying(Resource):
             name = task.split('eventLog', maxsplit=1)[1]
             event_log = OCEL_ext(ocel_import.apply(
                 get_log_filepath_from_name(name), parameters=self.parameters))
-            print(event_log.relations)
             return event_log.get_readable_timestamp().events.head(20).to_json(orient='records')
         elif 'objects' in task:
             name = task.split('objects', maxsplit=1)[1]
@@ -72,7 +72,6 @@ class Applying(Resource):
                 'o_scopes': log.object_scope_columns,
                 'o_columns': [col for col in log.objects.columns]
             }
-            print(logdata)
             return json.dumps(logdata)
         elif 'delete' in task:
             name = task.split('delete', maxsplit=1)[1]

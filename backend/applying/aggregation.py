@@ -101,12 +101,13 @@ def get_aggregation_functions(keyword: str):
 def aggregate_events(log, **kwargs):
     col_func_map = kwargs['col_func_map']
     # TODO where col func is groupby need to add as key, where col func is discard need to remove from col_func
-
+    print(col_func_map)
     col_func_map_mod = {k: get_aggregation_functions(
         v) for k, v in col_func_map.items() if get_aggregation_functions(v) is not None}
     col_func_map_mod[log.event_id_column] = [
         col_func_map_mod[log.event_id_column], setify]
-
+    print(col_func_map_mod)
+    print()
     log.events[kwargs['scope_column']] = log.events[kwargs['scope_column']].apply(
         keep_n_levels, n=kwargs['scope_level']+1)
     
@@ -135,6 +136,8 @@ def aggregate_events(log, **kwargs):
             new_columns.append('old_ids')
         else:
             new_columns.append(x[0])
+    print(new_columns)
+    print('############')
     agg_events.columns = new_columns
     agg_events.sort_values(
         log.event_id_column, inplace=True, ignore_index=True)
@@ -152,6 +155,7 @@ def aggregate_events(log, **kwargs):
         log.relations, log.event_id_column, old_to_new_id_mapping)
 
     log.events = agg_events.drop(columns='old_ids')
+    # print(log.events["start:ocel:timestamp"])
 
     # change relation columns besides id
     log.relations[log.event_activity] = log.relations[log.event_id_column].map(
