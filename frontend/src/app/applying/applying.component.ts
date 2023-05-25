@@ -224,7 +224,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     var newfilename = this.getTempFileName()
     this.EventLogSubs = this.aplService
       .getSelection(this.regex, this.selectedLog, newfilename, this.selectedScope,
-        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", "items")
+        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", "") // TODO: items
       .subscribe(res => {
         this.table = JSON.parse(res);
         this.getLogData(newfilename)
@@ -237,7 +237,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
       .getAggregation(this.selectedLog, newfilename, this.selectedScope, this.selectedScopeLevel, this.groupingKey,
-        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", this.getColumnFunctionMapping(), "items", this.rules)
+        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", this.getColumnFunctionMapping(), "", this.rules) //TODO: items
       .subscribe(res => {
         this.aggregationMapping = JSON.parse(res);
         this.aggregationMapping.isEventTransformation = this.selectedOEoption.includes("event");
@@ -291,7 +291,7 @@ export class ApplyingComponent implements OnInit, OnDestroy {
     var newfilename = this.getTempFileName()
     this.ApplyingSubs = this.aplService
       .getRelabelling(this.selectedLog, newfilename, this.relabel,
-        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", "items")
+        this.selectedOEoption.includes("event"), this.selectedOEoption == "object", "") //TODO: items is object type, needs to work without
       .subscribe(res => {
         this.table = JSON.parse(res);
         this.getLogData(newfilename)

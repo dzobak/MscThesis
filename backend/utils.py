@@ -184,34 +184,43 @@ def rename_file(old_name: str, new_name: str) -> None:
 def delete_file(name: str) -> None:
     os.remove(get_log_filepath_from_name(name))
 
+def get_scope_list(scope: str, sep='/') -> list:
+    scope_list = list(scope.rsplit(sep)) if type(scope) == str else []
+    return scope_list
 
 def get_nodes_and_edges(scopes: pd.Series):
-
+    print(scopes)
     scope_groups = scopes.groupby(scopes).count()
     scope_pairs = []
     weight = []
-    # nodes = {}
+    tmp_nodes = set()
     for scope in scope_groups.index:
-        scope_tuple = get_scope_tuple(scope)
-        for i in range(len(scope_tuple)):
-            # nodes[scope_tuple[i]]= i
-            if i == 0:
-                scope_pairs.append(('n0', scope_tuple[i]))
-                weight.append(scope_groups[scope])
-            if i < len(scope_tuple)-1:
-
-                scope_pairs.append((scope_tuple[i], scope_tuple[i+1]))
-                weight.append(scope_groups[scope])
-
+        if scope:
+            scope_list = get_scope_list(scope)
+            for i in range(len(scope_list)):
+                # nodes[scope_list[i]]= i
+                if i == 0:
+                    scope_pairs.append(('n0', scope_list[i]))
+                    weight.append(scope_groups[scope])
+                elif i < len(scope_list):
+                    scope_pairs.append(('/'.join(scope_list[:i]), '/'.join(scope_list[:i+1])))
+                    weight.append(scope_groups[scope])
+                tmp_nodes.add(tuple(scope_list[:i+1]))
+    
+    nodes = []
+    for tup in tmp_nodes:
+        nodes.append(('/'.join(tup), {'label': tup[-1]}))
+    
     edges = pd.DataFrame({'scope_pairs': scope_pairs, 'weight': weight})
     edges = edges.groupby('scope_pairs', as_index=False).sum('weight')
-    return edges
+    return nodes,edges
 
 
 def get_scope_graph(scopes: pd.Series, eventlogname: str):
-    print(scopes)
-    edges = get_nodes_and_edges(scopes)
+    nodes,edges = get_nodes_and_edges(scopes)
     G = nx.DiGraph()
+
+    G.add_nodes_from(nodes)
 
     for idx, edge in edges.iterrows():
         G.add_edge(*edge['scope_pairs'], label=edge['weight'])

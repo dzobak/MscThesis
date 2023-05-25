@@ -26,7 +26,7 @@ def remove_scope_by_index(scope: str, indexes: list[int], sep='/'):
 
 def relabel_function(df: pd.DataFrame, **kwargs):
     rel_command = kwargs['relabel_command']
-    if rel_command.split('AS')[1]:
+    if 'AS' in rel_command:
         new_column = rel_command.split('AS')[1]
         new_column = new_column.split('<')[1]
         kwargs['new_column'] = new_column.split('>')[0]
@@ -35,41 +35,46 @@ def relabel_function(df: pd.DataFrame, **kwargs):
         kwargs['new_column'] = 'new:column'
 
     commands = parse_command(rel_command)
-
+    print(commands)
     column = kwargs['new_column']
     new_column = pd.Series()
     for kwargs in commands:
+        df_to_relabel = df[~df[kwargs['scope_column']].isna()]
+        df_no_relabel = df[df[kwargs['scope_column']].isna()]
         # sc_indexes = list(map(int, input('Select the scope level: ').split(',')))
         if kwargs['Variant'] == Variant.KEEP_INDEX:
-            modified_col = df[kwargs['scope_column']].apply(
+            modified_col = df_to_relabel[kwargs['scope_column']].apply(
                 get_scope_by_index, indexes=kwargs['sc_indexes'])
         elif kwargs['Variant'] == Variant.KEEP_LEFT:
-            modified_col = df[kwargs['scope_column']].apply(
+            modified_col = df_to_relabel[kwargs['scope_column']].apply(
                 keep_n_levels, n=kwargs['n'])
         elif kwargs['Variant'] == Variant.KEEP_RIGHT:
-            modified_col = df[kwargs['scope_column']].apply(
+            modified_col = df_to_relabel[kwargs['scope_column']].apply(
                 keep_n_levels, n=kwargs['n'], left_side=False)
         elif kwargs['Variant'] == Variant.REMOVE_LEFT:
-            modified_col = df[kwargs['scope_column']].apply(
+            modified_col = df_to_relabel[kwargs['scope_column']].apply(
                 remove_n_levels, n=kwargs['n'])
         elif kwargs['Variant'] == Variant.REMOVE_RIGHT:
-            modified_col = df[kwargs['scope_column']].apply(
+            modified_col = df_to_relabel[kwargs['scope_column']].apply(
                 remove_n_levels, n=kwargs['n'], left_side=False)
         # TODO remove index does not work yet
         # elif kwargs['Variant'] == Variant.REMOVE_INDEX:
-        #     modified_col = df[kwargs['scope_column']].apply(
+        #     modified_col = df_to_relabel[kwargs['scope_column']].apply(
         #         remove_scope_by_index, indexes=kwargs['sc_indexes'])
         if new_column.any():
             new_column = [str(x) + '/' + str(y)
                           for x, y in zip(new_column, modified_col)]
         else:
             new_column = modified_col
+        print(df[column][~df.index.isin(new_column.index)])
+        print(new_column)
+        new_column =  pd.concat([new_column, df[column][~df.index.isin(new_column.index)]])
     df[column] = new_column
     return df
 
 
 def parse_command(rel_command: str):
-
+    print(rel_command)
     single_scope_commands = rel_command.split('CONCAT')
     commands = []
     for command in single_scope_commands:
@@ -89,7 +94,6 @@ def parse_command(rel_command: str):
                     kwargs['Variant'] = Variant.REMOVE_RIGHT
                 elif re.search('INDEX', command):
                     kwargs['Variant'] = Variant.REMOVE_INDEX
-            print(command)
             scope_column = command.split('<')[1]
             scope_column = scope_column.split('>')[0]
             kwargs['scope_column'] = scope_column
@@ -105,6 +109,7 @@ def parse_command(rel_command: str):
 
 
 def execute_relabelling(log, **kwargs):
+    #TODO: not here but relabelling does not need selected scope
     # df = log.events if kwargs['is_event_transformation'] else log.objects
     # show_scope_examples(df, kwargs['scope_column'])
     # print('Possible variants for subscope are: Keep left(l), Keep right(r), Index(i)')
@@ -122,8 +127,8 @@ def execute_relabelling(log, **kwargs):
         df = relabel_function(log.events, **kwargs)
         log.events = df
     elif kwargs['is_object_transformation']:
-        df = log.objects[log.objects[log.object_type_column]
-                         == kwargs['object_type']].copy()
+        print(kwargs)
+        df = log.objects.copy() #TODO: probably prone to mistakes with multiple scopes
         df = relabel_function(df, column='new:column', **kwargs)
         log.objects = df
 

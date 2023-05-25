@@ -21,6 +21,8 @@ def map_ids(df: pd.DataFrame, column: str, values_mapping: dict) -> pd.DataFrame
             new_row = list(row)
             new_row[loc] = values_mapping[row[loc]]
             new_df.loc[len(new_df.index)] = new_row
+        else:
+            new_df.loc[len(new_df.index)] = row #CHECK: this might break event aggregation
     return new_df
 
 
@@ -175,12 +177,10 @@ def aggregate_objects(log, **kwargs):
         v) for k, v in col_func_map.items() if get_aggregation_functions(v) is not None}
     col_func_map_mod[log.object_id_column] = [
         col_func_map_mod[log.object_id_column], setify]
-
-    agg_objs = log.objects[log.objects[log.object_type_column]
-                           == kwargs['object_type']]
-
-    not_agg_objs = log.objects[log.objects[log.object_type_column]
-                               != kwargs['object_type']]
+    agg_objs = log.objects[~log.objects[kwargs['scope_column']].isna()]
+    print(agg_objs)
+    not_agg_objs = log.objects[log.objects[kwargs['scope_column']].isna()]
+    print(not_agg_objs)
     agg_objs[kwargs['scope_column']] = agg_objs[kwargs['scope_column']].apply(
         keep_n_levels, n=kwargs['scope_level']+1)
 
@@ -197,6 +197,8 @@ def aggregate_objects(log, **kwargs):
     agg_objs = agg_objs.drop(columns=(log.object_id_column, 'setify'))
     agg_objs = agg_objs.droplevel(1, axis=1)
 
+    
+
     agg_objs.sort_values(
         log.object_id_column, inplace=True, ignore_index=True)
 
@@ -204,9 +206,11 @@ def aggregate_objects(log, **kwargs):
     # log.objects = agg_objs
     # TODO need to further look into nan values
     log.objects.replace({np.nan: None}, inplace=True)
+    
 
     log.relations.drop_duplicates(inplace=True)
     log.relations.reset_index(drop=True, inplace=True)
+    print(log.relations)
 
     #TODO: this schould get actual values
     new_to_old_id_mapping = {}
