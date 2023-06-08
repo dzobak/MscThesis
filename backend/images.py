@@ -7,3 +7,5 @@ class Images(Resource):
 
     def get(self, filename):
         return send_file(get_image_filepath_from_name(filename), mimetype='image/png')
+
+    # TODO: scope images dont get deleted when log is deleted.
