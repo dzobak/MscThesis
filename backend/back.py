@@ -11,17 +11,21 @@ CORS(app)
 api = Api(app)
 
  
-api.add_resource(EventLogs, '/eventlogs/<task>', '/static/static/eventlogs/<task>')
+api.add_resource(EventLogs, '/eventlogs/<task>', '/static/static/logs/<task>')
 api.add_resource(Applying, '/applying/<task>')
 api.add_resource(Images, '/images/<filename>')
 
 @app.route('/<path:path>', methods=['GET'])
 def static_proxy(path):
      print(path)
-     return send_from_directory('./', path)   
+     print("*****************")
+     return send_from_directory('./static', path)  
 
 @app.route('/', methods=['GET'])
+@app.route('/logs')
+@app.route('/applying')
 def root():
+     print("00000000000000000")
      return render_template('index.html', static_folder='static')
 
 

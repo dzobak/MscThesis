@@ -85,15 +85,15 @@ def setify_values(series: pd.Series) -> set:
 
 
 def get_file_folder() -> str:
-    return os.path.join('event_log_files', '')
+    return os.path.join('backend','event_log_files', '')
 
 
 def get_log_filepath_from_name(name: str) -> str:
-    return os.path.join('.', 'event_log_files', name+'.jsonocel')
+    return os.path.join('.', 'backend' , 'event_log_files', name+'.jsonocel')
 
 
 def get_image_filepath_from_name(name: str) -> str:
-    return os.path.join('.', 'images', name+'.png')
+    return os.path.join('.','backend', 'images', name+'.png')
 
 
 def get_image_link_from_name(name: str) -> str:
