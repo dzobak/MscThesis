@@ -3,6 +3,8 @@ import pandas as pd
 
 
 def compare_paths(path1, path2):
+    if pd.isnull(path1):
+        return True
     if re.search(path2, path1):
         return True
     else:
@@ -32,14 +34,12 @@ def execute_selection(log, **kwargs):
         # log.relations.drop(rows_to_drop, inplace=True)
 
     elif kwargs['is_object_transformation']:
-        df = log.objects[log.objects[log.object_type_column]
-                         == kwargs['object_type']]
-        # kwargs['regex'] = str(input('Specify regex: '))
-        df = selection_function(df, **kwargs)
+        # df = log.objects[log.objects[log.object_type_column]
+        #                  == kwargs['object_type']]           
+        df = selection_function(log.objects, **kwargs)
         log.objects = df
         log.relations = log.relations[log.relations[log.object_id_column].isin(
             set(log.objects[log.object_id_column]))]
         log.events = log.events[log.events[log.event_id_column].isin(
             set(log.relations[log.event_id_column]))]
-
     return log
