@@ -91,9 +91,16 @@ def get_file_folder() -> str:
 def get_log_filepath_from_name(name: str) -> str:
     return os.path.join('.', 'backend' , 'event_log_files', name+'.jsonocel')
 
+def get_alt_log_filepath_from_name(name: str) -> str:
+    return os.path.join('event_log_files', name+'.jsonocel')
+
 
 def get_image_filepath_from_name(name: str) -> str:
     return os.path.join('.','backend', 'images', name+'.png')
+
+def get_alt_image_filepath_from_name(name:str) ->str:
+    return os.path.join('images', name+'.png')
+
 
 
 def get_image_link_from_name(name: str) -> str:
@@ -113,7 +120,7 @@ def get_column_functions_by_dtype(dtype: type) -> List[str]:
     # TODO: Nan values can by identified as number even if the rest of the column is string
     elif dtype == type(0) or dtype == type(1.0) or np.issubdtype(dtype, np.number):
         return ['SUM', 'MAX', 'MIN', 'COUNT', 'AVG', 'MEDIAN', 'MODE', 'DISCARD']
-    print(dtype)
+    # print(dtype)
     return ["good job"]
 
 
@@ -145,7 +152,7 @@ def get_column_function_options(log: OCEL_ext, **kwargs) -> dict:
 
     for column in df.columns:
         if column not in col_functions:
-            print(df[column].dtypes)
+            # print(df[column].dtypes)
             col_functions[column] = get_column_functions_by_dtype(
                 type(df.iloc[df[column].first_valid_index()][column]))
     return col_functions
@@ -189,7 +196,7 @@ def get_scope_list(scope: str, sep='/') -> list:
     return scope_list
 
 def get_nodes_and_edges(scopes: pd.Series):
-    print(scopes)
+    # print(scopes) 
     scope_groups = scopes.groupby(scopes).count()
     scope_pairs = []
     weight = []
@@ -227,7 +234,7 @@ def get_scope_graph(scopes: pd.Series, eventlogname: str):
 
     A = nx.nx_agraph.to_agraph(G)
     A.node_attr["shape"] = "box"
-    print(A.string())
+    # print(A.string())
     n = A.get_node('n0')
     n.attr['style'] = 'invis'
     A.layout("dot")  # layout with dot

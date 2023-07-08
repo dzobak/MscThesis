@@ -17,15 +17,12 @@ api.add_resource(Images, '/images/<filename>')
 
 @app.route('/<path:path>', methods=['GET'])
 def static_proxy(path):
-     print(path)
-     print("*****************")
      return send_from_directory('./static', path)  
 
 @app.route('/', methods=['GET'])
 @app.route('/logs')
 @app.route('/applying')
 def root():
-     print("00000000000000000")
      return render_template('index.html', static_folder='static')
 
 

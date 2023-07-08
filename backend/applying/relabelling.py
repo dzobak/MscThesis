@@ -66,9 +66,8 @@ def relabel_function(df: pd.DataFrame, **kwargs):
                           for x, y in zip(new_column, modified_col)]
         else:
             new_column = modified_col
-        print(df[column][~df.index.isin(new_column.index)])
-        print(new_column)
-        new_column =  pd.concat([new_column, df[column][~df.index.isin(new_column.index)]])
+        if column in df.columns:
+            new_column =  pd.concat([new_column, df[column][~df.index.isin(new_column.index)]])
     df[column] = new_column
     return df
 
@@ -131,5 +130,5 @@ def execute_relabelling(log, **kwargs):
         df = log.objects.copy() #TODO: probably prone to mistakes with multiple scopes
         df = relabel_function(df, column='new:column', **kwargs)
         log.objects = df
-
+        print(log.objects)
     return log
