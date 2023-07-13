@@ -11,3 +11,5 @@ In the top folder of this application <br>
 In the top folder of this application <br>
 - run: `conda env create --file=.\backend\environment.yml` <br>
 - run: `bootstrap.bat`
+
+You can open the application at http://127.0.0.1:5002
