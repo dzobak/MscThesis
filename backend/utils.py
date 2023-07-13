@@ -4,6 +4,7 @@ import os
 from OCEL_extended import OCEL_ext
 import numpy as np
 import networkx as nx
+import re
 
 
 def get_scope_tuple(scope: str, sep='/') -> tuple:
@@ -96,9 +97,11 @@ def get_alt_log_filepath_from_name(name: str) -> str:
 
 
 def get_image_filepath_from_name(name: str) -> str:
+    name = re.sub(r'[^\w_. -]', '_', name)
     return os.path.join('.','backend', 'images', name+'.png')
 
 def get_alt_image_filepath_from_name(name:str) ->str:
+    name = re.sub(r'[^\w_. -]', '_', name)
     return os.path.join('images', name+'.png')
 
 
