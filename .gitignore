@@ -1,6 +1,6 @@
 .vscode/settings.json
 script/logs
-backend/event_log_files
+backend/event_log_files/*
 backend/images
 backend/out.json
 __pycache__/
