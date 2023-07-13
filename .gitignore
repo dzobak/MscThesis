@@ -1,7 +1,7 @@
 .vscode/settings.json
 script/logs
-backend/event_log_files/*
-backend/images/*
+backend/event_log_files/*.jsonocel
+backend/images/*.png
 backend/out.json
 __pycache__/
 *.py[cod]
