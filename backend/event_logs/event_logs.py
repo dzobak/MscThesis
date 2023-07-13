@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request, send_file
 import json
-from utils import get_log_filepath_from_name, delete_file
+from utils import get_log_filepath_from_name, delete_file, get_alt_log_filepath_from_name
 from OCEL_extended import OCEL_ext
 from pm4py.objects.ocel.importer.jsonocel import importer as ocel_import
 
@@ -12,7 +12,10 @@ class EventLogs(Resource):
         delete_file(task)
 
     def get(self,task):
-        return send_file(get_log_filepath_from_name(task))
+        try:
+            return send_file(get_log_filepath_from_name(task))
+        except:
+            return send_file(get_alt_log_filepath_from_name(task))
 
     def post(self, task):
         if task == 'import':

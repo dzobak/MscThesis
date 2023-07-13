@@ -177,10 +177,10 @@ def aggregate_objects(log, **kwargs):
         v) for k, v in col_func_map.items() if get_aggregation_functions(v) is not None}
     col_func_map_mod[log.object_id_column] = [
         col_func_map_mod[log.object_id_column], setify]
-    agg_objs = log.objects[~log.objects[kwargs['scope_column']].isna()]
-    print(agg_objs)
+    agg_objs = log.objects[~log.objects[kwargs['scope_column']].isna()] 
+
     not_agg_objs = log.objects[log.objects[kwargs['scope_column']].isna()]
-    print(not_agg_objs)
+
     agg_objs[kwargs['scope_column']] = agg_objs[kwargs['scope_column']].apply(
         keep_n_levels, n=kwargs['scope_level']+1)
 
