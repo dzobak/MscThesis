@@ -138,8 +138,7 @@ def aggregate_events(log, **kwargs):
             new_columns.append('old_ids')
         else:
             new_columns.append(x[0])
-    print(new_columns)
-    print('############')
+
     agg_events.columns = new_columns
     agg_events.sort_values(
         log.event_id_column, inplace=True, ignore_index=True)
