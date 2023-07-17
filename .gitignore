@@ -1,4 +1,5 @@
 .vscode/settings.json
+frontend/.vscode*
 script/logs
 backend/event_log_files/*.jsonocel
 backend/images/*.png
